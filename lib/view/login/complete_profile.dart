@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_app/common_widgets/gender_card.dart';
+import 'package:health_app/view/home/home.dart';
+import 'package:health_app/view/login/login.dart';
 import '../../common/color_extension.dart';
 import '../../common_widgets/rounded_btn.dart';
 
@@ -113,12 +114,12 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                           children: [
                             Text(
                               height.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.w900,
                               ),
                             ),
-                            Text(
+                            const Text(
                               "cm",
                               style: TextStyle(
                                 fontSize: 13,
@@ -133,10 +134,10 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                             inactiveTrackColor: TColour.white,
                             thumbColor: TColour.primaryColor1,
                             overlayColor: TColour.secondaryColor1,
-                            thumbShape:
-                                RoundSliderThumbShape(enabledThumbRadius: 10.0),
-                            overlayShape:
-                                RoundSliderOverlayShape(overlayRadius: 20.0),
+                            thumbShape: const RoundSliderThumbShape(
+                                enabledThumbRadius: 10.0),
+                            overlayShape: const RoundSliderOverlayShape(
+                                overlayRadius: 20.0),
                           ),
                           child: Slider(
                               value: height.toDouble(),
@@ -157,7 +158,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                     children: [
                       Expanded(
                         child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 15),
+                          margin: const EdgeInsets.symmetric(horizontal: 15),
                           child: Column(
                             children: [
                               Text(
@@ -189,7 +190,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                                         children: [
                                           Text(
                                             weight.toString(),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 30,
                                               fontWeight: FontWeight.w900,
                                             ),
@@ -213,9 +214,10 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                                                 weight--;
                                               });
                                             },
-                                            icon: Icon(Icons.arrow_drop_down),
+                                            icon: const Icon(
+                                                Icons.arrow_drop_down),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 10.0,
                                           ),
                                           IconButton(
@@ -224,7 +226,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                                                 weight++;
                                               });
                                             },
-                                            icon: Icon(
+                                            icon: const Icon(
                                               Icons.arrow_drop_up,
                                             ),
                                           ),
@@ -240,7 +242,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                       ),
                       Expanded(
                         child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 15),
+                          margin: const EdgeInsets.symmetric(horizontal: 15),
                           child: Column(
                             children: [
                               Text(
@@ -272,7 +274,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                                         children: [
                                           Text(
                                             age.toString(),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 30,
                                               fontWeight: FontWeight.w900,
                                             ),
@@ -296,9 +298,10 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                                                 age--;
                                               });
                                             },
-                                            icon: Icon(Icons.arrow_drop_down),
+                                            icon: const Icon(
+                                                Icons.arrow_drop_down),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 10.0,
                                           ),
                                           IconButton(
@@ -307,7 +310,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                                                 age++;
                                               });
                                             },
-                                            icon: Icon(
+                                            icon: const Icon(
                                               Icons.arrow_drop_up,
                                             ),
                                           ),
@@ -334,7 +337,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  const CompleteProfileView()));
+                                  const HomeView()));
                     })
               ],
             ),

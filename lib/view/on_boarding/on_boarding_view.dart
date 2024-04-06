@@ -14,6 +14,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
   int selectedPage = 1;
   PageController controller = PageController();
 
+  @override
   void initState() {
     super.initState();
     controller.addListener(() {
@@ -97,7 +98,6 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                         controller.jumpToPage(selectedPage);
                         selectedPage = selectedPage + 1;
                       } else {
-                        print("Welcome screen");
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>const SignUpView()));
                       }
                     },

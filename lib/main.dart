@@ -16,7 +16,6 @@ class MyApp extends StatelessWidget {
       title: 'Health Guard',
       theme: ThemeData(
         primaryColor: TColour.primaryColor1,
-        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         fontFamily: "Poppins",
         useMaterial3: true,
       ),
