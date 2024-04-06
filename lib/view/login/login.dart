@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_app/view/home/home.dart';
-import 'package:health_app/view/login/complete_profile.dart';
 import 'package:health_app/view/login/sign_up_view.dart';
-
 import '../../common/color_extension.dart';
 import '../../common_widgets/rounded_btn.dart';
 import '../../common_widgets/rounded_text_field.dart';
