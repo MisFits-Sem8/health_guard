@@ -3,6 +3,7 @@ import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
 import 'package:health_app/common_widgets/rounded_text_field.dart';
 import 'package:health_app/view/login/complete_profile.dart';
+import 'package:health_app/view/login/login.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -38,7 +39,7 @@ class _SignUpViewState extends State<SignUpView> {
                     fontWeight: FontWeight.w700),
               ),
               SizedBox(
-                height: media.width * 0.06,
+                height: media.height * 0.02,
               ),
               const RoundTextField(
                 hintText: "Name",
@@ -46,7 +47,7 @@ class _SignUpViewState extends State<SignUpView> {
                 keyboardType: TextInputType.name,
               ),
               SizedBox(
-                height: media.width * 0.06,
+                height: media.height * 0.02,
               ),
               const RoundTextField(
                 hintText: "Email",
@@ -54,7 +55,7 @@ class _SignUpViewState extends State<SignUpView> {
                 keyboardType: TextInputType.emailAddress,
               ),
               SizedBox(
-                height: media.width * 0.06,
+                height: media.height * 0.02,
               ),
               RoundTextField(
                 hintText: "Password",
@@ -72,31 +73,42 @@ class _SignUpViewState extends State<SignUpView> {
                 ),
               ),
               SizedBox(
-                height: media.width * 0.07,
+                height: media.height * 0.005,
               ),
-              Row(
-                children: [
-                  Icon(isCheck
-                      ? Icons.check_box
-                      : Icons.check_box_outline_blank),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      "I've read and agree to the privacy and policies",
-                      style: TextStyle(fontSize: 12, color: TColour.gray),
-                    ),
-                  )
-                ],
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    isCheck = !isCheck;
+                  });
+                },
+                child: Row(
+                  children: [
+                    Icon(isCheck
+                        ? Icons.check_box
+                        : Icons.check_box_outline_blank),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        "I've read and agree to the privacy and policies",
+                        style: TextStyle(fontSize: 12, color: TColour.gray),
+                      ),
+                    )
+                  ],
+                ),
               ),
               SizedBox(
-                height: media.width * 0.1,
+                height: media.height * 0.03,
               ),
-              RoundedButton(title: "Register", onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>const CompleteProfileView()));
-
-              }),
+              RoundedButton(
+                  title: "Register",
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CompleteProfileView()));
+                  }),
               SizedBox(
-                height: media.width * 0.06,
+                height: media.height * 0.03,
               ),
               Row(
                 children: [
@@ -122,25 +134,35 @@ class _SignUpViewState extends State<SignUpView> {
                 ],
               ),
               SizedBox(
-                height: media.width * 0.06,
+                height: media.height * 0.01,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Already have an account? ",
-                    style: TextStyle(
-                        color: TColour.black1,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400),
-                  ), Text(
-                    "Log in",
-                    style: TextStyle(
-                        color: TColour.black1,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700),
-                  ),
-                ],
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginView(),
+                      ));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Already have an account? ",
+                      style: TextStyle(
+                          color: TColour.black1,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400),
+                    ),
+                    Text(
+                      "Log in",
+                      style: TextStyle(
+                          color: TColour.black1,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700),
+                    ),
+                  ],
+                ),
               ),
               const Spacer(),
             ],

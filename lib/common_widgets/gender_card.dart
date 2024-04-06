@@ -24,7 +24,7 @@ class GenderCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                FontAwesomeIcons.mars,
+                genderType == Gender.male ? FontAwesomeIcons.mars : FontAwesomeIcons.venus,
                 size: 70,
               ),
               Text(
