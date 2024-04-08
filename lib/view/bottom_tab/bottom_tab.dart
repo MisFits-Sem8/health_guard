@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:health_app/view/activity/activity_view.dart';
 import 'package:health_app/view/home/home.dart';
 import 'package:health_app/view/login/complete_profile.dart';
-import 'package:health_app/view/login/login.dart';
 import 'package:health_app/view/message/message_view.dart';
 
 import '../../common/color_extension.dart';
