@@ -10,7 +10,7 @@ class MessageView extends StatefulWidget {
 class _MessageViewState extends State<MessageView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.cyanAccent,
     );
   }

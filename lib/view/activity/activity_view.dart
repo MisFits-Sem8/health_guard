@@ -10,7 +10,7 @@ class ActivityView extends StatefulWidget {
 class _ActivityViewState extends State<ActivityView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.green,
     );
   }
