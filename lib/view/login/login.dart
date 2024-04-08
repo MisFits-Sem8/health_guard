@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:health_app/view/home/home.dart';
+import 'package:health_app/view/bottom_tab/bottom_tab.dart';
 import 'package:health_app/view/login/sign_up_view.dart';
 import '../../common/color_extension.dart';
 import '../../common_widgets/rounded_btn.dart';
@@ -72,7 +72,7 @@ class _LoginViewState extends State<LoginView> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const HomeView(),
+                        builder: (context) => const BottomTab(),
                       ),
                     );
                   }),
