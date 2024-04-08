@@ -330,7 +330,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                   height: media.width * 0.06,
                 ),
                 RoundedButton(
-                    title: "Next",
+                    title: "Update",
                     onPressed: () {
                       Navigator.push(
                           context,
