@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_app/common_widgets/gender_card.dart';
+import 'package:health_app/view/bottom_tab/bottom_tab.dart';
 import 'package:health_app/view/home/home.dart';
 import '../../common/color_extension.dart';
 import '../../common_widgets/rounded_btn.dart';
@@ -336,7 +337,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  const HomeView()));
+                                  const BottomTab()));
                     })
               ],
             ),
