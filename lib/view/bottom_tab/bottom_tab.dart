@@ -3,6 +3,8 @@ import 'package:health_app/view/activity/activity_view.dart';
 import 'package:health_app/view/home/home.dart';
 import 'package:health_app/view/login/complete_profile.dart';
 import 'package:health_app/view/message/message_view.dart';
+import 'package:health_app/view/notifications/notifications_view.dart';
+import 'package:health_app/view/settings/settings_view.dart';
 
 import '../../common/color_extension.dart';
 import '../../common_widgets/tab_button.dart';
@@ -31,7 +33,7 @@ class _BottomTabState extends State<BottomTab> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             TabButton(
-              iconData: Icons.home,
+              iconData: Icons.home_rounded,
               isActive: selectedTab == 0,
               onTap: () {
                 selectedTab = 0;
@@ -43,22 +45,10 @@ class _BottomTabState extends State<BottomTab> {
               size: media.height * 0.04,
             ),
             TabButton(
-              iconData: Icons.scale_outlined,
+              iconData: Icons.directions_run_rounded,
               isActive: selectedTab == 1,
               onTap: () {
                 selectedTab = 1;
-                currentTab = const CompleteProfileView();
-                if (mounted) {
-                  setState(() {});
-                }
-              },
-              size: media.height * 0.04,
-            ),
-            TabButton(
-              iconData: Icons.directions_run_rounded,
-              isActive: selectedTab == 2,
-              onTap: () {
-                selectedTab = 2;
                 currentTab = const ActivityView();
                 if (mounted) {
                   setState(() {});
@@ -67,11 +57,34 @@ class _BottomTabState extends State<BottomTab> {
               size: media.height * 0.04,
             ),
             TabButton(
-              iconData: Icons.message_outlined,
+              iconData: Icons.notifications_rounded,
+              isActive: selectedTab == 2,
+              onTap: () {
+                selectedTab = 2;
+                currentTab = const NotificationView();
+                if (mounted) {
+                  setState(() {});
+                }
+              },
+              size: media.height * 0.04,
+            ),
+            TabButton(
+              iconData: Icons.message_rounded,
               isActive: selectedTab == 3,
               onTap: () {
                 selectedTab = 3;
                 currentTab = const MessageView();
+                if (mounted) {
+                  setState(() {});
+                }
+              },
+              size: media.height * 0.039,
+            ),TabButton(
+              iconData: Icons.person_2_rounded,
+              isActive: selectedTab == 4,
+              onTap: () {
+                selectedTab = 4;
+                currentTab = const SettingsView();
                 if (mounted) {
                   setState(() {});
                 }
