@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 
 class ActivityView extends StatefulWidget {
   const ActivityView({super.key});
