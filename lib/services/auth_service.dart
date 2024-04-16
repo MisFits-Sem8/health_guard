@@ -7,17 +7,20 @@ class AuthService {
   Future<String?> createUserWithEmailAndPassword(
     String email,
     String password,
+    String name,
   ) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      await cred.user?.updateDisplayName(name);
       return cred.user?.email;
     } on FirebaseAuthException catch (e) {
-      if (kDebugMode) {
-        return e.message;
+      if (e.code == 'email-already-in-use') {
+        return "The account already exists for that email.";
+      } else {
+        return "Check your email and password.";
       }
     }
-    return null;
   }
 
   Future<String?> loginUserWithEmailAndPassword(
@@ -29,10 +32,12 @@ class AuthService {
           email: email, password: password);
       return cred.user?.email;
     } on FirebaseAuthException catch (e) {
-      print('ERROR: ${e.code}');
-      return 'Check your email and password.';
-    } catch (e) {
-      return "Something went wrong!";
+      if (e.code == 'invalid-credential') {
+        return 'Check your email and password.';
+      } else {
+        print(e.code);
+        return "Something went wrong!";
+      }
     }
   }
 

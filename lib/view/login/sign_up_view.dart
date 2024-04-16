@@ -239,37 +239,41 @@ class _SignUpViewState extends State<SignUpView> {
 
     if (_formKey.currentState?.validate() ?? false) {
       String? errorMessage = await _auth.createUserWithEmailAndPassword(
-          _email.text, _password.text);
+          _email.text, _password.text, _name.text);
       if (EmailValidator.validate(errorMessage!)) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const CompleteProfileView()));
+        if (mounted) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const CompleteProfileView()));
+        }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          elevation: 0,
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.transparent,
-          content: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: const BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.all(Radius.circular(20))),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Oh! Snap",
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-                Text(
-                  errorMessage,
-                  style: const TextStyle(fontSize: 13, color: Colors.white),
-                )
-              ],
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            elevation: 0,
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.transparent,
+            content: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: const BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Oh! Snap",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                  Text(
+                    errorMessage,
+                    style: const TextStyle(fontSize: 13, color: Colors.white),
+                  )
+                ],
+              ),
             ),
-          ),
-        ));
+          ));
+        }
       }
     }
   }
