@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "511290732943",
+    "project_id": "healthguard-misfits",
+    "storage_bucket": "healthguard-misfits.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:511290732943:android:cd53ded81b031d8c469bfa",
+        "android_client_info": {
+          "package_name": "com.example.health_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_7NufsknylAWL8SexLSzWx0G1JUeuf2U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
