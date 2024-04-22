@@ -8,6 +8,7 @@ class TColour {
 
   static List<Color> get primary => [primaryColor1, primaryColor2];
   static List<Color> get secondary => [black2,lightTextGray];
+static List<Color> get gradient => [secondaryColor2, primaryColor1];
 
   static Color get black1 => const Color(0xff101617);
   static Color get black2 => Colors.black45;
