@@ -1,8 +1,11 @@
+import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pretty_gauge/pretty_gauge.dart';
+import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
 
 class ActivityView extends StatefulWidget {
   const ActivityView({super.key});
@@ -60,6 +63,12 @@ class _ActivityViewState extends State<ActivityView> {
         FlSpot(14, 4),
         FlSpot(15, 2),
       ];
+  List waterArray = [
+    {"title": "6-8", "subtitle": "1 cup"},
+    {"title": "8-10", "subtitle": "2 cup"},
+    {"title": "10-12", "subtitle": "3 cup"},
+    {"title": "12-14", "subtitle": "1 cup"}
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -259,7 +268,6 @@ class _ActivityViewState extends State<ActivityView> {
                   )
                 ]),
               ),
-              
               SizedBox(
                 height: media.width * .05,
               ),
@@ -440,6 +448,275 @@ class _ActivityViewState extends State<ActivityView> {
                               onPressed: () {}))
                     ]),
               ),
+              SizedBox(
+                height: media.width * .05,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: media.width,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black12, blurRadius: 3)
+                          ]),
+                      child: Row(
+                        children: [
+                          SimpleAnimationProgressBar(
+                            height: media.width * .8,
+                            width: 30,
+                            backgroundColor: TColour.secondaryColor2,
+                            foregrondColor: Colors.purple,
+                            ratio:
+                                0.8, // to be chage with the consumed water amount
+                            direction: Axis.vertical,
+                            curve: Curves.fastLinearToSlowEaseIn,
+                            duration: const Duration(seconds: 4),
+                            borderRadius: BorderRadius.circular(10),
+                            gradientColor: LinearGradient(colors: [
+                              TColour.primaryColor1,
+                              TColour.primaryColor2
+                            ]),
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Expanded(
+                              child: Column(
+                            children: [
+                              Text(
+                                "Water Intake",
+                                style: TextStyle(
+                                    color: TColour.black1,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (bounds) {
+                                  return LinearGradient(
+                                          colors: TColour.primary,
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight)
+                                      .createShader(Rect.fromLTRB(
+                                          0, 0, bounds.width, bounds.height));
+                                },
+                                child: Text(
+                                  "8/10",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      color: TColour.white.withOpacity(.7),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                              Text(
+                                "Rela time updates",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: TColour.black1.withOpacity(.7),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: waterArray.map((item) {
+                                  var isLast = item == waterArray.last;
+                                  return Row(children: [
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                vertical: 4),
+                                            width: 10,
+                                            height: 10,
+                                            decoration: BoxDecoration(
+                                                color: TColour.secondaryColor2,
+                                                borderRadius:
+                                                    BorderRadius.circular(15))),
+                                        if (!isLast)
+                                          DottedDashedLine(
+                                              height: media.width * .095,
+                                              width: 0,
+                                              axis: Axis.vertical)
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: media.width * .04,
+                                    ),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(item['subtitle']),
+                                        ShaderMask(
+                                          blendMode: BlendMode.srcIn,
+                                          shaderCallback: (bounds) {
+                                            return LinearGradient(
+                                                    colors: TColour.primary,
+                                                    begin: Alignment.centerLeft,
+                                                    end: Alignment.centerRight)
+                                                .createShader(Rect.fromLTRB(
+                                                    0,
+                                                    0,
+                                                    bounds.width,
+                                                    bounds.height));
+                                          },
+                                          child: Text(
+                                            item['title'],
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                                color: TColour.white
+                                                    .withOpacity(.7),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ]);
+                                }).toList(),
+                              )
+                            ],
+                          ))
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: media.width * .05,
+                  ),
+                  Expanded(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: double.maxFinite,
+                        height: media.width * .5,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 20),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black12, blurRadius: 2)
+                            ]),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Sleep"),
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (bounds) {
+                                  return LinearGradient(
+                                          colors: TColour.primary,
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight)
+                                      .createShader(Rect.fromLTRB(
+                                          0, 0, bounds.width, bounds.height));
+                                },
+                                child: Text(
+                                  "5hr 30min",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      color: TColour.white.withOpacity(.7),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                              SizedBox(height: media.width*.05,),
+                              CircularPercentIndicator(
+                                radius: 40.0,
+                                lineWidth: 7.0,
+                                percent: 0.30,
+                                animation: true,
+                                animationDuration: 1200,
+                                center: new Text(
+                                  "40%",
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10.0),
+                                ),
+                                circularStrokeCap: CircularStrokeCap.butt,
+                                backgroundColor: TColour.secondaryColor2,
+                                progressColor: TColour.primaryColor1,
+                              ),
+                            ]),
+                      ),
+                      SizedBox(
+                        height: media.width * .05,
+                      ),
+                      Container(
+                        width: double.maxFinite,
+                        height: media.width * .45,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 20),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black12, blurRadius: 2)
+                            ]),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Calories"),
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (bounds) {
+                                  return LinearGradient(
+                                          colors: TColour.primary,
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight)
+                                      .createShader(Rect.fromLTRB(
+                                          0, 0, bounds.width, bounds.height));
+                                },
+                                child: Text(
+                                  "40%",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      color: TColour.white.withOpacity(.7),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                              SizedBox(height: media.width*.05,),
+                              CircularPercentIndicator(
+                                radius: 40.0,
+                                lineWidth: 7.0,
+                                percent: 430/1200,
+                                animation: true,
+                                animationDuration: 1200,
+                                center: new Text(
+                                  "40%",
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10.0),
+                                ),
+                                circularStrokeCap: CircularStrokeCap.butt,
+                                backgroundColor: TColour.secondaryColor2,
+                                progressColor: TColour.primaryColor1,
+                              ),
+                            ]),
+                      ),
+                    ],
+                  )),
+                ],
+              ),
+              SizedBox(
+                height: media.width * .05,
+              )
             ],
           ),
         )),

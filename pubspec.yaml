@@ -19,6 +19,11 @@ dependencies:
   pretty_gauge: ^1.0.1
   share_plus: ^7.2.2
 
+  simple_animation_progress_bar: ^1.8.2
+  dotted_line: ^3.2.2
+  dotted_dashed_line: ^0.0.3
+  percent_indicator: ^4.2.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
