@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
-import 'package:health_app/view/activity/activity_view.dart';
 import 'package:health_app/view/on_boarding/getting_started_view.dart';
 
 void main() {
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Poppins",
         useMaterial3: true,
       ),
-      home: const ActivityView()
+      home: const GettingStartedView()
     );
   }
 }
