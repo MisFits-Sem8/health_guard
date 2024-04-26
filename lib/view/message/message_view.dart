@@ -20,6 +20,19 @@ class _MessageViewState extends State<MessageView> {
 
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: TColour.white,
+          centerTitle: true,
+          elevation: 0,
+          // leadingWidth: 0,
+          title: Text(
+            "HealthGuard",
+            style: TextStyle(
+                color: TColour.black1,
+                fontSize: 16,
+                fontWeight: FontWeight.w700),
+          ),
+        ),
         backgroundColor: TColour.white,
         body: Column(children: [
           Expanded(
@@ -49,7 +62,7 @@ class _MessageViewState extends State<MessageView> {
                     child: Text(
                       DateFormat.yMMMd().format(message.date),
                       style: TextStyle(
-                          color: TColour.white.withOpacity(0.7),
+                          color: TColour.white,
                           fontWeight: FontWeight.w500,
                           fontSize: 13),
                     ),
@@ -62,7 +75,7 @@ class _MessageViewState extends State<MessageView> {
                     : Alignment.centerLeft,
                 child: Card(
                   color: message.isSentByMe
-                      ? TColour.secondaryColor1
+                      ? TColour.primaryColor2
                       : TColour.white,
                   elevation: 2,
                   child: Padding(
