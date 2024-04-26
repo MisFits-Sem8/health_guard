@@ -52,7 +52,7 @@ class _ProfileViewState extends State<ProfileView> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: Image.asset(
-                      "assets/images/profile.png",
+                      gender == Gender.female ? "assets/images/profile-female.png" : "assets/images/profile-male.png",
                       width: 50,
                       height: 50,
                       fit: BoxFit.cover,
