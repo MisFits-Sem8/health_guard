@@ -37,23 +37,12 @@ class GoalCard extends StatelessWidget {
             width: 15,
           ),
           Expanded(
-            child: ShaderMask(
-              blendMode: BlendMode.srcIn,
-              shaderCallback: (bounds) {
-                return LinearGradient(
-                        colors: TColour.primary,
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight)
-                    .createShader(
-                        Rect.fromLTRB(0, 0, bounds.width, bounds.height));
-              },
-              child: Text(
-                goalname,
-                style: TextStyle(
-                    color: TColour.white.withOpacity(0.7),
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14),
-              ),
+            child: Text(
+              goalname,
+              style: TextStyle(
+                  color: TColour.black1.withOpacity(0.7),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14),
             ),
           ),
           Row(
@@ -61,11 +50,22 @@ class GoalCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              Text(
-                target,
-                style: const TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w300,
+              ShaderMask(
+                blendMode: BlendMode.srcIn,
+                shaderCallback: (bounds) {
+                  return LinearGradient(
+                          colors: TColour.primary,
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight)
+                      .createShader(
+                          Rect.fromLTRB(0, 0, bounds.width, bounds.height));
+                },
+                child: Text(
+                  target,
+                  style: const TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w300,
+                  ),
                 ),
               ),
               Text(

@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:health_app/common_widgets/goal_card.dart";
 import "package:health_app/common_widgets/rounded_btn.dart";
 import "package:health_app/view/profile/edit_profile_view.dart";
 
@@ -150,37 +151,33 @@ class _ProfileViewState extends State<ProfileView> {
                         const SizedBox(
                           height: 8,
                         ),
-                        const Row(
-                          children: [
-                            Expanded(
-                              child: TitleSubtitleCell(
-                                title: "180cm",
-                                subtitle: "Height",
-                              ),
-                            ),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            Expanded(
-                              child: TitleSubtitleCell(
-                                title: "65kg",
-                                subtitle: "Weight",
-                              ),
-                            ),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            Expanded(
-                              child: TitleSubtitleCell(
-                                title: "22yo",
-                                subtitle: "Age",
-                              ),
-                            ),
-                          ],
+                        const GoalCard(
+                          goalname: 'Sleep',
+                          target: "7",
+                          unit: "hr",
+                          imageName: "sleep",
                         ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        const GoalCard(
+                          goalname: 'Workout',
+                          target: "30",
+                          imageName: "workout",
+                          unit: 'mins',
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        const GoalCard(
+                          goalname: 'Water',
+                          target: "2",
+                          imageName: "water",
+                          unit: 'l',
+                        )
                       ])),
               const SizedBox(
-                height: 25,
+                height: 30,
               ),
               RoundedButton(
                 onPressed: () async {
@@ -193,30 +190,24 @@ class _ProfileViewState extends State<ProfileView> {
                 },
                 title: 'Sign Out',
               ),
-              const SizedBox(height: 2),
-              TextButton(
-                onPressed: () {
-                  // Add your privacy policy navigation logic here
-                },
-                child: Text(
-                  'Privacy Policy',
-                  style: TextStyle(
-                    color: TColour.primaryColor1, // Change color as needed
-                  ),
+              const SizedBox(height: 10),
+              Text(
+                'Privacy Policy',
+                style: TextStyle(
+                  color: TColour.primaryColor1,
+                  // Change color as needed
                 ),
+                textAlign: TextAlign.center,
               ),
-              TextButton(
-                onPressed: () {
-                  // Add your contact us navigation logic here
-                },
-                child: const Text(
-                  'Contact Us',
-                  style: TextStyle(
-                    color: Colors.blue, // Change color as needed
-                  ),
+              const SizedBox(height: 10),
+              Text(
+                'Contact Us',
+                style: TextStyle(
+                  color: TColour.primaryColor1, // Change color as needed
                 ),
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 10),
               const Text(
                 '© 2024 HealthGuard. All rights reserved.',
                 style: TextStyle(
