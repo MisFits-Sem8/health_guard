@@ -13,6 +13,9 @@ class EditProfileView extends StatefulWidget {
 
 class _EditProfileViewState extends State<EditProfileView> {
   Gender? gender;
+  double sleep = 6;
+  double workout = 2;
+  double water = 2.5;
   int height = 180;
   int weight = 50;
   int age = 25;
@@ -34,9 +37,9 @@ class _EditProfileViewState extends State<EditProfileView> {
         ),
       ),
       backgroundColor: TColour.white,
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 65),
+          padding: EdgeInsets.symmetric(horizontal: media.width * 0.05),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -53,9 +56,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                   style: TextStyle(color: TColour.gray, fontSize: 13),
                 ),
                 SizedBox(
-                  height: media.width * 0.05,
+                  height: media.height * 0.025,
                 ),
-
                 Text(
                   "Height",
                   style: TextStyle(
@@ -64,7 +66,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       fontWeight: FontWeight.w700),
                 ),
                 Container(
-                  margin: const EdgeInsets.all(15.0),
+                  margin: const EdgeInsets.symmetric(vertical: 10.0),
                   height: media.height * 0.15,
                   decoration: BoxDecoration(
                       color: TColour.white,
@@ -122,192 +124,282 @@ class _EditProfileViewState extends State<EditProfileView> {
                   ),
                 ),
                 SizedBox(
-                  height: media.width * 0.03,
+                  height: media.height * 0.02,
                 ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 15),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Weight",
-                                style: TextStyle(
-                                    color: TColour.black1,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                              SizedBox(
-                                height: media.width * 0.02,
-                              ),
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: TColour.white,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                            color: Colors.black12,
-                                            blurRadius: 2)
-                                      ]),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.baseline,
-                                        textBaseline: TextBaseline
-                                            .alphabetic, //both arguments are needed, crossaxis with baseline
-                                        children: [
-                                          Text(
-                                            weight.toString(),
-                                            style: const TextStyle(
-                                              fontSize: 30,
-                                              fontWeight: FontWeight.w900,
-                                            ),
-                                          ),
-                                          Text(
-                                            "kg",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: TColour.lightTextGray,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                weight--;
-                                              });
-                                            },
-                                            icon: const Icon(
-                                                Icons.arrow_drop_down),
-                                          ),
-                                          const SizedBox(
-                                            width: 10.0,
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                weight++;
-                                              });
-                                            },
-                                            icon: const Icon(
-                                              Icons.arrow_drop_up,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                Row(
+                  children: [
+                    Container(
+                      width: media.width * 0.42,
+                      child: Column(
+                        children: [
+                          Text(
+                            "Weight",
+                            style: TextStyle(
+                                color: TColour.black1,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700),
                           ),
-                        ),
+                          Container(
+                            height: media.height * 0.15,
+                            margin: const EdgeInsets.symmetric(vertical: 15.0),
+                            decoration: BoxDecoration(
+                                color: TColour.white,
+                                borderRadius: BorderRadius.circular(10.0),
+                                boxShadow: const [
+                                  BoxShadow(
+                                      color: Colors.black12, blurRadius: 2)
+                                ]),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.baseline,
+                                  textBaseline: TextBaseline
+                                      .alphabetic, //both arguments are needed, crossaxis with baseline
+                                  children: [
+                                    Text(
+                                      weight.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                    Text(
+                                      "kg",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: TColour.lightTextGray,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          weight--;
+                                        });
+                                      },
+                                      icon: const Icon(Icons.arrow_drop_down),
+                                    ),
+                                    const SizedBox(
+                                      width: 10.0,
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          weight++;
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.arrow_drop_up,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 15),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Age",
-                                style: TextStyle(
-                                    color: TColour.black1,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                              SizedBox(
-                                height: media.width * 0.02,
-                              ),
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: TColour.white,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                            color: Colors.black12,
-                                            blurRadius: 2)
-                                      ]),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.baseline,
-                                        textBaseline: TextBaseline
-                                            .alphabetic, //both arguments are needed, crossaxis with baseline
-                                        children: [
-                                          Text(
-                                            age.toString(),
-                                            style: const TextStyle(
-                                              fontSize: 30,
-                                              fontWeight: FontWeight.w900,
-                                            ),
-                                          ),
-                                          Text(
-                                            "yo",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              color: TColour.lightTextGray,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                age--;
-                                              });
-                                            },
-                                            icon: const Icon(
-                                                Icons.arrow_drop_down),
-                                          ),
-                                          const SizedBox(
-                                            width: 10.0,
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                age++;
-                                              });
-                                            },
-                                            icon: const Icon(
-                                              Icons.arrow_drop_up,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                    ),
+                    SizedBox(
+                      width: media.width * 0.06,
+                    ),
+                    Container(
+                      child: Column(
+                        children: [
+                          Text(
+                            "Age",
+                            style: TextStyle(
+                                color: TColour.black1,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700),
                           ),
-                        ),
+                          Container(
+                            height: media.height * 0.15,
+                            margin: const EdgeInsets.symmetric(vertical: 15.0),
+                            width: media.width * 0.42,
+                            decoration: BoxDecoration(
+                                color: TColour.white,
+                                borderRadius: BorderRadius.circular(10.0),
+                                boxShadow: const [
+                                  BoxShadow(
+                                      color: Colors.black12, blurRadius: 2)
+                                ]),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.baseline,
+                                  textBaseline: TextBaseline
+                                      .alphabetic, //both arguments are needed, crossaxis with baseline
+                                  children: [
+                                    Text(
+                                      age.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                    Text(
+                                      "yo",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: TColour.lightTextGray,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          age--;
+                                        });
+                                      },
+                                      icon: const Icon(Icons.arrow_drop_down),
+                                    ),
+                                    const SizedBox(
+                                      width: 10.0,
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          age++;
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.arrow_drop_up,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: media.height * 0.02,
+                ),
+                Text(
+                  "Update your goals",
+                  style: TextStyle(
+                      color: TColour.black1,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 15.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  decoration: BoxDecoration(
+                      color: TColour.white,
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black12, blurRadius: 2)
+                      ]),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.local_drink, color: Colors.blue),
+                          const SizedBox(width: 8),
+                          const Text("Water"),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: TextFormField(
+                              initialValue: water.toString(),
+                              textAlign: TextAlign.center,keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                setState(() {
+                                  water = double.tryParse(value) ?? water;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "litres",
+                            style: TextStyle(
+                                fontSize: 13, color: TColour.lightTextGray),
+                          ),
+                        ],
+                      ),
+                      // Sleep Goal Row
+                      Row(
+                        children: [
+                          const Icon(Icons.bedtime, color: Colors.orange),
+                          const SizedBox(width: 8),
+                          const Text("Sleep"),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: TextFormField(
+                              initialValue: sleep.toString(),
+                              textAlign: TextAlign.center,keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                setState(() {
+                                  sleep = double.tryParse(value) ?? sleep;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "hrs",
+                            style: TextStyle(
+                                fontSize: 13, color: TColour.lightTextGray),
+                          ),
+                        ],
+                      ),
+                      // Workout Goal Row
+                      Row(
+                        children: [
+                          const Icon(Icons.fitness_center,
+                              color: Colors.purple),
+                          const SizedBox(width: 8),
+                          const Text("Workout"),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: TextFormField(
+                              textAlign: TextAlign.center,
+                              initialValue: workout.toString(),
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                setState(() {
+                                  workout = double.tryParse(value) ?? workout;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "hrs",
+                            style: TextStyle(
+                                fontSize: 13, color: TColour.lightTextGray),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
                 SizedBox(
-                  height: media.width * 0.1,
+                  height: media.height * 0.01,
                 ),
                 RoundedButton(
                     title: "Update",

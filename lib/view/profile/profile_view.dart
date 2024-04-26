@@ -141,7 +141,7 @@ class _ProfileViewState extends State<ProfileView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Goal",
+                          "My Goals",
                           style: TextStyle(
                             color: TColour.black1,
                             fontSize: 16,
@@ -154,7 +154,7 @@ class _ProfileViewState extends State<ProfileView> {
                         const GoalCard(
                           goalname: 'Sleep',
                           target: "7",
-                          unit: "hr",
+                          unit: "hrs",
                           imageName: "sleep",
                         ),
                         const SizedBox(
@@ -162,9 +162,9 @@ class _ProfileViewState extends State<ProfileView> {
                         ),
                         const GoalCard(
                           goalname: 'Workout',
-                          target: "30",
+                          target: "2",
                           imageName: "workout",
-                          unit: 'mins',
+                          unit: 'hrs',
                         ),
                         const SizedBox(
                           height: 8,
@@ -173,7 +173,7 @@ class _ProfileViewState extends State<ProfileView> {
                           goalname: 'Water',
                           target: "2",
                           imageName: "water",
-                          unit: 'l',
+                          unit: 'litres',
                         )
                       ])),
               const SizedBox(
@@ -193,16 +193,16 @@ class _ProfileViewState extends State<ProfileView> {
               const SizedBox(height: 10),
               Text(
                 'Privacy Policy',
-                style: TextStyle(
-                  color: TColour.primaryColor1,
-                  // Change color as needed
-                ),
+                style: TextStyle(color: TColour.primaryColor1, fontSize: 13
+                    // Change color as needed
+                    ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
                 'Contact Us',
                 style: TextStyle(
+                  fontSize: 13,
                   color: TColour.primaryColor1, // Change color as needed
                 ),
                 textAlign: TextAlign.center,

@@ -19,7 +19,7 @@ class GoalCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
       decoration: BoxDecoration(
-        color: TColour.lightGray.withOpacity(0.7),
+        color: TColour.lightGray,
         borderRadius: BorderRadius.circular(15),
       ),
       child: Row(
@@ -67,6 +67,8 @@ class GoalCard extends StatelessWidget {
                     fontWeight: FontWeight.w300,
                   ),
                 ),
+              ),const SizedBox(
+                width: 3,
               ),
               Text(
                 unit,

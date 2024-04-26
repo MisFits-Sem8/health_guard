@@ -41,7 +41,7 @@ class TitleSubtitleCell extends StatelessWidget {
             style: TextStyle(
                 color: TColour.black1.withOpacity(0.7),
                 fontWeight: FontWeight.w500,
-                fontSize: 14),
+                fontSize: 13),
           ),
         ],
       ),
