@@ -320,7 +320,9 @@ class _ActivityViewState extends State<ActivityView> {
                       height: media.width * .08,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 40.0),
+                      // padding: const EdgeInsets.only(top: 40.0),
+                      padding:
+                      EdgeInsets.symmetric(vertical: 25, horizontal: 20),
                       child: LineChart(
                         LineChartData(
                           showingTooltipIndicators: tools.map((index) {
@@ -384,11 +386,19 @@ class _ActivityViewState extends State<ActivityView> {
                               getTooltipColor: (touchedSpot) =>
                                   Color.fromARGB(255, 217, 78, 222),
                               tooltipRoundedRadius: 8,
-                              getTooltipItems:
+
+
+                                getTooltipItems:
                                   (List<LineBarSpot> lineBarsSpot) {
-                                return lineBarsSpot.map((lineBarSpot) {
+                                return lineBarsSpot.asMap().entries.map((entry)  {
+                                  final index = entry.key;
+                                  final lineBarSpot = entry.value;
+
+                                  final alignment = index < lineBarsSpot.length / 2
+                                      ? FLHorizontalAlignment.right
+                                      : FLHorizontalAlignment.left;
                                   return LineTooltipItem(
-                                    "${lineBarSpot.x.toString()}day\n ${lineBarSpot.x.toInt()}steps",
+                                    "${lineBarSpot.x.toString()}day\n ${lineBarSpot.y.toInt()}steps",
                                     // lineBarSpot.y.toString(),
                                     const TextStyle(
                                       color: Colors.white,

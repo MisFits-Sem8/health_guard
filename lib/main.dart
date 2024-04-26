@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/view/activity/activity_view.dart';
+import 'package:health_app/view/activity/mental_health_summary.dart';
 import 'package:health_app/view/on_boarding/getting_started_view.dart';
 
 void main() {
