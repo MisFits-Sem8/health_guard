@@ -1,8 +1,7 @@
 import "package:flutter/material.dart";
 import "package:health_app/common/color_extension.dart";
-import "package:health_app/view/on_boarding/on_boarding_view.dart";
-
 import "../../common_widgets/rounded_btn.dart";
+import "../login/login.dart";
 
 class GettingStartedView extends StatefulWidget {
   const GettingStartedView({super.key});
@@ -56,7 +55,12 @@ class _GettingStartedViewState extends State<GettingStartedView> {
                     type: RoundButtonType.textGradient,
                     title: 'Get Started',
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>const OnBoardingView()));
+                      // Navigator.push(context, MaterialPageRoute(builder: (context)=>const OnBoardingView()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginView(),
+                          ));
                     },
                   )),
             )

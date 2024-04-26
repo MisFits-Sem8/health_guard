@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/on_boarding_page.dart';
-import 'package:health_app/view/login/sign_up_view.dart';
+import '../profile/complete_profile.dart';
 
 class OnBoardingView extends StatefulWidget {
   const OnBoardingView({super.key});
@@ -98,7 +98,11 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                         controller.jumpToPage(selectedPage);
                         selectedPage = selectedPage + 1;
                       } else {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>const SignUpView()));
+                        // Navigator.push(context, MaterialPageRoute(builder: (context)=>const SignUpView()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const CompleteProfileView()));
                       }
                     },
                   ),

@@ -52,7 +52,9 @@ class _ProfileViewState extends State<ProfileView> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: Image.asset(
-                      gender == Gender.female ? "assets/images/profile-female.png" : "assets/images/profile-male.png",
+                      gender == Gender.female
+                          ? "assets/images/profile-female.jpg"
+                          : "assets/images/profile-male.png",
                       width: 50,
                       height: 50,
                       fit: BoxFit.cover,
@@ -223,25 +225,9 @@ class _ProfileViewState extends State<ProfileView> {
                         builder: (context) => const LoginView(),
                       ));
                 },
-                title: 'Sign Out',
+                title: 'Log Out',
               ),
               const SizedBox(height: 10),
-              Text(
-                'Privacy Policy',
-                style: TextStyle(color: TColour.primaryColor1, fontSize: 13
-                    // Change color as needed
-                    ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 5),
-              Text(
-                'Contact Us',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: TColour.primaryColor1, // Change color as needed
-                ),
-                textAlign: TextAlign.center,
-              ),
               const SizedBox(height: 5),
               const Text(
                 '© 2024 HealthGuard. All rights reserved.',

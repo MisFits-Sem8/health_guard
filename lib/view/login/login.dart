@@ -1,7 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:health_app/view/bottom_tab/bottom_tab.dart';
 import 'package:health_app/view/login/sign_up_view.dart';
+import 'package:health_app/view/tips/health_tip_view.dart';
 import '../../common/color_extension.dart';
 import '../../common_widgets/rounded_btn.dart';
 import '../../common_widgets/rounded_text_field.dart';
@@ -143,7 +143,7 @@ class _LoginViewState extends State<LoginView> {
       if (EmailValidator.validate(errorMessage!)) {
         if (mounted) {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const BottomTab()));
+              MaterialPageRoute(builder: (context) => const HealthTipPage()));
         }
       } else {
         if (mounted) {

@@ -4,8 +4,8 @@ import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
 import 'package:health_app/common_widgets/rounded_text_field.dart';
 import 'package:health_app/services/auth_service.dart';
-import 'package:health_app/view/profile/complete_profile.dart';
 import 'package:health_app/view/login/login.dart';
+import '../on_boarding/on_boarding_view.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -242,10 +242,11 @@ class _SignUpViewState extends State<SignUpView> {
           _email.text, _password.text, _name.text);
       if (EmailValidator.validate(errorMessage!)) {
         if (mounted) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const CompleteProfileView()));
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => const CompleteProfileView()));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>const OnBoardingView()));
         }
       } else {
         if (mounted) {
