@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../common/color_extension.dart';
-import '../view/login/complete_profile.dart';
+import '../view/profile/complete_profile.dart';
 
 class GenderCard extends StatelessWidget {
-  const GenderCard({super.key, required this.onPress, required this.genderType, required this.boxColor});
+  const GenderCard(
+      {super.key,
+      required this.onPress,
+      required this.genderType,
+      required this.boxColor});
   final Gender genderType;
   final Color boxColor;
   final void Function() onPress;
@@ -19,12 +23,17 @@ class GenderCard extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 15.0),
           decoration: BoxDecoration(
               color: boxColor,
-              borderRadius: BorderRadius.circular(10.0)),
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: const [
+                BoxShadow(color: Colors.black12, blurRadius: 2)
+              ]),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                genderType == Gender.male ? FontAwesomeIcons.mars : FontAwesomeIcons.venus,
+                genderType == Gender.male
+                    ? FontAwesomeIcons.mars
+                    : FontAwesomeIcons.venus,
                 size: 70,
               ),
               Text(
