@@ -34,16 +34,24 @@ class _MessageViewState extends State<MessageView> {
                 message.date.day,
               ),
               groupHeaderBuilder: (Message message) => SizedBox(
-                height: media.height * 0.07,
+                height: media.height * 0.05,
                 child: Center(
-                  child: Card(
-                    color: TColour.primaryColor2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        DateFormat.yMMMd().format(message.date),
-                        style: TextStyle(color: TColour.white),
-                      ),
+                  child: ShaderMask(
+                    blendMode: BlendMode.srcIn,
+                    shaderCallback: (bounds) {
+                      return LinearGradient(
+                              colors: TColour.primary,
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight)
+                          .createShader(
+                              Rect.fromLTRB(0, 0, bounds.width, bounds.height));
+                    },
+                    child: Text(
+                      DateFormat.yMMMd().format(message.date),
+                      style: TextStyle(
+                          color: TColour.white.withOpacity(0.7),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 13),
                     ),
                   ),
                 ),
@@ -56,10 +64,14 @@ class _MessageViewState extends State<MessageView> {
                   color: message.isSentByMe
                       ? TColour.secondaryColor1
                       : TColour.white,
-                  elevation: 8,
+                  elevation: 2,
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Text(message.text),
+                    child: Text(message.text,
+                        style: TextStyle(
+                            color: TColour.black1.withOpacity(0.7),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14)),
                   ),
                 ),
               ),
@@ -111,7 +123,10 @@ class _MessageViewState extends State<MessageView> {
                     });
                     _messageController.clear();
                   },
-                  child: Icon(Icons.send_rounded, color: TColour.white,),
+                  child: Icon(
+                    Icons.send_rounded,
+                    color: TColour.white,
+                  ),
                 ),
               ],
             ),

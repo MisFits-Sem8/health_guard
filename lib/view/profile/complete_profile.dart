@@ -71,7 +71,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                         },
                         boxColor: gender == Gender.male
                             ? TColour.secondaryColor1
-                            : TColour.lightGray,
+                            : TColour.white,
                       ),
                       GenderCard(
                           onPress: () {
@@ -82,7 +82,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                           genderType: Gender.female,
                           boxColor: gender == Gender.female
                               ? TColour.secondaryColor1
-                              : TColour.lightGray)
+                              : TColour.white)
                     ],
                   ),
                 ),
@@ -100,8 +100,11 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                   child: Container(
                     margin: const EdgeInsets.all(15.0),
                     decoration: BoxDecoration(
-                        color: TColour.lightGray,
-                        borderRadius: BorderRadius.circular(10.0)),
+                        color: TColour.white,
+                        borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black12, blurRadius: 2)
+                        ]),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -130,7 +133,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                         SliderTheme(
                           data: SliderTheme.of(context).copyWith(
                             activeTrackColor: TColour.primaryColor2,
-                            inactiveTrackColor: TColour.white,
+                            inactiveTrackColor: TColour.gray.withOpacity(0.3),
                             thumbColor: TColour.primaryColor1,
                             overlayColor: TColour.secondaryColor1,
                             thumbShape: const RoundSliderThumbShape(
@@ -173,9 +176,13 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                               Expanded(
                                 child: Container(
                                   decoration: BoxDecoration(
-                                      color: TColour.lightGray,
-                                      borderRadius:
-                                          BorderRadius.circular(10.0)),
+                                      color: TColour.white,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 2)
+                                      ]),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -257,9 +264,13 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                               Expanded(
                                 child: Container(
                                   decoration: BoxDecoration(
-                                      color: TColour.lightGray,
-                                      borderRadius:
-                                          BorderRadius.circular(10.0)),
+                                      color: TColour.white,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 2)
+                                      ]),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -279,7 +290,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                                             ),
                                           ),
                                           Text(
-                                            "kg",
+                                            "yo",
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: TColour.lightTextGray,
@@ -335,8 +346,7 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const BottomTab()));
+                              builder: (context) => const BottomTab()));
                     })
               ],
             ),

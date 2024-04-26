@@ -4,7 +4,7 @@ import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
 import 'package:health_app/common_widgets/rounded_text_field.dart';
 import 'package:health_app/services/auth_service.dart';
-import 'package:health_app/view/login/complete_profile.dart';
+import 'package:health_app/view/profile/complete_profile.dart';
 import 'package:health_app/view/login/login.dart';
 
 class SignUpView extends StatefulWidget {
