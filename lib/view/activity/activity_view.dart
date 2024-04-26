@@ -365,153 +365,162 @@ class _ActivityViewState extends State<ActivityView> {
                   height: media.width * .05,
                 ),
                 Container(
-                  height: media.width * .4,
-                  width: double.maxFinite,
-                  decoration: BoxDecoration(
-                      color: TColour.primaryColor1.withOpacity(.3),
-                      borderRadius: BorderRadius.circular(25)),
-                  child: Stack(
-                    alignment: Alignment.topLeft,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 25, horizontal: 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Steps Count",
+                height: media.width * .4,
+                width: double.maxFinite,
+                decoration: BoxDecoration(
+                    color: TColour.primaryColor1.withOpacity(.3),
+                    borderRadius: BorderRadius.circular(25)),
+                child: Stack(
+                  alignment: Alignment.topLeft,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 25, horizontal: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Steps Count",
+                            style: TextStyle(
+                                color: TColour.black1,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          ShaderMask(
+                            blendMode: BlendMode.srcIn,
+                            shaderCallback: (bounds) {
+                              return LinearGradient(
+                                      colors: TColour.primary,
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight)
+                                  .createShader(Rect.fromLTRB(
+                                      0, 0, bounds.width, bounds.height));
+                            },
+                            child: Text(
+                              "1520/4000",
                               style: TextStyle(
-                                  color: TColour.black1,
+                                  color: TColour.white.withOpacity(.7),
                                   fontSize: 16,
                                   fontWeight: FontWeight.w700),
                             ),
-                            ShaderMask(
-                              blendMode: BlendMode.srcIn,
-                              shaderCallback: (bounds) {
-                                return LinearGradient(
-                                        colors: TColour.primary,
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight)
-                                    .createShader(Rect.fromLTRB(
-                                        0, 0, bounds.width, bounds.height));
-                              },
-                              child: Text(
-                                "1520/4000",
-                                style: TextStyle(
-                                    color: TColour.white.withOpacity(.7),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: media.width * .08,
+                    ),
+                    Padding(
+                      // padding: const EdgeInsets.only(top: 40.0),
+                      padding:
+                      EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+                      child: LineChart(
+                        LineChartData(
+                          showingTooltipIndicators: tools.map((index) {
+                            return ShowingTooltipIndicators([
+                              LineBarSpot(
+                                tooltipsOnBar,
+                                lineBarsData.indexOf(tooltipsOnBar),
+                                tooltipsOnBar.spots[index],
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: media.width * .08,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 40.0),
-                        child: LineChart(
-                          LineChartData(
-                            showingTooltipIndicators: tools.map((index) {
-                              return ShowingTooltipIndicators([
-                                LineBarSpot(
-                                  tooltipsOnBar,
-                                  lineBarsData.indexOf(tooltipsOnBar),
-                                  tooltipsOnBar.spots[index],
-                                ),
-                              ]);
-                            }).toList(),
-                            lineTouchData: LineTouchData(
-                              enabled: true,
-                              handleBuiltInTouches: false,
-                              touchCallback: (FlTouchEvent event,
-                                  LineTouchResponse? response) {
-                                if (response == null ||
-                                    response.lineBarSpots == null) {
-                                  return;
-                                }
-                                if (event is FlTapUpEvent) {
-                                  final spotIndex =
-                                      response.lineBarSpots!.first.spotIndex;
-                                  tools.clear();
-                                  setState(() {
-                                    tools.add(spotIndex);
-                                  });
-                                }
-                              },
-                              mouseCursorResolver: (FlTouchEvent event,
-                                  LineTouchResponse? response) {
-                                if (response == null ||
-                                    response.lineBarSpots == null) {
-                                  return SystemMouseCursors.basic;
-                                }
-                                return SystemMouseCursors.click;
-                              },
-                              getTouchedSpotIndicator:
-                                  (LineChartBarData barData,
-                                      List<int> spotIndexes) {
-                                return spotIndexes.map((index) {
-                                  return TouchedSpotIndicatorData(
-                                    const FlLine(
-                                      color: Colors.transparent,
+                            ]);
+                          }).toList(),
+                          lineTouchData: LineTouchData(
+                            enabled: true,
+                            handleBuiltInTouches: false,
+                            touchCallback: (FlTouchEvent event,
+                                LineTouchResponse? response) {
+                              if (response == null ||
+                                  response.lineBarSpots == null) {
+                                return;
+                              }
+                              if (event is FlTapUpEvent) {
+                                final spotIndex =
+                                    response.lineBarSpots!.first.spotIndex;
+                                tools.clear();
+                                setState(() {
+                                  tools.add(spotIndex);
+                                });
+                              }
+                            },
+                            mouseCursorResolver: (FlTouchEvent event,
+                                LineTouchResponse? response) {
+                              if (response == null ||
+                                  response.lineBarSpots == null) {
+                                return SystemMouseCursors.basic;
+                              }
+                              return SystemMouseCursors.click;
+                            },
+                            getTouchedSpotIndicator: (LineChartBarData barData,
+                                List<int> spotIndexes) {
+                              return spotIndexes.map((index) {
+                                return TouchedSpotIndicatorData(
+                                  const FlLine(
+                                    color: Colors.transparent,
+                                  ),
+                                  FlDotData(
+                                    show: true,
+                                    getDotPainter:
+                                        (spot, percent, barData, index) =>
+                                            FlDotCirclePainter(
+                                      radius: 5,
+                                      color: const Color.fromARGB(
+                                          255, 255, 255, 255),
+                                      strokeWidth: 2,
+                                      strokeColor: Colors.green,
                                     ),
-                                    FlDotData(
-                                      show: true,
-                                      getDotPainter:
-                                          (spot, percent, barData, index) =>
-                                              FlDotCirclePainter(
-                                        radius: 5,
-                                        color: const Color.fromARGB(
-                                            255, 255, 255, 255),
-                                        strokeWidth: 2,
-                                        strokeColor: Colors.green,
-                                      ),
+                                  ),
+                                );
+                              }).toList();
+                            },
+                            touchTooltipData: LineTouchTooltipData(
+                              getTooltipColor: (touchedSpot) =>
+                                  Color.fromARGB(255, 217, 78, 222),
+                              tooltipRoundedRadius: 8,
+
+
+                                getTooltipItems:
+                                  (List<LineBarSpot> lineBarsSpot) {
+                                return lineBarsSpot.asMap().entries.map((entry)  {
+                                  final index = entry.key;
+                                  final lineBarSpot = entry.value;
+
+                                  final alignment = index < lineBarsSpot.length / 2
+                                      ? FLHorizontalAlignment.right
+                                      : FLHorizontalAlignment.left;
+                                  return LineTooltipItem(
+                                    "${lineBarSpot.x.toString()}day\n ${lineBarSpot.y.toInt()}steps",
+                                    // lineBarSpot.y.toString(),
+                                    const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   );
                                 }).toList();
                               },
-                              touchTooltipData: LineTouchTooltipData(
-                                getTooltipColor: (touchedSpot) =>
-                                    Color.fromARGB(255, 217, 78, 222),
-                                tooltipRoundedRadius: 8,
-                                getTooltipItems:
-                                    (List<LineBarSpot> lineBarsSpot) {
-                                  return lineBarsSpot.map((lineBarSpot) {
-                                    return LineTooltipItem(
-                                      "${lineBarSpot.x.toString()}day\n ${lineBarSpot.x.toInt()}steps",
-                                      // lineBarSpot.y.toString(),
-                                      const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    );
-                                  }).toList();
-                                },
-                              ),
                             ),
-                            lineBarsData: lineBarsData,
-                            minY: 0,
-                            titlesData: FlTitlesData(
-                              show: false,
-                            ),
-                            gridData: const FlGridData(show: false),
-                            borderData: FlBorderData(
-                              show: true,
-                              border: Border.all(
-                                color: Colors.transparent,
-                              ),
+                          ),
+                          lineBarsData: lineBarsData,
+                          minY: 0,
+                          titlesData: FlTitlesData(
+                            show: false,
+                          ),
+                          gridData: const FlGridData(show: false),
+                          borderData: FlBorderData(
+                            show: true,
+                            border: Border.all(
+                              color: Colors.transparent,
                             ),
                           ),
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
+              ),
                 SizedBox(
                   height: media.width * .05,
                 ),
