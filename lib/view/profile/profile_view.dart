@@ -7,6 +7,7 @@ import "../../common/color_extension.dart";
 import "../../common_widgets/title_subtitle.dart";
 import "../../services/auth_service.dart";
 import "../login/login.dart";
+import "complete_profile.dart";
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -16,6 +17,14 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  Gender gender = Gender.female;
+  String name = "Kumuthu Athukorala";
+  double sleep = 6;
+  double workout = 2;
+  double water = 2.5;
+  int height = 180;
+  int weight = 50;
+  int age = 25;
   final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
@@ -57,7 +66,7 @@ class _ProfileViewState extends State<ProfileView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Stefani Wong",
+                          name,
                           style: TextStyle(
                             color: TColour.black1,
                             fontSize: 16,
@@ -65,7 +74,7 @@ class _ProfileViewState extends State<ProfileView> {
                           ),
                         ),
                         Text(
-                          "Lose a Fat Program",
+                          gender == Gender.female ? "Her/She" : "He/Him",
                           style: TextStyle(
                             color: TColour.gray,
                             fontSize: 12,
@@ -95,35 +104,61 @@ class _ProfileViewState extends State<ProfileView> {
                 ],
               ),
               const SizedBox(
-                height: 15,
+                height: 25,
               ),
-              const Row(
-                children: [
-                  Expanded(
-                    child: TitleSubtitleCell(
-                      title: "180cm",
-                      subtitle: "Height",
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                decoration: BoxDecoration(
+                    color: TColour.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: const [
+                      BoxShadow(color: Colors.black12, blurRadius: 2)
+                    ]),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "My Details",
+                      style: TextStyle(
+                        color: TColour.black1,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Expanded(
-                    child: TitleSubtitleCell(
-                      title: "65kg",
-                      subtitle: "Weight",
+                    const SizedBox(
+                      height: 8,
                     ),
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Expanded(
-                    child: TitleSubtitleCell(
-                      title: "22yo",
-                      subtitle: "Age",
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TitleSubtitleCell(
+                            title: "${height}cm",
+                            subtitle: "Height",
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Expanded(
+                          child: TitleSubtitleCell(
+                            title: "${weight}cm",
+                            subtitle: "Weight",
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Expanded(
+                          child: TitleSubtitleCell(
+                            title: "${age}yo",
+                            subtitle: "Age",
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 25,
@@ -144,40 +179,40 @@ class _ProfileViewState extends State<ProfileView> {
                           "My Goals",
                           style: TextStyle(
                             color: TColour.black1,
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         const SizedBox(
                           height: 8,
                         ),
-                        const GoalCard(
+                        GoalCard(
                           goalname: 'Sleep',
-                          target: "7",
+                          target: sleep.toString(),
                           unit: "hrs",
                           imageName: "sleep",
                         ),
                         const SizedBox(
                           height: 8,
                         ),
-                        const GoalCard(
+                        GoalCard(
                           goalname: 'Workout',
-                          target: "2",
+                          target: workout.toString(),
                           imageName: "workout",
                           unit: 'hrs',
                         ),
                         const SizedBox(
                           height: 8,
                         ),
-                        const GoalCard(
+                        GoalCard(
                           goalname: 'Water',
-                          target: "2",
+                          target: water.toString(),
                           imageName: "water",
                           unit: 'litres',
                         )
                       ])),
               const SizedBox(
-                height: 30,
+                height: 20,
               ),
               RoundedButton(
                 onPressed: () async {
@@ -198,7 +233,7 @@ class _ProfileViewState extends State<ProfileView> {
                     ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               Text(
                 'Contact Us',
                 style: TextStyle(
@@ -207,7 +242,7 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               const Text(
                 '© 2024 HealthGuard. All rights reserved.',
                 style: TextStyle(
