@@ -6,6 +6,8 @@ import 'package:health_app/common_widgets/rounded_btn.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pretty_gauge/pretty_gauge.dart';
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
+import 'package:pedometer/pedometer.dart';
+import 'dart:async';
 
 class ActivityView extends StatefulWidget {
   const ActivityView({super.key});
@@ -24,6 +26,21 @@ class _ActivityViewState extends State<ActivityView> {
   String? bmiInterpretation;
 
   Color? bmiStatusColor;
+
+  late Stream<StepCount> _stepCountStream;
+
+  late Stream<PedestrianStatus> _pedestrianStatusStream;
+
+  String _status = '?', _steps = '?';
+
+  List<FlSpot> allSpots = [];
+
+  List<int> tools = [];
+
+  DateTime _currentDay = DateTime.now();
+
+  int _dailySteps = 0;
+
   void setBmiInterpretation() {
     if (bmiScore > 30) {
       bmiStatus = "Obese";
@@ -44,31 +61,106 @@ class _ActivityViewState extends State<ActivityView> {
     }
   }
 
-  List<int> tools = [14];
-  List<FlSpot> get allSpots => const [
-        FlSpot(0, 1),
-        FlSpot(1, 2),
-        FlSpot(2, 1.5),
-        FlSpot(3, 2),
-        FlSpot(4, 2),
-        FlSpot(5, 3),
-        FlSpot(6, 4),
-        FlSpot(7, 2),
-        FlSpot(8, 1),
-        FlSpot(9, 2),
-        FlSpot(10, 1.5),
-        FlSpot(11, 2),
-        FlSpot(12, 2),
-        FlSpot(13, 3),
-        FlSpot(14, 4),
-        FlSpot(15, 2),
-      ];
+  // List<int> tools = [14];
+  // List<FlSpot> get allSpots => const [
+  //       FlSpot(0, 1),
+  //       FlSpot(1, 2),
+  //       FlSpot(2, 1.5),
+  //       FlSpot(3, 2),
+  //       FlSpot(4, 2),
+  //       FlSpot(5, 3),
+  //       FlSpot(6, 4),
+  //       FlSpot(7, 2),
+  //       FlSpot(8, 1),
+  //       FlSpot(9, 2),
+  //       FlSpot(10, 1.5),
+  //       FlSpot(11, 2),
+  //       FlSpot(12, 2),
+  //       FlSpot(13, 3),
+  //       FlSpot(14, 4),
+  //       FlSpot(15, 2),
+  //     ];
   List waterArray = [
     {"title": "6-8", "subtitle": "1 cup"},
     {"title": "8-10", "subtitle": "2 cup"},
     {"title": "10-12", "subtitle": "3 cup"},
     {"title": "12-14", "subtitle": "1 cup"}
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+
+  void onStepCount(StepCount event) {
+    print(event);
+    setState(() {
+      DateTime now = DateTime.now();
+
+      // Check if the current day is the same as the last recorded day
+      if (now.day == _currentDay.day &&
+          now.month == _currentDay.month &&
+          now.year == _currentDay.year) {
+        // If it's the same day, increment the daily steps
+        _dailySteps += event.steps;
+      } else {
+        // If it's a new day, reset the daily steps and update the current day
+        _dailySteps = event.steps;
+        _currentDay = now;
+      }
+
+      // Update the steps display
+      _steps = _dailySteps.toString();
+
+      // Add or update the daily steps in the list
+      if (allSpots.isNotEmpty &&
+          allSpots.last.x == _currentDay.day.toDouble()) {
+        // Update the last entry if it's for the current day
+        allSpots[allSpots.length - 1] =
+            FlSpot(_currentDay.day.toDouble(), _dailySteps.toDouble());
+      } else {
+        // Add a new entry for the new day
+        allSpots
+            .add(FlSpot(_currentDay.day.toDouble(), _dailySteps.toDouble()));
+        tools.add(allSpots.length - 1);
+      }
+    });
+  }
+
+  void onPedestrianStatusChanged(PedestrianStatus event) {
+    print(event);
+    setState(() {
+      _status = event.status;
+    });
+  }
+
+  void onPedestrianStatusError(error) {
+    print('onPedestrianStatusError: $error');
+    setState(() {
+      _status = 'Pedestrian Status not available';
+    });
+    print(_status);
+  }
+
+  void onStepCountError(error) {
+    print('onStepCountError: $error');
+    setState(() {
+      _steps = 'Step Count not available';
+    });
+  }
+
+  void initPlatformState() {
+    _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
+    _pedestrianStatusStream
+        .listen(onPedestrianStatusChanged)
+        .onError(onPedestrianStatusError);
+
+    _stepCountStream = Pedometer.stepCountStream;
+    _stepCountStream.listen(onStepCount).onError(onStepCountError);
+
+    if (!mounted) return;
+  }
 
   @override
   Widget build(BuildContext context) {

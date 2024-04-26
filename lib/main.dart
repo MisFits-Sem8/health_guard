@@ -17,13 +17,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Health Guard',
-      theme: ThemeData(
-        primaryColor: TColour.primaryColor1,
-        fontFamily: "Poppins",
-        useMaterial3: true,
-      ),
-      home: const GettingStartedView()
-    );
+        title: 'Health Guard',
+        theme: ThemeData(
+          primaryColor: TColour.primaryColor1,
+          fontFamily: "Poppins",
+          useMaterial3: true,
+        ),
+        home: const GettingStartedView());
   }
 }
