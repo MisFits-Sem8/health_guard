@@ -41,6 +41,8 @@ class _ActivityViewState extends State<ActivityView> {
 
   int _dailySteps = 0;
 
+  double previousSteps = 0;
+
   void setBmiInterpretation() {
     if (bmiScore > 30) {
       bmiStatus = "Obese";
@@ -61,25 +63,6 @@ class _ActivityViewState extends State<ActivityView> {
     }
   }
 
-  // List<int> tools = [14];
-  // List<FlSpot> get allSpots => const [
-  //       FlSpot(0, 1),
-  //       FlSpot(1, 2),
-  //       FlSpot(2, 1.5),
-  //       FlSpot(3, 2),
-  //       FlSpot(4, 2),
-  //       FlSpot(5, 3),
-  //       FlSpot(6, 4),
-  //       FlSpot(7, 2),
-  //       FlSpot(8, 1),
-  //       FlSpot(9, 2),
-  //       FlSpot(10, 1.5),
-  //       FlSpot(11, 2),
-  //       FlSpot(12, 2),
-  //       FlSpot(13, 3),
-  //       FlSpot(14, 4),
-  //       FlSpot(15, 2),
-  //     ];
   List waterArray = [
     {"title": "6-8", "subtitle": "1 cup"},
     {"title": "8-10", "subtitle": "2 cup"},
@@ -94,26 +77,29 @@ class _ActivityViewState extends State<ActivityView> {
   }
 
   void onStepCount(StepCount event) {
-    print(event);
     setState(() {
-      DateTime now = DateTime.now();
+      if (!allSpots.isNotEmpty) {
+        previousSteps = event.steps.toDouble();
+      }
 
       // Check if the current day is the same as the last recorded day
-      if (now.day == _currentDay.day &&
-          now.month == _currentDay.month &&
-          now.year == _currentDay.year) {
+      if (event.timeStamp.day == _currentDay.day &&
+          event.timeStamp.month == _currentDay.month &&
+          event.timeStamp.year == _currentDay.year) {
+        // if (event.timeStamp.minute == _currentDay.minute) {
         // If it's the same day, increment the daily steps
-        _dailySteps += event.steps;
+        _dailySteps += (event.steps - previousSteps).toInt();
+        previousSteps = event.steps.toDouble();
       } else {
         // If it's a new day, reset the daily steps and update the current day
-        _dailySteps = event.steps;
-        _currentDay = now;
+        _dailySteps = (event.steps - previousSteps).toInt();
+        _currentDay = event.timeStamp;
+        previousSteps = event.steps.toDouble();
       }
 
       // Update the steps display
       _steps = _dailySteps.toString();
 
-      // Add or update the daily steps in the list
       if (allSpots.isNotEmpty &&
           allSpots.last.x == _currentDay.day.toDouble()) {
         // Update the last entry if it's for the current day
@@ -364,163 +350,170 @@ class _ActivityViewState extends State<ActivityView> {
                 SizedBox(
                   height: media.width * .05,
                 ),
-                Container(
-                height: media.width * .4,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                    color: TColour.primaryColor1.withOpacity(.3),
-                    borderRadius: BorderRadius.circular(25)),
-                child: Stack(
-                  alignment: Alignment.topLeft,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 25, horizontal: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                    return Container(
+                      height: media.width * .4,
+                      width: double.maxFinite,
+                      decoration: BoxDecoration(
+                          color: TColour.primaryColor1.withOpacity(.3),
+                          borderRadius: BorderRadius.circular(25)),
+                      child: Stack(
+                        alignment: Alignment.topLeft,
                         children: [
-                          Text(
-                            "Steps Count",
-                            style: TextStyle(
-                                color: TColour.black1,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 25, horizontal: 20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Steps Count",
+                                  style: TextStyle(
+                                      color: TColour.black1,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                ShaderMask(
+                                  blendMode: BlendMode.srcIn,
+                                  shaderCallback: (bounds) {
+                                    return LinearGradient(
+                                            colors: TColour.primary,
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight)
+                                        .createShader(Rect.fromLTRB(
+                                            0, 0, bounds.width, bounds.height));
+                                  },
+                                  child: Text(
+                                    "1520/4000",
+                                    style: TextStyle(
+                                        color: TColour.white.withOpacity(.7),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                          ShaderMask(
-                            blendMode: BlendMode.srcIn,
-                            shaderCallback: (bounds) {
-                              return LinearGradient(
-                                      colors: TColour.primary,
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight)
-                                  .createShader(Rect.fromLTRB(
-                                      0, 0, bounds.width, bounds.height));
-                            },
-                            child: Text(
-                              "1520/4000",
-                              style: TextStyle(
-                                  color: TColour.white.withOpacity(.7),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700),
+                          SizedBox(
+                            height: media.width * .08,
+                          ),
+                          Padding(
+                            // padding: const EdgeInsets.only(top: 40.0),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 25, horizontal: 20),
+                            child: LineChart(
+                              LineChartData(
+                                showingTooltipIndicators: tools.map((index) {
+                                  return ShowingTooltipIndicators([
+                                    LineBarSpot(
+                                      tooltipsOnBar,
+                                      lineBarsData.indexOf(tooltipsOnBar),
+                                      tooltipsOnBar.spots[index],
+                                    ),
+                                  ]);
+                                }).toList(),
+                                lineTouchData: LineTouchData(
+                                  enabled: true,
+                                  handleBuiltInTouches: false,
+                                  touchCallback: (FlTouchEvent event,
+                                      LineTouchResponse? response) {
+                                    if (response == null ||
+                                        response.lineBarSpots == null) {
+                                      return;
+                                    }
+                                    if (event is FlTapUpEvent) {
+                                      final spotIndex = response
+                                          .lineBarSpots!.first.spotIndex;
+                                      tools.clear();
+                                      setState(() {
+                                        tools.add(spotIndex);
+                                      });
+                                    }
+                                  },
+                                  mouseCursorResolver: (FlTouchEvent event,
+                                      LineTouchResponse? response) {
+                                    if (response == null ||
+                                        response.lineBarSpots == null) {
+                                      return SystemMouseCursors.basic;
+                                    }
+                                    return SystemMouseCursors.click;
+                                  },
+                                  getTouchedSpotIndicator:
+                                      (LineChartBarData barData,
+                                          List<int> spotIndexes) {
+                                    return spotIndexes.map((index) {
+                                      return TouchedSpotIndicatorData(
+                                        const FlLine(
+                                          color: Colors.transparent,
+                                        ),
+                                        FlDotData(
+                                          show: true,
+                                          getDotPainter:
+                                              (spot, percent, barData, index) =>
+                                                  FlDotCirclePainter(
+                                            radius: 5,
+                                            color: const Color.fromARGB(
+                                                255, 255, 255, 255),
+                                            strokeWidth: 2,
+                                            strokeColor: Colors.green,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList();
+                                  },
+                                  touchTooltipData: LineTouchTooltipData(
+                                    getTooltipColor: (touchedSpot) =>
+                                        Color.fromARGB(255, 217, 78, 222),
+                                    tooltipRoundedRadius: 8,
+                                    getTooltipItems:
+                                        (List<LineBarSpot> lineBarsSpot) {
+                                      return lineBarsSpot
+                                          .asMap()
+                                          .entries
+                                          .map((entry) {
+                                        final index = entry.key;
+                                        final lineBarSpot = entry.value;
+
+                                        final alignment =
+                                            index < lineBarsSpot.length / 2
+                                                ? FLHorizontalAlignment.right
+                                                : FLHorizontalAlignment.left;
+                                        return LineTooltipItem(
+                                          "${lineBarSpot.x.toString()}day\n ${lineBarSpot.y.toInt()}steps",
+                                          // lineBarSpot.y.toString(),
+                                          const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        );
+                                      }).toList();
+                                    },
+                                  ),
+                                ),
+                                lineBarsData: lineBarsData,
+                                minY: 0,
+                                titlesData: FlTitlesData(
+                                  show: false,
+                                ),
+                                gridData: const FlGridData(show: false),
+                                borderData: FlBorderData(
+                                  show: true,
+                                  border: Border.all(
+                                    color: Colors.transparent,
+                                  ),
+                                ),
+                              ),
                             ),
                           )
                         ],
                       ),
-                    ),
-                    SizedBox(
-                      height: media.width * .08,
-                    ),
-                    Padding(
-                      // padding: const EdgeInsets.only(top: 40.0),
-                      padding:
-                      EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-                      child: LineChart(
-                        LineChartData(
-                          showingTooltipIndicators: tools.map((index) {
-                            return ShowingTooltipIndicators([
-                              LineBarSpot(
-                                tooltipsOnBar,
-                                lineBarsData.indexOf(tooltipsOnBar),
-                                tooltipsOnBar.spots[index],
-                              ),
-                            ]);
-                          }).toList(),
-                          lineTouchData: LineTouchData(
-                            enabled: true,
-                            handleBuiltInTouches: false,
-                            touchCallback: (FlTouchEvent event,
-                                LineTouchResponse? response) {
-                              if (response == null ||
-                                  response.lineBarSpots == null) {
-                                return;
-                              }
-                              if (event is FlTapUpEvent) {
-                                final spotIndex =
-                                    response.lineBarSpots!.first.spotIndex;
-                                tools.clear();
-                                setState(() {
-                                  tools.add(spotIndex);
-                                });
-                              }
-                            },
-                            mouseCursorResolver: (FlTouchEvent event,
-                                LineTouchResponse? response) {
-                              if (response == null ||
-                                  response.lineBarSpots == null) {
-                                return SystemMouseCursors.basic;
-                              }
-                              return SystemMouseCursors.click;
-                            },
-                            getTouchedSpotIndicator: (LineChartBarData barData,
-                                List<int> spotIndexes) {
-                              return spotIndexes.map((index) {
-                                return TouchedSpotIndicatorData(
-                                  const FlLine(
-                                    color: Colors.transparent,
-                                  ),
-                                  FlDotData(
-                                    show: true,
-                                    getDotPainter:
-                                        (spot, percent, barData, index) =>
-                                            FlDotCirclePainter(
-                                      radius: 5,
-                                      color: const Color.fromARGB(
-                                          255, 255, 255, 255),
-                                      strokeWidth: 2,
-                                      strokeColor: Colors.green,
-                                    ),
-                                  ),
-                                );
-                              }).toList();
-                            },
-                            touchTooltipData: LineTouchTooltipData(
-                              getTooltipColor: (touchedSpot) =>
-                                  Color.fromARGB(255, 217, 78, 222),
-                              tooltipRoundedRadius: 8,
-
-
-                                getTooltipItems:
-                                  (List<LineBarSpot> lineBarsSpot) {
-                                return lineBarsSpot.asMap().entries.map((entry)  {
-                                  final index = entry.key;
-                                  final lineBarSpot = entry.value;
-
-                                  final alignment = index < lineBarsSpot.length / 2
-                                      ? FLHorizontalAlignment.right
-                                      : FLHorizontalAlignment.left;
-                                  return LineTooltipItem(
-                                    "${lineBarSpot.x.toString()}day\n ${lineBarSpot.y.toInt()}steps",
-                                    // lineBarSpot.y.toString(),
-                                    const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  );
-                                }).toList();
-                              },
-                            ),
-                          ),
-                          lineBarsData: lineBarsData,
-                          minY: 0,
-                          titlesData: FlTitlesData(
-                            show: false,
-                          ),
-                          gridData: const FlGridData(show: false),
-                          borderData: FlBorderData(
-                            show: true,
-                            border: Border.all(
-                              color: Colors.transparent,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
+                    );
+                  },
                 ),
-              ),
                 SizedBox(
                   height: media.width * .05,
                 ),
