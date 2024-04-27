@@ -203,7 +203,7 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: TColour.primary,
+                  colors: TColour.gradient,
                 ),
                 borderRadius: BorderRadius.circular(10.0),
               ),
