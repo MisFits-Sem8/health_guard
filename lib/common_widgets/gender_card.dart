@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import '../common/color_extension.dart';
 import '../view/profile/complete_profile.dart';
 
@@ -32,8 +30,8 @@ class GenderCard extends StatelessWidget {
             children: [
               Icon(
                 genderType == Gender.male
-                    ? FontAwesomeIcons.mars
-                    : FontAwesomeIcons.venus,
+                    ? Icons.male_rounded
+                    : Icons.female_rounded,
                 size: 70,
               ),
               Text(

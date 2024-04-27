@@ -14,11 +14,9 @@ dependencies:
 
 
   cupertino_icons: ^1.0.2
-  font_awesome_flutter: ^10.7.0
   fl_chart: ^0.67.0
   pretty_gauge: ^1.0.1
   share_plus: ^7.2.2
-
   simple_animation_progress_bar: ^1.8.2
   dotted_line: ^3.2.2
   dotted_dashed_line: ^0.0.3
@@ -28,6 +26,7 @@ dependencies:
   firebase_core: ^2.27.0
   firebase_auth: ^4.17.8
   email_validator: ^2.1.17
+  cloud_firestore: ^4.15.8
 
 
 dev_dependencies:
