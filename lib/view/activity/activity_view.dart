@@ -216,6 +216,34 @@ class _ActivityViewState extends State<ActivityView> {
     });
   }
 
+  double calculatePercentCaloriesBurned() {
+    int? steps;
+    if (_dataRepository.recordSteps.isNotEmpty) {
+      steps = _dataRepository
+          .getRecord(_dataRepository.recordSteps.length - 1)
+          ?.steps;
+    }
+
+    double weightInKg = 70.0;
+    // MET value for walking is approximately 3.9 at speed of 5km/h
+    double met = 3.9;
+
+    // Time is estimated based on an average pace
+    double time = (steps ?? 2000) /
+        50.0; // time in hours based on an average pace of 5000 steps per hour
+
+    // Calories burned formula
+    double calories = time * met * 5 * weightInKg / 10;
+
+    // Total calories that should be burned per day
+    double totalCalories = 2000;
+
+    // Calculate the percentage of total calories burned
+    double percentCaloriesBurned = (calories / totalCalories) * 100;
+
+    return percentCaloriesBurned;
+  }
+
   @override
   Widget build(BuildContext context) {
     setBmiInterpretation();
@@ -549,9 +577,18 @@ class _ActivityViewState extends State<ActivityView> {
                                             index < lineBarsSpot.length / 2
                                                 ? FLHorizontalAlignment.right
                                                 : FLHorizontalAlignment.left;
+
+                                        DailySteps? record = _dataRepository
+                                            .getRecord(lineBarSpot.x.toInt());
+                                        String date = record?.date ?? 'N/A';
+                                        int steps = record?.steps ?? 0;
+                                        if (date != 'N/A') {
+                                          date = DateTime.parse(date)
+                                              .day
+                                              .toString();
+                                        }
                                         return LineTooltipItem(
-                                          "${lineBarSpot.x.toString()}day\n ${lineBarSpot.y.toInt()}steps",
-                                          // lineBarSpot.y.toString(),
+                                          "${date}day\n ${steps}steps",
                                           const TextStyle(
                                             color: Colors.white,
                                             fontSize: 10,
@@ -865,7 +902,7 @@ class _ActivityViewState extends State<ActivityView> {
                                             0, 0, bounds.width, bounds.height));
                                   },
                                   child: Text(
-                                    "40%",
+                                    "${calculatePercentCaloriesBurned().toStringAsFixed(2)}%",
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                         color: TColour.white.withOpacity(.7),
@@ -879,11 +916,12 @@ class _ActivityViewState extends State<ActivityView> {
                                 CircularPercentIndicator(
                                   radius: 40.0,
                                   lineWidth: 7.0,
-                                  percent: 430 / 1200,
+                                  percent:
+                                      calculatePercentCaloriesBurned() / 100,
                                   animation: true,
                                   animationDuration: 1200,
                                   center: new Text(
-                                    "40%",
+                                    "${calculatePercentCaloriesBurned().toStringAsFixed(2)}%",
                                     style: new TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 10.0),

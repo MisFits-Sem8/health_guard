@@ -31,6 +31,7 @@ class DataRepository {
     } else {
       // If the record doesn't exist, add it to the map
       _recordSteps[key] = step;
+      reorganizeMap();
     }
   }
 
@@ -44,8 +45,8 @@ class DataRepository {
     int j = 0;
     for (int i = 0; i < sortedEntries.length; i++) {
       // If the dates are equal, add the steps together
-      print("sortedEntries[i].value.date");
-      print(sortedEntries[i].value.date);
+      // debugPrint("sortedEntries[i].value.date");
+      // debugPrint(sortedEntries[i].value.date);
       if (i != 0 &&
           sortedEntries[i].value.date == sortedEntries[i - 1].value.date) {
         _recordSteps[j - 1]!.steps += sortedEntries[i].value.steps;
