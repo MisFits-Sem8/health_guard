@@ -2,6 +2,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
+import 'package:health_app/view/activity/add_activity.dart';
+import 'package:health_app/view/activity_summary/sleep_tracker_view.dart';
+import 'package:health_app/view/create_schdeuls/create_schedule_view.dart';
 import 'package:health_app/view/profile/edit_profile_view.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -344,6 +347,62 @@ class _ActivityViewState extends State<ActivityView> {
                         )),
                   ],
                 ),
+                Container(
+                    height: media.width * .15,
+                    decoration: BoxDecoration(
+                        color: TColour.primaryColor1.withOpacity(.3),
+                        borderRadius:
+                            BorderRadius.circular(media.width * .075)),
+                    child: Stack(alignment: Alignment.center, children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(children: [
+                                SizedBox(
+                                    height: 40,
+                                    width: 150,
+                                    child: RoundedButton(
+                                      title: "Sleeping | Calories",
+                                      type: RoundButtonType.bgGradient,
+                                      fontSize: 12,
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SleepTrackerView(),
+                                          ),
+                                        );
+                                      },
+                                    ))
+                              ]),
+                              SizedBox(
+                                width: media.height * .03,
+                              ),
+                              Column(children: [
+                                SizedBox(
+                                    height: 40,
+                                    width: 150,
+                                    child: RoundedButton(
+                                        title: "Add Compledted Workout",
+                                        type: RoundButtonType.bgGradient,
+                                        fontSize: 12,
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                            const AddActivity(),
+                                          ),
+                                        );
+                                      },))
+                              ])
+                            ]),
+                      ),
+                    ])),
+
                 SizedBox(
                   height: media.width * .05,
                 ),

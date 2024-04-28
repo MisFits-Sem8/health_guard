@@ -53,151 +53,95 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: TColour.white,
-        centerTitle: true,
-        elevation: 0,
-        title: Text(
-          "Profile",
-          style: TextStyle(
-              color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: TColour.white,
+          centerTitle: true,
+          elevation: 0,
+          title: Text(
+            "Profile",
+            style: TextStyle(
+                color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
+          ),
         ),
-      ),
-      backgroundColor: TColour.white,
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: Image.asset(
-                      gender == "female"
-                          ? "assets/images/profile-female.jpg"
-                          : "assets/images/profile-male.png",
-                      width: media.width * 0.15,
-                      height: media.width * 0.15,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          name,
-                          style: TextStyle(
-                            color: TColour.black1,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Text(
-                          gender == "female" ? "She/Her" : "He/Him",
-                          style: TextStyle(
-                            color: TColour.gray,
-                            fontSize: 12,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 70,
-                    height: 25,
-                    child: RoundedButton(
-                      title: "Edit",
-                      type: RoundButtonType.bgGradient,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditProfileView(
-                              age: age,
-                              height: height,
-                              weight: weight,
-                              gender: gender,
-                              water: water,
-                              sleep: sleep,
-                              workout: workout,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: media.width * 0.1,
-              ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                decoration: BoxDecoration(
-                    color: TColour.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: const [
-                      BoxShadow(color: Colors.black12, blurRadius: 2)
-                    ]),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        backgroundColor: TColour.white,
+        body: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
                   children: [
-                    Text(
-                      "My Details",
-                      style: TextStyle(
-                        color: TColour.black1,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Image.asset(
+                        gender == "female"
+                            ? "assets/images/profile-female.jpg"
+                            : "assets/images/profile-male.png",
+                        width: media.width * 0.15,
+                        height: media.width * 0.15,
+                        fit: BoxFit.cover,
                       ),
                     ),
                     const SizedBox(
-                      height: 8,
+                      width: 15,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TitleSubtitleCell(
-                            title: "${height}cm",
-                            subtitle: "Height",
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            style: TextStyle(
+                              color: TColour.black1,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Expanded(
-                          child: TitleSubtitleCell(
-                            title: "${weight}cm",
-                            subtitle: "Weight",
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Expanded(
-                          child: TitleSubtitleCell(
-                            title: "${age}yo",
-                            subtitle: "Age",
-                          ),
-                        ),
-                      ],
+                          Text(
+                            gender == "female" ? "She/Her" : "He/Him",
+                            style: TextStyle(
+                              color: TColour.gray,
+                              fontSize: 12,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
+                    SizedBox(
+                      width: 70,
+                      height: 25,
+                      child: RoundedButton(
+                        title: "Edit",
+                        type: RoundButtonType.bgGradient,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditProfileView(
+                                age: age,
+                                height: height,
+                                weight: weight,
+                                gender: gender,
+                                water: water,
+                                sleep: sleep,
+                                workout: workout,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    )
                   ],
                 ),
-              ),
-              SizedBox(
-                height: media.width * 0.1,
-              ),
-              Container(
+                SizedBox(
+                  height: media.width * 0.1,
+                ),
+                Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   decoration: BoxDecoration(
@@ -207,70 +151,128 @@ class _ProfileViewState extends State<ProfileView> {
                         BoxShadow(color: Colors.black12, blurRadius: 2)
                       ]),
                   child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "My Goals",
-                          style: TextStyle(
-                            color: TColour.black1,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "My Details",
+                        style: TextStyle(
+                          color: TColour.black1,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TitleSubtitleCell(
+                              title: "${height}cm",
+                              subtitle: "Height",
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        GoalCard(
-                          goalname: 'Sleep',
-                          target: sleep.toString(),
-                          unit: "hrs",
-                          imageName: "sleep",
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        GoalCard(
-                          goalname: 'Workout',
-                          target: workout.toString(),
-                          imageName: "workout",
-                          unit: 'hrs',
-                        ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        GoalCard(
-                          goalname: 'Water',
-                          target: water.toString(),
-                          imageName: "water",
-                          unit: 'litres',
-                        )
-                      ])),
-              SizedBox(
-                height: media.width * 0.1,
-              ),
-              RoundedButton(
-                onPressed: () async {
-                  _auth.signOut;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginView(),
-                      ));
-                },
-                title: 'Log Out',
-              ),
-              SizedBox(
-                height: media.width * 0.05,
-              ),
-              const Text(
-                '© 2024 HealthGuard. All rights reserved.',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Expanded(
+                            child: TitleSubtitleCell(
+                              title: "${weight}cm",
+                              subtitle: "Weight",
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Expanded(
+                            child: TitleSubtitleCell(
+                              title: "${age}yo",
+                              subtitle: "Age",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+                SizedBox(
+                  height: media.width * 0.1,
+                ),
+                Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    decoration: BoxDecoration(
+                        color: TColour.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black12, blurRadius: 2)
+                        ]),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "My Goals",
+                            style: TextStyle(
+                              color: TColour.black1,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          GoalCard(
+                            goalname: 'Sleep',
+                            target: sleep.toString(),
+                            unit: "hrs",
+                            imageName: "sleep",
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          GoalCard(
+                            goalname: 'Workout',
+                            target: workout.toString(),
+                            imageName: "workout",
+                            unit: 'hrs',
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          GoalCard(
+                            goalname: 'Water',
+                            target: water.toString(),
+                            imageName: "water",
+                            unit: 'litres',
+                          )
+                        ])),
+                SizedBox(
+                  height: media.width * 0.1,
+                ),
+                RoundedButton(
+                  onPressed: () async {
+                    _auth.signOut;
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginView(),
+                        ));
+                  },
+                  title: 'Log Out',
+                ),
+                SizedBox(
+                  height: media.width * 0.05,
+                ),
+                const Text(
+                  '© 2024 HealthGuard. All rights reserved.',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ),
       ),

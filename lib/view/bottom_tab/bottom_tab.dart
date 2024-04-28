@@ -6,6 +6,7 @@ import 'package:health_app/view/message/message_view.dart';
 import 'package:health_app/view/notifications/notifications_view.dart';
 import '../../common/color_extension.dart';
 import '../../common_widgets/tab_button.dart';
+import '../activity_summary/sleep_summary.dart';
 
 class BottomTab extends StatefulWidget {
   const BottomTab({super.key});
@@ -47,7 +48,7 @@ class _BottomTabState extends State<BottomTab> {
               isActive: selectedTab == 1,
               onTap: () {
                 selectedTab = 1;
-                currentTab = const SleepTrackerView();
+                currentTab = const CreateScheduleView();
                 if (mounted) {
                   setState(() {});
                 }

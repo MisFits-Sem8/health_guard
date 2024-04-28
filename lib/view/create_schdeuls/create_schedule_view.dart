@@ -1,18 +1,17 @@
-// import 'package:fitness/view/sleep_tracker/sleep_schedule_view.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/today_sleep_schedule_row.dart';
 import 'package:health_app/view/profile/profile_view.dart';
 
-class SleepTrackerView extends StatefulWidget {
-  const SleepTrackerView({super.key});
+class CreateScheduleView extends StatefulWidget {
+  const CreateScheduleView({super.key});
 
   @override
-  State<SleepTrackerView> createState() => _SleepTrackerViewState();
+  State<CreateScheduleView> createState() => _CreateScheduleViewState();
 }
 
-class _SleepTrackerViewState extends State<SleepTrackerView> {
+class _CreateScheduleViewState extends State<CreateScheduleView> {
   List todaySleepArr = [
     {
       "name": "Bedtime",
