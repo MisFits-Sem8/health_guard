@@ -448,7 +448,6 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                       title: "Update",
                       onPressed: () {
                         if (_profileFormKey.currentState?.validate() ?? false) {
-                          print("skjdcbskehv");
                           _auth.addUserData(
                             height,
                             weight,

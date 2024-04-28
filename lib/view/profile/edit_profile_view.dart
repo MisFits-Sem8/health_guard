@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:health_app/models/user.dart';
 import 'package:health_app/view/bottom_tab/bottom_tab.dart';
 import '../../common/color_extension.dart';
 import '../../common_widgets/rounded_btn.dart';
-import 'complete_profile.dart';
+import '../../services/auth_service.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({super.key});
@@ -12,13 +13,38 @@ class EditProfileView extends StatefulWidget {
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
-  Gender? gender;
-  double sleep = 6;
-  double workout = 2;
-  double water = 2.5;
-  int height = 180;
-  int weight = 50;
-  int age = 25;
+  final _auth = AuthService();
+  late String gender;
+  late int height;
+  late int weight;
+  late int age;
+  final _editProfileFormKey = GlobalKey<FormState>();
+  late final _sleep;
+  late final _workout;
+  late final _water;
+
+  Future<void> _initializeUserData() async {
+    UserDataModel? userData = await _auth.getUserData();
+    if (userData != null) {
+      setState(() {
+        height = userData.height;
+        weight = userData.weight;
+        age = userData.age;
+        gender = userData.gender;
+        _sleep = TextEditingController(text: userData.sleep.toString());
+        _workout = TextEditingController(text: userData.workout.toString());
+        _water = TextEditingController(text: userData.water.toString());
+      });
+    } else {
+      print("User data is not available.");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -313,89 +339,94 @@ class _EditProfileViewState extends State<EditProfileView> {
                       boxShadow: const [
                         BoxShadow(color: Colors.black12, blurRadius: 2)
                       ]),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.local_drink, color: Colors.blue),
-                          const SizedBox(width: 8),
-                          const Text("Water"),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: TextFormField(
-                              initialValue: water.toString(),
-                              textAlign: TextAlign.center,keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                setState(() {
-                                  water = double.tryParse(value) ?? water;
-                                });
-                              },
+                  child: Form(
+                    key: _editProfileFormKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.local_drink, color: Colors.blue),
+                            const SizedBox(width: 8),
+                            const Text("Water"),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: TextFormField(
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  controller: _water,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      _water.text = "1.5";
+                                    }
+                                    return null;
+                                  }),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "litres",
-                            style: TextStyle(
-                                fontSize: 13, color: TColour.lightTextGray),
-                          ),
-                        ],
-                      ),
-                      // Sleep Goal Row
-                      Row(
-                        children: [
-                          const Icon(Icons.bedtime, color: Colors.orange),
-                          const SizedBox(width: 8),
-                          const Text("Sleep"),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: TextFormField(
-                              initialValue: sleep.toString(),
-                              textAlign: TextAlign.center,keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                setState(() {
-                                  sleep = double.tryParse(value) ?? sleep;
-                                });
-                              },
+                            const SizedBox(width: 8),
+                            Text(
+                              "litres",
+                              style: TextStyle(
+                                  fontSize: 13, color: TColour.lightTextGray),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "hrs",
-                            style: TextStyle(
-                                fontSize: 13, color: TColour.lightTextGray),
-                          ),
-                        ],
-                      ),
-                      // Workout Goal Row
-                      Row(
-                        children: [
-                          const Icon(Icons.fitness_center,
-                              color: Colors.purple),
-                          const SizedBox(width: 8),
-                          const Text("Workout"),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: TextFormField(
-                              textAlign: TextAlign.center,
-                              initialValue: workout.toString(),
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                setState(() {
-                                  workout = double.tryParse(value) ?? workout;
-                                });
-                              },
+                          ],
+                        ),
+                        // Sleep Goal Row
+                        Row(
+                          children: [
+                            const Icon(Icons.bedtime, color: Colors.orange),
+                            const SizedBox(width: 8),
+                            const Text("Sleep"),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: TextFormField(
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  controller: _sleep,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      _sleep.text = "6.0";
+                                    }
+                                    return null;
+                                  }),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "hrs",
-                            style: TextStyle(
-                                fontSize: 13, color: TColour.lightTextGray),
-                          ),
-                        ],
-                      ),
-                    ],
+                            const SizedBox(width: 8),
+                            Text(
+                              "hrs",
+                              style: TextStyle(
+                                  fontSize: 13, color: TColour.lightTextGray),
+                            ),
+                          ],
+                        ),
+                        // Workout Goal Row
+                        Row(
+                          children: [
+                            const Icon(Icons.fitness_center,
+                                color: Colors.purple),
+                            const SizedBox(width: 8),
+                            const Text("Workout"),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: TextFormField(
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  controller: _workout,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      _workout.text = "1.0";
+                                    }
+                                    return null;
+                                  }),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              "hrs",
+                              style: TextStyle(
+                                  fontSize: 13, color: TColour.lightTextGray),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -404,10 +435,22 @@ class _EditProfileViewState extends State<EditProfileView> {
                 RoundedButton(
                     title: "Update",
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const BottomTab()));
+                      if (_editProfileFormKey.currentState?.validate() ??
+                          false) {
+                        _auth.addUserData(
+                          height,
+                          weight,
+                          age,
+                          double.parse(_water.text),
+                          double.parse(_workout.text),
+                          double.parse(_sleep.text),
+                          gender,
+                        );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const BottomTab()));
+                      }
                     })
               ],
             ),

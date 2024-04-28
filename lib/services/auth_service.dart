@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:health_app/services/database.dart';
@@ -60,4 +58,36 @@ class AuthService {
       print(e.code);
     }
   }
+
+  Future<UserDataModel?> getUserData() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        final data = await DatabaseService(uid: user.uid).userData.first;
+        if (data.exists) {
+          final userData = data.data() as Map<String, dynamic>;
+          return UserDataModel(
+            userData["name"],
+            userData["age"],
+            userData["height"],
+            userData["weight"],
+            userData["sleep"],
+            userData["workout"],
+            userData["water"],
+            userData["gender"],
+          );
+        } else {
+          print("User data doesn't exist.");
+          return null;
+        }
+      } else {
+        print("User is not logged in");
+        return null;
+      }
+    } on FirebaseAuthException catch (e) {
+      print(e.code);
+      return null;
+    }
+  }
+
 }

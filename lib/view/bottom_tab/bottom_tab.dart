@@ -4,7 +4,6 @@ import 'package:health_app/view/home/home.dart';
 import 'package:health_app/view/message/message_view.dart';
 import 'package:health_app/view/notifications/notifications_view.dart';
 import 'package:health_app/view/profile/profile_view.dart';
-
 import '../../common/color_extension.dart';
 import '../../common_widgets/tab_button.dart';
 

@@ -2,12 +2,11 @@ import "package:flutter/material.dart";
 import "package:health_app/common_widgets/goal_card.dart";
 import "package:health_app/common_widgets/rounded_btn.dart";
 import "package:health_app/view/profile/edit_profile_view.dart";
-
 import "../../common/color_extension.dart";
 import "../../common_widgets/title_subtitle.dart";
+import "../../models/user.dart";
 import "../../services/auth_service.dart";
 import "../login/login.dart";
-import "complete_profile.dart";
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -17,27 +16,54 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  Gender gender = Gender.female;
-  String name = "Kumuthu Athukorala";
-  double sleep = 6;
-  double workout = 2;
-  double water = 2.5;
-  int height = 180;
-  int weight = 50;
-  int age = 25;
+  late String gender = "";
+  late String name = "";
+  late int height = 0;
+  late int weight = 0;
+  late int age = 0;
+  late double sleep = 0;
+  late double workout = 0;
+  late double water = 0;
   final AuthService _auth = AuthService();
+
+  Future<void> _initializeUserData() async {
+    UserDataModel? userData = await _auth.getUserData();
+    if (userData != null) {
+      setState(() {
+        name = userData.name;
+        height = userData.height;
+        weight = userData.weight;
+        age = userData.age;
+        gender = userData.gender;
+        sleep = userData.sleep;
+        workout = userData.workout;
+        water = userData.water;
+      });
+    } else {
+      print("User data is not available.");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeUserData();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var media = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: TColour.white,
         centerTitle: true,
         elevation: 0,
-        // leadingWidth: 0,
         title: Text(
           "Profile",
           style: TextStyle(
-              color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
+              color: TColour.black1,
+              fontSize: 16,
+              fontWeight: FontWeight.w700),
         ),
       ),
       backgroundColor: TColour.white,
@@ -52,11 +78,11 @@ class _ProfileViewState extends State<ProfileView> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: Image.asset(
-                      gender == Gender.female
+                      gender == "female"
                           ? "assets/images/profile-female.jpg"
                           : "assets/images/profile-male.png",
-                      width: 50,
-                      height: 50,
+                      width: media.width * 0.15,
+                      height: media.width * 0.15,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -76,7 +102,7 @@ class _ProfileViewState extends State<ProfileView> {
                           ),
                         ),
                         Text(
-                          gender == Gender.female ? "Her/She" : "He/Him",
+                          gender == "female" ? "She/Her" : "He/Him",
                           style: TextStyle(
                             color: TColour.gray,
                             fontSize: 12,
@@ -105,8 +131,8 @@ class _ProfileViewState extends State<ProfileView> {
                   )
                 ],
               ),
-              const SizedBox(
-                height: 25,
+              SizedBox(
+                height: media.width * 0.1,
               ),
               Container(
                 padding:
@@ -162,12 +188,12 @@ class _ProfileViewState extends State<ProfileView> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 25,
+              SizedBox(
+                height: media.width * 0.1,
               ),
               Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10, horizontal: 15),
                   decoration: BoxDecoration(
                       color: TColour.white,
                       borderRadius: BorderRadius.circular(15),
@@ -213,8 +239,8 @@ class _ProfileViewState extends State<ProfileView> {
                           unit: 'litres',
                         )
                       ])),
-              const SizedBox(
-                height: 20,
+              SizedBox(
+                height: media.width * 0.1,
               ),
               RoundedButton(
                 onPressed: () async {
@@ -227,8 +253,9 @@ class _ProfileViewState extends State<ProfileView> {
                 },
                 title: 'Log Out',
               ),
-              const SizedBox(height: 10),
-              const SizedBox(height: 5),
+              SizedBox(
+                height: media.width * 0.05,
+              ),
               const Text(
                 '© 2024 HealthGuard. All rights reserved.',
                 style: TextStyle(
