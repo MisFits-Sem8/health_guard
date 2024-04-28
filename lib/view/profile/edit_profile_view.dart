@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_app/models/user.dart';
-import 'package:health_app/view/bottom_tab/bottom_tab.dart';
+import 'package:health_app/view/profile/profile_view.dart';
 import '../../common/color_extension.dart';
 import '../../common_widgets/rounded_btn.dart';
 import '../../services/auth_service.dart';
@@ -14,14 +14,14 @@ class EditProfileView extends StatefulWidget {
 
 class _EditProfileViewState extends State<EditProfileView> {
   final _auth = AuthService();
-  late String gender;
-  late int height;
-  late int weight;
-  late int age;
+  late String gender = "";
+  late int height = 120;
+  late int weight = 0;
+  late int age = 0;
   final _editProfileFormKey = GlobalKey<FormState>();
-  late final _sleep;
-  late final _workout;
-  late final _water;
+  late final _sleep = TextEditingController(text: "6.0");
+  late final _workout = TextEditingController(text: "1.0");
+  late final _water = TextEditingController(text: "1.5");
 
   Future<void> _initializeUserData() async {
     UserDataModel? userData = await _auth.getUserData();
@@ -31,9 +31,9 @@ class _EditProfileViewState extends State<EditProfileView> {
         weight = userData.weight;
         age = userData.age;
         gender = userData.gender;
-        _sleep = TextEditingController(text: userData.sleep.toString());
-        _workout = TextEditingController(text: userData.workout.toString());
-        _water = TextEditingController(text: userData.water.toString());
+        _sleep.text = userData.sleep.toString();
+        _workout.text = userData.workout.toString();
+        _water.text = userData.water.toString();
       });
     } else {
       print("User data is not available.");
@@ -449,7 +449,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const BottomTab()));
+                                builder: (context) => const ProfileView()));
                       }
                     })
               ],
