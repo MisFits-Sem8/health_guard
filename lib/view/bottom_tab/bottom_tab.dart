@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:health_app/view/activity/activity_view.dart';
 import 'package:health_app/view/activity/mental_health_summary.dart';
+import 'package:health_app/view/create_schdeuls/create_schedule_view.dart';
 import 'package:health_app/view/home/home.dart';
 import 'package:health_app/view/message/message_view.dart';
 import 'package:health_app/view/notifications/notifications_view.dart';
 import 'package:health_app/view/profile/profile_view.dart';
-
 import '../../common/color_extension.dart';
 import '../../common_widgets/tab_button.dart';
 
@@ -49,7 +49,8 @@ class _BottomTabState extends State<BottomTab> {
               isActive: selectedTab == 1,
               onTap: () {
                 selectedTab = 1;
-                currentTab = const MentalHealthSummary();
+                // currentTab = const MentalHealthSummary();
+                currentTab = const SleepTrackerView();
                 if (mounted) {
                   setState(() {});
                 }
