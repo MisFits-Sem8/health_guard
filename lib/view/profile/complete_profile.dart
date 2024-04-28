@@ -19,12 +19,11 @@ class CompleteProfileView extends StatefulWidget {
 
 class _CompleteProfileViewState extends State<CompleteProfileView> {
   final _auth = AuthService();
-
-  late Gender? gender;
+  final _profileFormKey = GlobalKey<FormState>();
+  Gender? gender;
   int height = 180;
   int weight = 50;
   int age = 25;
-  final _formKey = GlobalKey<FormState>();
   final _sleep = TextEditingController();
   final _workout = TextEditingController();
   final _water = TextEditingController();
@@ -352,76 +351,94 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                         boxShadow: const [
                           BoxShadow(color: Colors.black12, blurRadius: 2)
                         ]),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.local_drink, color: Colors.blue),
-                            const SizedBox(width: 8),
-                            const Text("Water"),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: TextFormField(
-                                textAlign: TextAlign.center,
-                                keyboardType: TextInputType.number,
-                                controller: _water,
+                    child: Form(
+                      key: _profileFormKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.local_drink, color: Colors.blue),
+                              const SizedBox(width: 8),
+                              const Text("Water"),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: TextFormField(
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    controller: _water,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        _water.text = "6.0";
+                                      }
+                                      return null;
+                                    }),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              "litres",
-                              style: TextStyle(
-                                  fontSize: 13, color: TColour.lightTextGray),
-                            ),
-                          ],
-                        ),
-                        // Sleep Goal Row
-                        Row(
-                          children: [
-                            const Icon(Icons.bedtime, color: Colors.orange),
-                            const SizedBox(width: 8),
-                            const Text("Sleep"),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: TextFormField(
-                                controller: _sleep,
-                                textAlign: TextAlign.center,
-                                keyboardType: TextInputType.number,
+                              const SizedBox(width: 8),
+                              Text(
+                                "litres",
+                                style: TextStyle(
+                                    fontSize: 13, color: TColour.lightTextGray),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              "hrs",
-                              style: TextStyle(
-                                  fontSize: 13, color: TColour.lightTextGray),
-                            ),
-                          ],
-                        ),
-                        // Workout Goal Row
-                        Row(
-                          children: [
-                            const Icon(Icons.fitness_center,
-                                color: Colors.purple),
-                            const SizedBox(width: 8),
-                            const Text("Workout"),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: TextFormField(
-                                textAlign: TextAlign.center,
-                                keyboardType: TextInputType.number,
-                                controller: _workout,
+                            ],
+                          ),
+                          // Sleep Goal Row
+                          Row(
+                            children: [
+                              const Icon(Icons.bedtime, color: Colors.orange),
+                              const SizedBox(width: 8),
+                              const Text("Sleep"),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: TextFormField(
+                                    controller: _sleep,
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        _sleep.text = "6.0";
+                                      }
+                                      return null;
+                                    }),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              "hrs",
-                              style: TextStyle(
-                                  fontSize: 13, color: TColour.lightTextGray),
-                            ),
-                          ],
-                        ),
-                      ],
+                              const SizedBox(width: 8),
+                              Text(
+                                "hrs",
+                                style: TextStyle(
+                                    fontSize: 13, color: TColour.lightTextGray),
+                              ),
+                            ],
+                          ),
+                          // Workout Goal Row
+                          Row(
+                            children: [
+                              const Icon(Icons.fitness_center,
+                                  color: Colors.purple),
+                              const SizedBox(width: 8),
+                              const Text("Workout"),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: TextFormField(
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    controller: _workout,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        _workout.text = "1.0";
+                                      }
+                                      return null;
+                                    }),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                "hrs",
+                                style: TextStyle(
+                                    fontSize: 13, color: TColour.lightTextGray),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -430,20 +447,22 @@ class _CompleteProfileViewState extends State<CompleteProfileView> {
                   RoundedButton(
                       title: "Update",
                       onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
+                        if (_profileFormKey.currentState?.validate() ?? false) {
+                          print("skjdcbskehv");
                           _auth.addUserData(
-                              height,
-                              weight,
-                              age,
-                              _water.text as double,
-                              _workout.text as double,
-                              _sleep.text as double,
-                              gender.toString());
+                            height,
+                            weight,
+                            age,
+                            double.parse(_water.text),
+                            double.parse(_workout.text),
+                            double.parse(_sleep.text),
+                            gender == Gender.male ? "male" : "female",
+                          );
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const BottomTab()));
                         }
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const BottomTab()));
                       })
                 ],
               ),
