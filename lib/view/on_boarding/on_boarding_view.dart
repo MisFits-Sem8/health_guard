@@ -11,14 +11,14 @@ class OnBoardingView extends StatefulWidget {
 }
 
 class _OnBoardingViewState extends State<OnBoardingView> {
-  int selectedPage = 1;
+  int selectedPage = 0;
   PageController controller = PageController();
 
   @override
   void initState() {
     super.initState();
     controller.addListener(() {
-      selectedPage = controller.page?.round() ?? 0;
+      selectedPage = controller.page?.round() ?? 1;
       setState(() {});
     });
   }
@@ -72,7 +72,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                   height: 70,
                   child: CircularProgressIndicator(
                     color: TColour.primaryColor1,
-                    value: selectedPage / pageList.length,
+                    value: (selectedPage + 1) / pageList.length,
                     strokeWidth: 2,
                   ),
                 ),
@@ -91,18 +91,15 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                     ),
                     color: TColour.primaryColor1,
                     onPressed: () {
-                      if (selectedPage < pageList.length) {
-                        controller.animateToPage(selectedPage,
-                            duration: const Duration(milliseconds:1800),
-                            curve: Curves.bounceInOut);
+                      if (selectedPage != 2) {
+                        selectedPage += 1;
                         controller.jumpToPage(selectedPage);
-                        selectedPage = selectedPage + 1;
                       } else {
-                        // Navigator.push(context, MaterialPageRoute(builder: (context)=>const SignUpView()));
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const CompleteProfileView()));
+                                builder: (context) =>
+                                    const CompleteProfileView()));
                       }
                     },
                   ),
