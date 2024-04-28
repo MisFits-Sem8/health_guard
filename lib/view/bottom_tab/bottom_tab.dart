@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:health_app/view/activity/activity_view.dart';
+import 'package:health_app/view/activity/mental_health_summary.dart';
 import 'package:health_app/view/home/home.dart';
 import 'package:health_app/view/message/message_view.dart';
 import 'package:health_app/view/notifications/notifications_view.dart';
@@ -36,7 +37,7 @@ class _BottomTabState extends State<BottomTab> {
               isActive: selectedTab == 0,
               onTap: () {
                 selectedTab = 0;
-                currentTab = const HomeView();
+                currentTab = const ActivityView();
                 if (mounted) {
                   setState(() {});
                 }
@@ -44,11 +45,11 @@ class _BottomTabState extends State<BottomTab> {
               size: media.height * 0.04,
             ),
             TabButton(
-              iconData: Icons.directions_run_rounded,
+              iconData: Icons.emoji_emotions_rounded,
               isActive: selectedTab == 1,
               onTap: () {
                 selectedTab = 1;
-                currentTab = const ActivityView();
+                currentTab = const MentalHealthSummary();
                 if (mounted) {
                   setState(() {});
                 }
