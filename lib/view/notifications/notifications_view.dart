@@ -105,7 +105,7 @@ class _NotificationViewState extends State<NotificationView> {
             itemBuilder: ((context, index) {
               var nObj = notifications[index] as Map? ?? {};
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Row(
                   children: [
                     ClipRRect(
@@ -128,7 +128,7 @@ class _NotificationViewState extends State<NotificationView> {
                           nObj["title"].toString(),
                           style: TextStyle(
                             color: TColour.black1,
-                            fontSize: 12,
+                            fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -149,8 +149,8 @@ class _NotificationViewState extends State<NotificationView> {
                         },
                         icon: Image.asset(
                           "assets/images/icons/trash.png",
-                          width: 30,
-                          height: 30,
+                          width: 20,
+                          height: 20,
                           fit: BoxFit.contain,
                         ))
                   ],
