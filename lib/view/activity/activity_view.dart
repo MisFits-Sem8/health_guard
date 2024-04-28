@@ -917,7 +917,7 @@ class _ActivityViewState extends State<ActivityView> {
                                   radius: 40.0,
                                   lineWidth: 7.0,
                                   percent:
-                                      calculatePercentCaloriesBurned() / 100,
+                                      calculatePercentCaloriesBurned() / 100>1?1:calculatePercentCaloriesBurned()/100,
                                   animation: true,
                                   animationDuration: 1200,
                                   center: new Text(

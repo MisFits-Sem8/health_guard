@@ -21,10 +21,11 @@ void main() async {
   var databaseFactory = databaseFactoryFfi;
   final FitnessDatabaseHelper dbh = FitnessDatabaseHelper();
   final Future<Database> db = dbh.fitnessDatabase;
-  // await dbh.initializeDatabase();
-  // dbh.truncateStepsTable();
+  await dbh.initializeDatabase();
+  dbh.truncateStepsTable();
+  await dbh.populateDb();
 
-  cron.schedule(Schedule.parse('*/10 * * * *'), () async {
+  cron.schedule(Schedule.parse('*/5 * * * *'), () async {
     executeCronJob();
     debugPrint("steps count updated to local database");
   });

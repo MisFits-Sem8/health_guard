@@ -6,7 +6,7 @@ import 'package:logger/logger.dart';
 
 // Constants
 const double kInactivityThreshold = 0.2; // m/s^2 (adjust as needed)
-const int kInactivityDurationSeconds = 900; // 15 minutes
+const int kInactivityDurationSeconds = 10; // 15 minutes
 const double kSignificantMovementThreshold =
     1.0; // m/s^2 or rad/s (adjust as needed)
 
@@ -49,11 +49,11 @@ class SleepTracker {
   List<TimedGyroscopeEvent> get recentGyroscopeEvents => _recentGyroscopeEvents;
 
   void _handleAccelerometerEvent(AccelerometerEvent event) {
-    _logger.d('Received accelerometer event: $event');
+    // _logger.d('Received accelerometer event: $event');
     _recentAccelerometerEvents.add(TimedAccelerometerEvent(event));
     _recentAccelerometerEvents.removeWhere((e) => e.timestamp.isBefore(
         DateTime.now()
-            .subtract(Duration(seconds: kInactivityDurationSeconds))));
+            .subtract(const Duration(seconds: kInactivityDurationSeconds))));
     if (!_isSleeping) {
       // Check for prolonged inactivity
       if (_isInactive(_recentAccelerometerEvents)) {
@@ -68,7 +68,7 @@ class SleepTracker {
         // Calculate sleep duration and reset tracking
         final sleepDuration = DateTime.now().difference(_sleepStartTime!);
         _logger.w('Sleep ended. Duration: $sleepDuration');
-        print('Sleep duration: $sleepDuration');
+        _logger.d('Sleep duration: $sleepDuration');
         _isSleeping = false;
         _sleepStartTime = null;
         _recentAccelerometerEvents.clear();
@@ -97,9 +97,24 @@ class SleepTracker {
     }
   }
 
+  // bool _isInactive(List<TimedAccelerometerEvent> events) {
+  //   return events.isNotEmpty &&
+  //       events.every((timedEvent) =>
+  //           timedEvent.event.x.abs() < kInactivityThreshold &&
+  //           timedEvent.event.y.abs() < kInactivityThreshold &&
+  //           timedEvent.event.z.abs() < kInactivityThreshold);
+  // }
   bool _isInactive(List<TimedAccelerometerEvent> events) {
-    return events.isNotEmpty &&
-        events.every((timedEvent) =>
+    // Determine the sensor frequency (number of events per second)
+    int sensorFrequency =
+        100; // Adjust this value based on your sensor's actual frequency
+
+    // Calculate the number of events to consider for inactivity
+    int numEvents = kInactivityDurationSeconds * sensorFrequency;
+
+    // Check if the device has been inactive for the specified duration
+    return events.length >= numEvents &&
+        events.sublist(events.length - numEvents).every((timedEvent) =>
             timedEvent.event.x.abs() < kInactivityThreshold &&
             timedEvent.event.y.abs() < kInactivityThreshold &&
             timedEvent.event.z.abs() < kInactivityThreshold);

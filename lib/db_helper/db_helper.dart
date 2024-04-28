@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'package:health_app/model/daily_steps.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'dart:math';
 
 class FitnessDatabaseHelper {
   static FitnessDatabaseHelper? _databaseHelper; // Singleton DatabaseHelper
@@ -61,8 +62,8 @@ class FitnessDatabaseHelper {
     Database db = await fitnessDatabase;
 
     // Check if the record exists
-    List<Map> result =
-        await db.query(stepsTable, where: '$colId = ?', whereArgs: [steps.id]);
+    List<Map> result = await db
+        .query(stepsTable, where: '$colDate = ?', whereArgs: [steps.date]);
 
     if (result.isEmpty) {
       // If the record doesn't exist, insert it
@@ -70,7 +71,7 @@ class FitnessDatabaseHelper {
     } else {
       // If the record exists, update it
       return await db.update(stepsTable, steps.toMap(),
-          where: '$colId = ?', whereArgs: [steps.id]);
+          where: '$colDate = ?', whereArgs: [steps.date]);
     }
   }
 
@@ -115,5 +116,16 @@ class FitnessDatabaseHelper {
     }
 
     return stepsList;
+  }
+
+  Future<void> populateDb() async {
+    var rng = new Random();
+    for (int i = 18; i <= 28; i++) {
+      String date = '2024-04-${i.toString().padLeft(2, '0')}';
+      int steps = rng.nextInt(990) +
+          10; // generates a random integer where 10 <= _ <= 2000
+      DailySteps dailySteps = DailySteps(date, steps);
+      await insertSteps(dailySteps);
+    }
   }
 }

@@ -44,6 +44,8 @@ dependencies:
   sensors_plus: ^5.0.1
   logger: ^2.2.0
 
+  flutter_local_notifications: ^17.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

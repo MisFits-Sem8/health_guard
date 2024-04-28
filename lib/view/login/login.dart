@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:health_app/services/notification_service.dart';
 import 'package:health_app/view/login/sign_up_view.dart';
 import 'package:health_app/view/tips/health_tip_view.dart';
 import '../../common/color_extension.dart';
@@ -142,6 +143,7 @@ class _LoginViewState extends State<LoginView> {
           _email.text, _password.text);
       if (EmailValidator.validate(errorMessage!)) {
         if (mounted) {
+          NotificationService().showNotification();
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const HealthTipPage()));
         }
