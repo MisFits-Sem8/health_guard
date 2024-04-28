@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:health_app/services/sleep_track_service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/view/on_boarding/getting_started_view.dart';
@@ -27,6 +28,9 @@ void main() async {
     executeCronJob();
     debugPrint("steps count updated to local database");
   });
+
+  SleepTracker _sleepTracker = SleepTracker();
+
   runApp(const MyApp());
 }
 
