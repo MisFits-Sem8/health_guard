@@ -37,9 +37,9 @@ dependencies:
   permission_handler: ^10.2.0
   animated_toggle_switch: ^0.8.2
 
-  sqflite: ^2.3.3
-  sqflite_common_ffi: ^2.3.3
-  path: ^1.9.0
+  sqflite: ^2.2.3
+  sqflite_common_ffi: ^2.2.3
+  path: ^1.8.3
   cron: ^0.6.0
 
 dev_dependencies:

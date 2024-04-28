@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           fontFamily: "Poppins",
           useMaterial3: true,
         ),
-        home:const SleepTrackerView());
-        // home: const GettingStartedView());
+        // home:const SleepTrackerView());
+        home: const GettingStartedView());
   }
 }
