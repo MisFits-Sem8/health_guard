@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 
+import '../profile/profile_view.dart';
+
 class NotificationView extends StatefulWidget {
   const NotificationView({super.key});
 
@@ -56,25 +58,25 @@ class _NotificationViewState extends State<NotificationView> {
           backgroundColor: TColour.white,
           centerTitle: true,
           elevation: 0,
-          leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Container(
-                width: 40,
-                height: 40,
-                margin: const EdgeInsets.all(8),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: TColour.lightGray,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Image.asset(
-                  "assets/images/icons/back-button.png",
-                  width: 20,
-                  height: 20,
-                  fit: BoxFit.contain,
-                )),
-          ),
+          // leading: InkWell(
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //   },
+          //   child: Container(
+          //       width: 40,
+          //       height: 40,
+          //       margin: const EdgeInsets.all(8),
+          //       alignment: Alignment.center,
+          //       decoration: BoxDecoration(
+          //           color: TColour.lightGray,
+          //           borderRadius: BorderRadius.circular(10)),
+          //       child: Image.asset(
+          //         "assets/images/icons/back-button.png",
+          //         width: 20,
+          //         height: 20,
+          //         fit: BoxFit.contain,
+          //       )),
+          // ),
           title: Text(
             "Notification",
             style: TextStyle(
@@ -83,25 +85,19 @@ class _NotificationViewState extends State<NotificationView> {
                 fontWeight: FontWeight.w700),
           ),
           actions: [
-            InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                  width: 40,
-                  height: 40,
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      color: TColour.lightGray,
-                      borderRadius: BorderRadius.circular(10)),
-                  // child:Icon(Icons.arrow_back_ios ,color:TColour.white,),
-                  child: Image.asset(
-                    "assets/images/icons/more.png",
-                    width: 12,
-                    height: 12,
-                    fit: BoxFit.contain,
-                  )),
-            ),
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ProfileView()));
+                },
+                icon: Image.asset(
+                  "assets/images/profile-female.jpg",
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.fitHeight,
+                )),
           ],
         ),
         backgroundColor: TColour.white,
