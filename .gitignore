@@ -45,3 +45,4 @@ app.*.map.json
 lib/firebase_options.dart
 # flutter pub get will auto generate this file
 pubspec.lock
+.vscode
