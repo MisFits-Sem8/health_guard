@@ -3,11 +3,15 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pretty_gauge/pretty_gauge.dart';
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
 import 'package:pedometer/pedometer.dart';
 import 'dart:async';
+import 'package:health_app/model/daily_steps.dart';
+import 'package:health_app/db_helper/db_helper.dart';
+import 'package:health_app/repositories/data_repository.dart';
 
 class ActivityView extends StatefulWidget {
   const ActivityView({super.key});
@@ -35,6 +39,10 @@ class _ActivityViewState extends State<ActivityView> {
 
   List<FlSpot> allSpots = [];
 
+  // Map<String, DailySteps> stepRecords = {};
+
+  final FitnessDatabaseHelper databaseHelper = FitnessDatabaseHelper();
+
   List<int> tools = [];
 
   DateTime _currentDay = DateTime.now();
@@ -42,6 +50,8 @@ class _ActivityViewState extends State<ActivityView> {
   int _dailySteps = 0;
 
   double previousSteps = 0;
+
+  final DataRepository _dataRepository = DataRepository();
 
   void setBmiInterpretation() {
     if (bmiScore > 30) {
@@ -74,63 +84,85 @@ class _ActivityViewState extends State<ActivityView> {
   void initState() {
     super.initState();
     initPlatformState();
+    updateStepsView();
   }
 
   void onStepCount(StepCount event) {
     setState(() {
-      if (!allSpots.isNotEmpty) {
+      if (!allSpots.isNotEmpty || previousSteps == 0) {
         previousSteps = event.steps.toDouble();
       }
 
+      String eventDate = DateFormat('yyyy-MM-dd').format(event.timeStamp);
+      String currentDate = DateFormat('yyyy-MM-dd').format(_currentDay);
+
       // Check if the current day is the same as the last recorded day
-      if (event.timeStamp.day == _currentDay.day &&
-          event.timeStamp.month == _currentDay.month &&
-          event.timeStamp.year == _currentDay.year) {
-        // if (event.timeStamp.minute == _currentDay.minute) {
+      if (eventDate == currentDate) {
         // If it's the same day, increment the daily steps
         _dailySteps += (event.steps - previousSteps).toInt();
-        previousSteps = event.steps.toDouble();
+        // previousSteps = event.steps.toDouble();
       } else {
         // If it's a new day, reset the daily steps and update the current day
         _dailySteps = (event.steps - previousSteps).toInt();
         _currentDay = event.timeStamp;
-        previousSteps = event.steps.toDouble();
       }
-
+      previousSteps = event.steps.toDouble();
       // Update the steps display
       _steps = _dailySteps.toString();
 
+      // print("_steps");
+      debugPrint(_steps);
+
       if (allSpots.isNotEmpty &&
-          allSpots.last.x == _currentDay.day.toDouble()) {
+          _dataRepository
+                  .recordSteps[_dataRepository.recordSteps.length - 1]?.date ==
+              eventDate) {
+        // print(eventDate);
+        // print(_dataRepository.recordSteps[allSpots.last.x.toInt()]);
+
         // Update the last entry if it's for the current day
-        allSpots[allSpots.length - 1] =
-            FlSpot(_currentDay.day.toDouble(), _dailySteps.toDouble());
+        allSpots[_dataRepository.recordSteps.length - 1] = FlSpot(
+            _dataRepository.recordSteps.length - 1, _dailySteps.toDouble());
+
+        DailySteps? prevRecord =
+            _dataRepository.recordSteps[_dataRepository.recordSteps.length - 1];
+        if (prevRecord != null) {
+          prevRecord.updateSteps(_dailySteps);
+          // _dataRepository.updateStep(allSpots.last.x.toInt(), prevRecord);
+        } else {
+          _dataRepository.updateStep(_dataRepository.recordSteps.length - 1,
+              DailySteps(eventDate, _dailySteps));
+        }
+        // _dataRepository.updateStep(allSpots.last.x.toInt(), prevRecord);
       } else {
         // Add a new entry for the new day
-        allSpots
-            .add(FlSpot(_currentDay.day.toDouble(), _dailySteps.toDouble()));
-        tools.add(allSpots.length - 1);
+        allSpots.add(FlSpot(_dataRepository.recordSteps.length.toDouble(),
+            _dailySteps.toDouble()));
+        tools.add(_dataRepository.recordSteps.length);
+        _dataRepository.updateStep(_dataRepository.recordSteps.length,
+            DailySteps(eventDate, _dailySteps));
       }
+      // print(_dataRepository);
     });
   }
 
   void onPedestrianStatusChanged(PedestrianStatus event) {
-    print(event);
+    // print(event);
     setState(() {
       _status = event.status;
     });
   }
 
   void onPedestrianStatusError(error) {
-    print('onPedestrianStatusError: $error');
+    // print('onPedestrianStatusError: $error');
     setState(() {
       _status = 'Pedestrian Status not available';
     });
-    print(_status);
+    // print(_status);
   }
 
   void onStepCountError(error) {
-    print('onStepCountError: $error');
+    // print('onStepCountError: $error');
     setState(() {
       _steps = 'Step Count not available';
     });
@@ -146,6 +178,42 @@ class _ActivityViewState extends State<ActivityView> {
     _stepCountStream.listen(onStepCount).onError(onStepCountError);
 
     if (!mounted) return;
+  }
+
+  void updateStepsView() async {
+    await databaseHelper.initializeDatabase();
+    List<DailySteps> recordSteps = await databaseHelper.getStepsList();
+
+    // Create a new list to store the filtered spots
+    List<FlSpot> filteredSpots = [];
+
+    for (int i = 0; i < recordSteps.length; i++) {
+      _dataRepository.updateStep(i, recordSteps[i]);
+    }
+    debugPrint("organized");
+    debugPrint(_dataRepository.toString());
+
+    for (int i = 0; i < _dataRepository.recordSteps.length; i++) {
+      if (_dataRepository.recordSteps.containsKey(i)) {
+        // DailySteps step = _dataRepository.recordSteps[i]!;
+        DailySteps step = _dataRepository.recordSteps[i]!;
+        String currentDate = DateFormat('yyyy-MM-dd').format(_currentDay);
+        debugPrint("dates");
+        debugPrint(step.date);
+        // Check if the current day is the same as the last recorded day
+        if (step.date == currentDate) {
+          _dailySteps += step.steps.toInt();
+        }
+        filteredSpots.add(FlSpot(i.toDouble(), step.steps.toDouble()));
+      }
+    }
+    filteredSpots.sort((a, b) => a.x.compareTo(b.x));
+
+    debugPrint(filteredSpots.toString());
+    setState(() {
+      this.allSpots = filteredSpots;
+      this.tools = List<int>.generate(filteredSpots.length, (i) => i);
+    });
   }
 
   @override
@@ -387,7 +455,7 @@ class _ActivityViewState extends State<ActivityView> {
                                             0, 0, bounds.width, bounds.height));
                                   },
                                   child: Text(
-                                    "1520/4000",
+                                    "${allSpots.isEmpty ? 0 : allSpots.last.y.toInt()}/4000",
                                     style: TextStyle(
                                         color: TColour.white.withOpacity(.7),
                                         fontSize: 16,

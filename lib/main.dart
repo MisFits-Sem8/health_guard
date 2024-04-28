@@ -1,12 +1,32 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/view/on_boarding/getting_started_view.dart';
 import 'firebase_options.dart';
+import 'package:cron/cron.dart';
+import 'package:health_app/db_helper/db_helper.dart';
+import 'package:health_app/db_helper/steps_update_job.dart';
 
-void main() async{
+void main() async {
+  final cron = Cron();
+
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  sqfliteFfiInit();
+  var databaseFactory = databaseFactoryFfi;
+  final FitnessDatabaseHelper dbh = FitnessDatabaseHelper();
+  final Future<Database> db = dbh.fitnessDatabase;
+  // await dbh.initializeDatabase();
+  // dbh.truncateStepsTable();
+
+  cron.schedule(Schedule.parse('*/30 * * * *'), () async {
+    executeCronJob();
+    debugPrint("steps count updated to local database");
+  });
   runApp(const MyApp());
 }
 
