@@ -53,20 +53,20 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: TColour.white,
-          centerTitle: true,
-          elevation: 0,
-          title: Text(
-            "Profile",
-            style: TextStyle(
-                color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
-          ),
-        ),
+    return Scaffold(
+      appBar: AppBar(
         backgroundColor: TColour.white,
-        body: SingleChildScrollView(
+        centerTitle: true,
+        elevation: 0,
+        title: Text(
+          "Profile",
+          style: TextStyle(
+              color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
+        ),
+      ),
+      backgroundColor: TColour.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
             child: Column(
