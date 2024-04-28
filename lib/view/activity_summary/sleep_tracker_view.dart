@@ -76,7 +76,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
           ),
         ),
         title: Text(
-          "Sleep Tracker",
+          "Sleep | Sleep Tracker",
           style: TextStyle(
               color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
         ),
@@ -111,6 +111,11 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    "Sleep Summary",
+                    style: TextStyle(
+                        color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
                   Container(
                       padding: const EdgeInsets.only(left: 15),
                       height: media.width * 0.5,
@@ -271,6 +276,11 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                     height: media.width * 0.05,
 
                   ),
+                  Text(
+                    "Calory Summary",
+                    style: TextStyle(
+                        color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
                   Container(
                       padding: const EdgeInsets.only(left: 15),
                       height: media.width * 0.5,
@@ -282,7 +292,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                             return ShowingTooltipIndicators([
                               LineBarSpot(
                                 tooltipsOnBar,
-                                lineBarsData1.indexOf(tooltipsOnBar),
+                                lineBarsData2.indexOf(tooltipsOnBar),
                                 tooltipsOnBar.spots[index],
                               ),
                             ]);
@@ -341,7 +351,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                                   (List<LineBarSpot> lineBarsSpot) {
                                 return lineBarsSpot.map((lineBarSpot) {
                                   return LineTooltipItem(
-                                    "${lineBarSpot.y.toInt()} hours",
+                                    "${lineBarSpot.y.toInt()} Calories",
                                     const TextStyle(
                                       color: Colors.white,
                                       fontSize: 10,
@@ -352,7 +362,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                               },
                             ),
                           ),
-                          lineBarsData: lineBarsData1,
+                          lineBarsData: lineBarsData2,
                           minY: -0.01,
                           maxY: 10.01,
                           titlesData: FlTitlesData(
@@ -403,7 +413,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Text(
-                              "Last Night Sleep",
+                              "Today Calorie Count",
                               style: TextStyle(
                                 color: TColour.white,
                                 fontSize: 14,
@@ -413,7 +423,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Text(
-                              "8h 20m",
+                              "1200/4000",
                               style: TextStyle(
                                   color: TColour.white,
                                   fontSize: 16,
@@ -482,7 +492,36 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
         interval: 2,
         reservedSize: 40,
       );
+  List<LineChartBarData> get lineBarsData2 => [
+    lineChartBarData2_2,
+  ];
 
+  LineChartBarData get lineChartBarData2_2 => LineChartBarData(
+    isCurved: true,
+    gradient: LinearGradient(colors: [
+      TColour.primaryColor2,
+      TColour.primaryColor1,
+    ]),
+    barWidth: 2,
+    isStrokeCapRound: true,
+    dotData: FlDotData(show: false),
+    belowBarData: BarAreaData(
+      show: true,
+      gradient: LinearGradient(colors: [
+        TColour.primaryColor2,
+        TColour.white,
+      ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+    ),
+    spots: const [
+      FlSpot(1, 8),
+      FlSpot(2, 3),
+      FlSpot(3, 4),
+      FlSpot(4, 7),
+      FlSpot(5, 6),
+      FlSpot(6, 8),
+      FlSpot(7, 2),
+    ],
+  );
   Widget rightTitleWidgets(double value, TitleMeta meta) {
     String text;
     switch (value.toInt()) {
