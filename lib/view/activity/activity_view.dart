@@ -4,7 +4,6 @@ import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
 import 'package:health_app/view/activity/add_activity.dart';
 import 'package:health_app/view/activity_summary/sleep_tracker_view.dart';
-import 'package:health_app/view/create_schdeuls/create_schedule_view.dart';
 import 'package:health_app/view/profile/edit_profile_view.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -347,64 +346,8 @@ class _ActivityViewState extends State<ActivityView> {
                         )),
                   ],
                 ),
-                Container(
-                    height: media.width * .15,
-                    decoration: BoxDecoration(
-                        color: TColour.primaryColor1.withOpacity(.3),
-                        borderRadius:
-                            BorderRadius.circular(media.width * .075)),
-                    child: Stack(alignment: Alignment.center, children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(children: [
-                                SizedBox(
-                                    height: 40,
-                                    width: 150,
-                                    child: RoundedButton(
-                                      title: "Sleeping | Calories",
-                                      type: RoundButtonType.bgGradient,
-                                      fontSize: 12,
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const SleepTrackerView(),
-                                          ),
-                                        );
-                                      },
-                                    ))
-                              ]),
-                              SizedBox(
-                                width: media.height * .03,
-                              ),
-                              Column(children: [
-                                SizedBox(
-                                    height: 40,
-                                    width: 150,
-                                    child: RoundedButton(
-                                        title: "Add Compledted Workout",
-                                        type: RoundButtonType.bgGradient,
-                                        fontSize: 12,
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                            const AddActivity(),
-                                          ),
-                                        );
-                                      },))
-                              ])
-                            ]),
-                      ),
-                    ])),
-
                 SizedBox(
-                  height: media.width * .05,
+                  height: media.width * .03,
                 ),
                 Container(
                   height: media.width * .5,
@@ -464,7 +407,10 @@ class _ActivityViewState extends State<ActivityView> {
                                                       height: height,
                                                       weight: weight,
                                                       sleep: sleep,
-                                                      water: (targetWaterIntake/1000).toDouble(),
+                                                      water:
+                                                          (targetWaterIntake /
+                                                                  1000)
+                                                              .toDouble(),
                                                       workout: workout,
                                                       age: age,
                                                       gender: gender),
@@ -511,8 +457,11 @@ class _ActivityViewState extends State<ActivityView> {
                                 ),
                                 Text(
                                   bmiInterpretation!,
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: 11, color: Colors.blueGrey.shade700),
+                                    fontSize: 11,
+                                    color: Colors.blueGrey.shade700,
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 5,
@@ -706,7 +655,7 @@ class _ActivityViewState extends State<ActivityView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Today Target",
+                          "Today Achieved",
                           style: TextStyle(
                               color: TColour.black1,
                               fontSize: 14,
@@ -716,10 +665,17 @@ class _ActivityViewState extends State<ActivityView> {
                             height: 35,
                             width: media.width * 0.25,
                             child: RoundedButton(
-                                title: "check",
+                                title: "workout",
                                 type: RoundButtonType.bgGradient,
                                 fontSize: 14,
-                                onPressed: () {}))
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const AddActivity(),
+                                    ),
+                                  );
+                                }))
                       ]),
                 ),
                 SizedBox(
@@ -737,9 +693,40 @@ class _ActivityViewState extends State<ActivityView> {
                             boxShadow: const [
                               BoxShadow(color: Colors.black12, blurRadius: 3)
                             ]),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                        child: Column(
                           children: [
+                            Text(
+                              "Water Intake",
+                              style: TextStyle(
+                                  color: TColour.black1,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700),
+                            ),
+                            SizedBox(
+                              height: media.width * 0.02,
+                            ),
+                            ShaderMask(
+                              blendMode: BlendMode.srcIn,
+                              shaderCallback: (bounds) {
+                                return LinearGradient(
+                                        colors: TColour.primary,
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight)
+                                    .createShader(Rect.fromLTRB(
+                                        0, 0, bounds.width, bounds.height));
+                              },
+                              child: Text(
+                                "${waterIntake}/${targetWaterIntake}",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: TColour.white.withOpacity(.7),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                            ),
+                            SizedBox(
+                              height: media.width * 0.02,
+                            ),
                             SimpleAnimationProgressBar(
                               height: media.width * .8,
                               width: 30,
@@ -757,149 +744,16 @@ class _ActivityViewState extends State<ActivityView> {
                               ]),
                             ),
                             SizedBox(
-                              width: media.width * 0.04,
+                              height: media.width * 0.02,
                             ),
-                            Expanded(
-                                child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Water Intake",
-                                  style: TextStyle(
-                                      color: TColour.black1,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                SizedBox(
-                                  height: media.width * 0.15,
-                                ),
-                                ShaderMask(
-                                  blendMode: BlendMode.srcIn,
-                                  shaderCallback: (bounds) {
-                                    return LinearGradient(
-                                            colors: TColour.primary,
-                                            begin: Alignment.centerLeft,
-                                            end: Alignment.centerRight)
-                                        .createShader(Rect.fromLTRB(
-                                            0, 0, bounds.width, bounds.height));
-                                  },
-                                  child: Text(
-                                    "${waterIntake}/${targetWaterIntake}",
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                        shadows: [
-                                          // List of Shadow objects for adding shadows
-                                          Shadow(
-                                            offset: Offset(2.0,
-                                                2.0), // Offset the shadow slightly
-                                            blurRadius:
-                                                3.0, // Blur the shadow for a softer look
-                                            color: Colors.grey.withOpacity(
-                                                0.5), // Set the shadow color and opacity
-                                          ),
-                                        ],
-                                        color: TColour.white.withOpacity(.7),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: media.width * 0.04,
-                                ),
-                                Text(
-                                  "Real time updates",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      color: TColour.black1.withOpacity(.7),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                SizedBox(
-                                  height: media.width * 0.04,
-                                ),
-                                ElevatedButton(
-                                  onPressed: incrementWaterIntake,
-                                  child: Text(
-                                    'Add🥤',
-                                    style: TextStyle(
-                                        color: TColour.black1.withOpacity(.7),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                                // Column(
-                                //   crossAxisAlignment: CrossAxisAlignment.start,
-                                //   children: waterArray.map((item) {
-                                //     var isLast = item == waterArray.last;
-                                //     return Row(children: [
-                                //       Column(
-                                //         mainAxisAlignment:
-                                //             MainAxisAlignment.start,
-                                //         crossAxisAlignment:
-                                //             CrossAxisAlignment.center,
-                                //         children: [
-                                //           Container(
-                                //               margin:
-                                //                   const EdgeInsets.symmetric(
-                                //                       vertical: 4),
-                                //               width: 10,
-                                //               height: 10,
-                                //               decoration: BoxDecoration(
-                                //                   color:
-                                //                       TColour.secondaryColor2,
-                                //                   borderRadius:
-                                //                       BorderRadius.circular(
-                                //                           15))),
-                                //           if (!isLast)
-                                //             DottedDashedLine(
-                                //                 height: media.width * .095,
-                                //                 width: 0,
-                                //                 axis: Axis.vertical)
-                                //         ],
-                                //       ),
-                                //       SizedBox(
-                                //         width: media.width * .04,
-                                //       ),
-                                //       // Column(
-                                //       //   mainAxisAlignment:
-                                //       //       MainAxisAlignment.start,
-                                //       //   crossAxisAlignment:
-                                //       //       CrossAxisAlignment.start,
-                                //       //   children: [
-                                //       //     Text(item['subtitle']),
-                                //       //     ShaderMask(
-                                //       //       blendMode: BlendMode.srcIn,
-                                //       //       shaderCallback: (bounds) {
-                                //       //         return LinearGradient(
-                                //       //                 colors: TColour.primary,
-                                //       //                 begin:
-                                //       //                     Alignment.centerLeft,
-                                //       //                 end:
-                                //       //                     Alignment.centerRight)
-                                //       //             .createShader(Rect.fromLTRB(
-                                //       //                 0,
-                                //       //                 0,
-                                //       //                 bounds.width,
-                                //       //                 bounds.height));
-                                //       //       },
-                                //       //       child: Text(
-                                //       //         item['title'],
-                                //       //         textAlign: TextAlign.left,
-                                //       //         style: TextStyle(
-                                //       //             color: TColour.white
-                                //       //                 .withOpacity(.7),
-                                //       //             fontSize: 14,
-                                //       //             fontWeight: FontWeight.w700),
-                                //       //       ),
-                                //       //     ),
-                                //       //   ],
-                                //       // ),
-                                //     ]);
-                                //   }).toList(),
-                                // )
-                              ],
-                            ))
+                            SizedBox(
+                                height: 35,
+                                width: double.maxFinite,
+                                child: RoundedButton(
+                                    title: 'Add🥤',
+                                    type: RoundButtonType.bgGradient,
+                                    fontSize: 13,
+                                    onPressed: incrementWaterIntake))
                           ],
                         ),
                       ),
@@ -909,14 +763,97 @@ class _ActivityViewState extends State<ActivityView> {
                     ),
                     Expanded(
                         child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
                           width: double.maxFinite,
-                          // height: media.width * .48,
                           padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
+                              vertical: 20, horizontal: 20),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25),
+                              boxShadow: const [
+                                BoxShadow(color: Colors.black12, blurRadius: 2)
+                              ]),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Calories",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: TColour.black1,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              ShaderMask(
+                                blendMode: BlendMode.srcIn,
+                                shaderCallback: (bounds) {
+                                  return LinearGradient(
+                                          colors: TColour.primary,
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight)
+                                      .createShader(Rect.fromLTRB(
+                                          0, 0, bounds.width, bounds.height));
+                                },
+                                child: Text(
+                                  "234 kCal",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      color: TColour.white.withOpacity(.7),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                              SizedBox(
+                                height: media.width * 0.02,
+                              ),
+                              CircularPercentIndicator(
+                                radius: 40.0,
+                                lineWidth: 7.0,
+                                percent: 234 / 500,
+                                animation: true,
+                                animationDuration: 1200,
+                                center: new Text(
+                                  "46.8%",
+                                  style: new TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10.0),
+                                ),
+                                circularStrokeCap: CircularStrokeCap.butt,
+                                backgroundColor: TColour.secondaryColor2,
+                                progressColor: TColour.primaryColor1,
+                              ),
+                              SizedBox(
+                                height: media.height * 0.02,
+                              ),
+                              SizedBox(
+                                  height: 35,
+                                  width: double.maxFinite,
+                                  child: RoundedButton(
+                                    title: 'Calories Tracker',
+                                    type: RoundButtonType.bgGradient,
+                                    fontSize: 12,
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                          const SleepTrackerView(),
+                                        ),
+                                      );
+                                    },
+                                  ))
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: media.height * 0.01,
+                        ),
+                        Container(
+                          width: double.maxFinite,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 20),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(25),
@@ -927,11 +864,15 @@ class _ActivityViewState extends State<ActivityView> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Sleep",
+                                  "Track your Sleep",
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: TColour.black1,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700),
+                                ),
+                                SizedBox(
+                                  height: media.height * 0.01,
                                 ),
                                 ShaderMask(
                                   blendMode: BlendMode.srcIn,
@@ -971,70 +912,26 @@ class _ActivityViewState extends State<ActivityView> {
                                   backgroundColor: TColour.secondaryColor2,
                                   progressColor: TColour.primaryColor1,
                                 ),
-                              ]),
-                        ),
-                        SizedBox(
-                          height: media.width * .04,
-                        ),
-                        Container(
-                          width: double.maxFinite,
-                          // height: media.width * .48,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 20),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(25),
-                              boxShadow: const [
-                                BoxShadow(color: Colors.black12, blurRadius: 2)
-                              ]),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Calories",
-                                  style: TextStyle(
-                                      color: TColour.black1,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                ShaderMask(
-                                  blendMode: BlendMode.srcIn,
-                                  shaderCallback: (bounds) {
-                                    return LinearGradient(
-                                            colors: TColour.primary,
-                                            begin: Alignment.centerLeft,
-                                            end: Alignment.centerRight)
-                                        .createShader(Rect.fromLTRB(
-                                            0, 0, bounds.width, bounds.height));
-                                  },
-                                  child: Text(
-                                    "40%",
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                        color: TColour.white.withOpacity(.7),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700),
-                                  ),
+                                SizedBox(
+                                  height: media.height * 0.02,
                                 ),
                                 SizedBox(
-                                  height: media.width * 0.02,
-                                ),
-                                CircularPercentIndicator(
-                                  radius: 40.0,
-                                  lineWidth: 7.0,
-                                  percent: 430 / 1200,
-                                  animation: true,
-                                  animationDuration: 1200,
-                                  center: new Text(
-                                    "40%",
-                                    style: new TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 10.0),
-                                  ),
-                                  circularStrokeCap: CircularStrokeCap.butt,
-                                  backgroundColor: TColour.secondaryColor2,
-                                  progressColor: TColour.primaryColor1,
-                                ),
+                                    height: 35,
+                                    width: double.maxFinite,
+                                    child: RoundedButton(
+                                      title: 'Sleep Tracker',
+                                      type: RoundButtonType.bgGradient,
+                                      fontSize: 13,
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SleepTrackerView(),
+                                          ),
+                                        );
+                                      },
+                                    ))
                               ]),
                         ),
                       ],

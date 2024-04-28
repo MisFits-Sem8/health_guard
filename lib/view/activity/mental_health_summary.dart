@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:health_app/common_widgets/rounded_btn.dart';
 import 'package:http/http.dart' as http;
 import '../../common/color_extension.dart';
+import '../profile/profile_view.dart';
 
 class MentalHealthSummary extends StatefulWidget {
   const MentalHealthSummary({super.key});
@@ -103,7 +105,29 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
     String output = 'Initial Output';
     return Scaffold(
       appBar: AppBar(
-        title: Text('Check Your Mental Health'),
+        backgroundColor: TColour.white,
+        centerTitle: true,
+        elevation: 0,
+        title: Text(
+          "Mental Health Assessment",
+          style: TextStyle(
+              color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProfileView()));
+              },
+              icon: Image.asset(
+                "assets/images/profile-female.jpg",
+                width: 50,
+                height: 50,
+                fit: BoxFit.fitHeight,
+              )),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10.0),
@@ -115,7 +139,6 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                 'How do you feel today?',
                 style: TextStyle(
                   fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -187,17 +210,20 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                     ),
                     SizedBox(height: 20),
                     Text(
-                      'Selected Feeling: ${selectedFeeling.isNotEmpty ? selectedFeeling : "None"} ${selectedEmoji.isNotEmpty ? selectedEmoji : "None"}',
-                      style: TextStyle(fontSize: 20),
+                      'You are feeling ${selectedFeeling.isNotEmpty ? selectedFeeling : "None"} ${selectedEmoji.isNotEmpty ? selectedEmoji : "None"}',
+                      style:
+                          TextStyle(fontSize: 15, color: TColour.lightTextGray),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 20.0),
-            Text(
-              'Tell something about your feelings..',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            SizedBox(height: 30.0),
+            const Center(
+              child: Text(
+                'Tell something about your feelings...',
+                style: TextStyle(fontSize: 18.0),
+              ),
             ),
             SizedBox(height: 10.0),
             Container(
@@ -209,9 +235,9 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
               ),
               child: TextField(
                   controller: feelingController,
-                  decoration: InputDecoration(
-                      hintText: 'How do you feel?',
-                      border: OutlineInputBorder(),
+                  decoration: const InputDecoration(
+                      hintText: 'Say something...',
+                      border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 12.0)),
                   style: TextStyle(color: Colors.white),
@@ -222,16 +248,16 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                     });
                   }),
             ),
-            SizedBox(height: 10.0),
+            SizedBox(height: 20.0),
             Row(
               children: [
                 Expanded(
                   child: Column(
                     children: [
                       Text(
-                        'Stress level',
+                        'Sleep level',
                         style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.bold),
+                            fontSize: 16.0),
                       ),
                       SizedBox(height: 10.0),
                       Container(
@@ -302,7 +328,7 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                       Text(
                         'Stress level',
                         style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.bold),
+                            fontSize: 16.0),
                       ),
                       SizedBox(height: 10.0),
                       Container(
@@ -366,17 +392,10 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                 ),
               ],
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 30.0),
             Container(
               alignment: Alignment.center,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: TColour.secondaryColor2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 4,
-                ),
+              child: RoundedButton(
                 onPressed: () async {
                   data = await sendPostRequest();
                   setState(() {
@@ -385,14 +404,8 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                     depressionStatus = data;
                   });
                 },
-                child: Column(
-                  children: [
-                    Text(
-                      'Submit',
-                      style: TextStyle(color: Colors.white, fontSize: 15),
-                    ),
-                  ],
-                ),
+                title: "Submit",
+                type: RoundButtonType.bgSGradient,
               ),
             ),
             Visibility(
@@ -427,7 +440,8 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
       PieChartSectionData(
         color: _getColorForStatus(label1),
         value: score1 * 10000, // Convert score to percentage
-        title: '${(score1 * 100).toStringAsFixed(1)}\n${label1}%', // Display percentage
+        title:
+            '${(score1 * 100).toStringAsFixed(1)}\n${label1}%', // Display percentage
         radius: 30,
         titleStyle: TextStyle(
           fontSize: 16,
@@ -440,7 +454,8 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
       PieChartSectionData(
         color: _getColorForStatus(label2),
         value: score2 * 10000, // Convert score to percentage
-        title: '${(score2 * 100).toStringAsFixed(1)}%\n${label2}', // Display percentage
+        title:
+            '${(score2 * 100).toStringAsFixed(1)}%\n${label2}', // Display percentage
         radius: 50,
         titleStyle: TextStyle(
           fontSize: 16,
@@ -453,7 +468,8 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
       PieChartSectionData(
         color: _getColorForStatus(label3),
         value: score3 * 10000, // Convert score to percentage
-        title: '${(score3 * 100).toStringAsFixed(1)}%\n${label3}', // Display percentage
+        title:
+            '${(score3 * 100).toStringAsFixed(1)}%\n${label3}', // Display percentage
         radius: 40,
         titleStyle: TextStyle(
           fontSize: 16,

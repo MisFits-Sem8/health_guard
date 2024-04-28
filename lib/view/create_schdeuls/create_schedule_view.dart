@@ -150,57 +150,25 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
         backgroundColor: TColour.white,
         centerTitle: true,
         elevation: 0,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Container(
-            margin: const EdgeInsets.all(8),
-            height: 40,
-            width: 40,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                color: TColour.lightGray,
-                borderRadius: BorderRadius.circular(10)),
-            child: Image.asset(
-              "assets/images/icons/back-button.png",
-              width: 15,
-              height: 15,
-              fit: BoxFit.contain,
-            ),
-          ),
-        ),
         title: Text(
           "Create your own schedules",
           style: TextStyle(
               color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
         ),
         actions: [
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ProfileView(),
-                ),
-              );
-            },
-            child: Container(
-              margin: const EdgeInsets.all(8),
-              height: 40,
-              width: 40,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: TColour.lightGray,
-                  borderRadius: BorderRadius.circular(10)),
-              child: Image.asset(
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProfileView()));
+              },
+              icon: Image.asset(
                 "assets/images/profile-female.jpg",
-                width: 40,
-                height: 40,
-                fit: BoxFit.contain,
-              ),
-            ),
-          )
+                width: 50,
+                height: 50,
+                fit: BoxFit.fitHeight,
+              )),
         ],
       ),
       backgroundColor: TColour.white,
@@ -209,13 +177,11 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: media.width * 0.05,
-                  ),
                   Container(
                     padding: const EdgeInsets.symmetric(
                         vertical: 15, horizontal: 15),
@@ -235,25 +201,6 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700),
                             ),
-                            // SizedBox(
-                            //   width: 80,
-                            //   height: 25,
-                            //   child: RoundedButton(
-                            //     title: "Check",
-                            //     type: RoundButtonType.bgGradient,
-                            //     fontSize: 12,
-                            //     fontWeight: FontWeight.w400,
-                            //     onPressed: () {
-                            //       Navigator.push(
-                            //         context,
-                            //         MaterialPageRoute(
-                            //           builder: (context) =>
-                            //               const NotificationView(),
-                            //         ),
-                            //       );
-                            //     },
-                            //   ),
-                            // )
                           ],
                         ),
                         SizedBox(
