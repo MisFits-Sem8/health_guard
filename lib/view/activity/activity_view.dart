@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
+import 'package:health_app/view/profile/edit_profile_view.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pretty_gauge/pretty_gauge.dart';
@@ -12,6 +13,8 @@ import 'package:health_app/model/daily_steps.dart';
 import 'package:health_app/db_helper/db_helper.dart';
 import 'package:health_app/repositories/data_repository.dart';
 
+import '../../models/user.dart';
+import '../../services/auth_service.dart';
 import '../profile/profile_view.dart';
 
 class ActivityView extends StatefulWidget {
@@ -22,9 +25,17 @@ class ActivityView extends StatefulWidget {
 }
 
 class _ActivityViewState extends State<ActivityView> {
-  final double bmiScore = 10;
+  late String gender = "";
+  late String name = "";
+  late int height = 0;
+  late int weight = 0;
+  late int age = 0;
+  late double sleep = 0;
+  late double workout = 0;
+  late int targetWaterIntake = 0;
+  final AuthService _auth = AuthService();
 
-  final int age = 24;
+  late final double bmiScore;
 
   String? bmiStatus;
 
@@ -56,21 +67,21 @@ class _ActivityViewState extends State<ActivityView> {
 
   void setBmiInterpretation() {
     if (bmiScore > 30) {
-      bmiStatus = "Obese";
+      bmiStatus = "OBESITY";
       bmiInterpretation = "Please work to reduce obesity";
-      bmiStatusColor = const Color.fromARGB(255, 30, 233, 233);
+      bmiStatusColor = Colors.orange.shade900;
     } else if (bmiScore >= 25) {
       bmiStatus = "Overweight";
       bmiInterpretation = "Do regular exercise & reduce the weight";
-      bmiStatusColor = Color.fromARGB(255, 53, 21, 235);
+      bmiStatusColor = Colors.orange.shade500;
     } else if (bmiScore >= 18.5) {
-      bmiStatus = "Normal";
+      bmiStatus = "NORMAL";
       bmiInterpretation = "Enjoy, You are fit";
-      bmiStatusColor = Colors.green;
+      bmiStatusColor = Colors.lightGreen.shade800;
     } else if (bmiScore < 18.5) {
-      bmiStatus = "Underweight";
+      bmiStatus = "UNDERWEIGHT";
       bmiInterpretation = "Try to increase the weight";
-      bmiStatusColor = const Color.fromARGB(255, 244, 54, 216);
+      bmiStatusColor = Colors.blueAccent.shade400;
     }
   }
 
@@ -81,8 +92,30 @@ class _ActivityViewState extends State<ActivityView> {
     {"title": "12-14", "subtitle": "1 cup"}
   ];
 
+  Future<void> _initializeUserData() async {
+    UserDataModel? userData = await _auth.getUserData();
+    if (userData != null) {
+      setState(() {
+        name = userData.name;
+        height = userData.height;
+        weight = userData.weight;
+        age = userData.age;
+        gender = userData.gender;
+        sleep = userData.sleep;
+        workout = userData.workout;
+        targetWaterIntake = (userData.water * 1000).toInt();
+        double heightInMeters = height / 100.0;
+        bmiScore = double.parse(
+            (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
+      });
+    } else {
+      print("User data is not available.");
+    }
+  }
+
   @override
   void initState() {
+    _initializeUserData();
     super.initState();
     initPlatformState();
     updateStepsView();
@@ -216,14 +249,16 @@ class _ActivityViewState extends State<ActivityView> {
       this.tools = List<int>.generate(filteredSpots.length, (i) => i);
     });
   }
+
   int waterIntake = 0;
-  int targetWaterIntake = 2000; // Customize this value as needed
+  // int targetWaterIntake = 2000; // Customize this value as needed
 
   void incrementWaterIntake() {
     setState(() {
-      waterIntake+=100;
+      waterIntake += 200;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     setBmiInterpretation();
@@ -284,7 +319,7 @@ class _ActivityViewState extends State<ActivityView> {
                           style: TextStyle(color: TColour.black1, fontSize: 16),
                         ),
                         Text(
-                          "Harshani Bandara",
+                          name,
                           style: TextStyle(
                               color: TColour.black1,
                               fontSize: 14,
@@ -300,9 +335,11 @@ class _ActivityViewState extends State<ActivityView> {
                                   builder: (context) => const ProfileView()));
                         },
                         icon: Image.asset(
-                          "assets/images/user.jpeg",
-                          width: 25,
-                          height: 25,
+                          gender == "male"
+                              ? "assets/images/profile-male.png"
+                              : "assets/images/profile-female.jpg",
+                          width: 50,
+                          height: 50,
                           fit: BoxFit.fitHeight,
                         )),
                   ],
@@ -327,23 +364,26 @@ class _ActivityViewState extends State<ActivityView> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
+                          vertical: 15, horizontal: 20),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Your BMI",
+                                "Your BMI Value",
                                 style: TextStyle(
-                                    color: TColour.white, fontSize: 16),
+                                    color: TColour.black1,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700),
                               ),
                               Text(
-                                "Value: ${bmiScore}",
+                                "${bmiScore}",
                                 style: TextStyle(
                                     color: TColour.white,
-                                    fontSize: 14,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w700),
                               ),
                               SizedBox(
@@ -353,74 +393,72 @@ class _ActivityViewState extends State<ActivityView> {
                                   height: 30,
                                   width: 120,
                                   child: RoundedButton(
-                                      title: "Update",
+                                      title: "update",
                                       type: RoundButtonType.bgGradient,
-                                      fontSize: 12,
-                                      onPressed: () {}))
+                                      fontSize: 13,
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditProfileView(
+                                                      height: height,
+                                                      weight: weight,
+                                                      sleep: sleep,
+                                                      water: (targetWaterIntake/1000).toDouble(),
+                                                      workout: workout,
+                                                      age: age,
+                                                      gender: gender),
+                                            ));
+                                      }))
                             ],
                           ),
-                          SizedBox(
-                            width: 30,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(4),
-                            child: Card(
-                              color: Colors.white,
-                              elevation: 12,
-                              // shape: const RoundedRectangleBorder(),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    "Your Score",
-                                    style: TextStyle(
-                                        fontSize: 10, color: Colors.black),
+                          Container(
+                            width: media.width * 0.35,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: TColour.white.withOpacity(0.6),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                PrettyGauge(
+                                  gaugeSize: 100,
+                                  minValue: 0,
+                                  maxValue: 40,
+                                  segments: [
+                                    GaugeSegment(
+                                        'UnderWeight', 18.5, Colors.blueAccent),
+                                    GaugeSegment(
+                                        'Normal', 6.4, Colors.lightGreen),
+                                    GaugeSegment(
+                                        'OverWeight', 5, Colors.orange),
+                                    GaugeSegment('Obesity', 10.1, Colors.red),
+                                  ],
+                                  valueWidget: Text(
+                                    bmiScore.toStringAsFixed(1),
+                                    style: const TextStyle(fontSize: 20),
                                   ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  PrettyGauge(
-                                    gaugeSize: 100,
-                                    minValue: 0,
-                                    maxValue: 40,
-                                    segments: [
-                                      GaugeSegment('UnderWeight', 18.5,
-                                          Color.fromARGB(255, 30, 233, 233)),
-                                      GaugeSegment('Normal', 6.4, Colors.green),
-                                      GaugeSegment('OverWeight', 5,
-                                          Color.fromARGB(255, 53, 21, 235)),
-                                      GaugeSegment('Obese', 10.1,
-                                          Color.fromARGB(255, 244, 54, 216)),
-                                    ],
-                                    valueWidget: Text(
-                                      bmiScore.toStringAsFixed(1),
-                                      style: const TextStyle(fontSize: 20),
-                                    ),
-                                    currentValue: bmiScore.toDouble(),
-                                    needleColor: Color.fromARGB(255, 0, 0, 0),
-                                  ),
-                                  // const SizedBox(
-                                  //   height: 5,
-                                  // ),
-                                  Text(
-                                    bmiStatus!,
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: bmiStatusColor!,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                  // const SizedBox(
-                                  //   height: 5,
-                                  // ),
-                                  Text(
-                                    bmiInterpretation!,
-                                    style: const TextStyle(fontSize: 10),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                ],
-                              ),
+                                  currentValue: bmiScore.toDouble(),
+                                  needleColor: Color.fromARGB(255, 0, 0, 0),
+                                ),
+                                Text(
+                                  bmiStatus!,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: bmiStatusColor!,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                Text(
+                                  bmiInterpretation!,
+                                  style: TextStyle(
+                                      fontSize: 11, color: Colors.blueGrey.shade700),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -617,11 +655,11 @@ class _ActivityViewState extends State<ActivityView> {
                         ),
                         SizedBox(
                             height: 35,
-                            width: 70,
+                            width: media.width * 0.25,
                             child: RoundedButton(
                                 title: "check",
                                 type: RoundButtonType.bgGradient,
-                                fontSize: 12,
+                                fontSize: 14,
                                 onPressed: () {}))
                       ]),
                 ),
@@ -648,8 +686,8 @@ class _ActivityViewState extends State<ActivityView> {
                               width: 30,
                               backgroundColor: TColour.secondaryColor2,
                               foregrondColor: Colors.purple,
-                              ratio:
-                                  waterIntake/targetWaterIntake, // to be chage with the consumed water amount
+                              ratio: waterIntake /
+                                  targetWaterIntake, // to be chage with the consumed water amount
                               direction: Axis.vertical,
                               curve: Curves.fastLinearToSlowEaseIn,
                               duration: const Duration(seconds: 4),
@@ -664,8 +702,8 @@ class _ActivityViewState extends State<ActivityView> {
                             ),
                             Expanded(
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   "Water Intake",
@@ -679,7 +717,6 @@ class _ActivityViewState extends State<ActivityView> {
                                 ),
                                 ShaderMask(
                                   blendMode: BlendMode.srcIn,
-
                                   shaderCallback: (bounds) {
                                     return LinearGradient(
                                             colors: TColour.primary,
@@ -692,11 +729,15 @@ class _ActivityViewState extends State<ActivityView> {
                                     "${waterIntake}/${targetWaterIntake}",
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
-                                        shadows: [ // List of Shadow objects for adding shadows
+                                        shadows: [
+                                          // List of Shadow objects for adding shadows
                                           Shadow(
-                                            offset: Offset(2.0, 2.0), // Offset the shadow slightly
-                                            blurRadius: 3.0, // Blur the shadow for a softer look
-                                            color: Colors.grey.withOpacity(0.5), // Set the shadow color and opacity
+                                            offset: Offset(2.0,
+                                                2.0), // Offset the shadow slightly
+                                            blurRadius:
+                                                3.0, // Blur the shadow for a softer look
+                                            color: Colors.grey.withOpacity(
+                                                0.5), // Set the shadow color and opacity
                                           ),
                                         ],
                                         color: TColour.white.withOpacity(.7),
@@ -719,13 +760,14 @@ class _ActivityViewState extends State<ActivityView> {
                                   height: media.width * 0.04,
                                 ),
                                 ElevatedButton(
-
                                   onPressed: incrementWaterIntake,
-                                  child: Text('Add🥤' ,style: TextStyle(
-                                  color: TColour.black1.withOpacity(.7),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700),),
-
+                                  child: Text(
+                                    'Add🥤',
+                                    style: TextStyle(
+                                        color: TColour.black1.withOpacity(.7),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700),
+                                  ),
                                 ),
                                 // Column(
                                 //   crossAxisAlignment: CrossAxisAlignment.start,
