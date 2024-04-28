@@ -3,6 +3,7 @@ import 'package:health_app/view/activity/activity_view.dart';
 import 'package:health_app/view/home/home.dart';
 import 'package:health_app/view/message/message_view.dart';
 import 'package:health_app/view/notifications/notifications_view.dart';
+import 'package:health_app/view/profile/complete_profile.dart';
 import 'package:health_app/view/profile/profile_view.dart';
 
 import '../../common/color_extension.dart';
@@ -60,7 +61,7 @@ class _BottomTabState extends State<BottomTab> {
               isActive: selectedTab == 2,
               onTap: () {
                 selectedTab = 2;
-                currentTab = const NotificationView();
+                currentTab = const CompleteProfileView();
                 if (mounted) {
                   setState(() {});
                 }
