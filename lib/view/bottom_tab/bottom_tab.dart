@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:health_app/view/activity/activity_view.dart';
 import 'package:health_app/view/activity/mental_health_summary.dart';
 import 'package:health_app/view/create_schdeuls/create_schedule_view.dart';
-import 'package:health_app/view/home/home.dart';
 import 'package:health_app/view/message/message_view.dart';
 import 'package:health_app/view/notifications/notifications_view.dart';
-import 'package:health_app/view/profile/profile_view.dart';
 import '../../common/color_extension.dart';
 import '../../common_widgets/tab_button.dart';
 
@@ -19,7 +17,7 @@ class BottomTab extends StatefulWidget {
 class _BottomTabState extends State<BottomTab> {
   int selectedTab = 0;
   final PageStorageBucket pageStorageBucket = PageStorageBucket();
-  Widget currentTab = const HomeView();
+  Widget currentTab = const ActivityView();
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +43,10 @@ class _BottomTabState extends State<BottomTab> {
               size: media.height * 0.04,
             ),
             TabButton(
-              iconData: Icons.emoji_emotions_rounded,
+              iconData: Icons.calendar_month_rounded,
               isActive: selectedTab == 1,
               onTap: () {
                 selectedTab = 1;
-                // currentTab = const MentalHealthSummary();
                 currentTab = const SleepTrackerView();
                 if (mounted) {
                   setState(() {});
@@ -58,11 +55,11 @@ class _BottomTabState extends State<BottomTab> {
               size: media.height * 0.04,
             ),
             TabButton(
-              iconData: Icons.notifications_rounded,
+              iconData: Icons.emoji_emotions_rounded,
               isActive: selectedTab == 2,
               onTap: () {
                 selectedTab = 2;
-                currentTab = const NotificationView();
+                currentTab = const MentalHealthSummary();
                 if (mounted) {
                   setState(() {});
                 }
@@ -81,11 +78,11 @@ class _BottomTabState extends State<BottomTab> {
               },
               size: media.height * 0.039,
             ),TabButton(
-              iconData: Icons.person_2_rounded,
+              iconData: Icons.notifications_rounded,
               isActive: selectedTab == 4,
               onTap: () {
                 selectedTab = 4;
-                currentTab = const ProfileView();
+                currentTab = const NotificationView();
                 if (mounted) {
                   setState(() {});
                 }

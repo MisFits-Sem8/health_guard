@@ -1,4 +1,3 @@
-import 'package:dotted_dashed_line/dotted_dashed_line.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
@@ -12,6 +11,8 @@ import 'dart:async';
 import 'package:health_app/model/daily_steps.dart';
 import 'package:health_app/db_helper/db_helper.dart';
 import 'package:health_app/repositories/data_repository.dart';
+
+import '../profile/profile_view.dart';
 
 class ActivityView extends StatefulWidget {
   const ActivityView({super.key});
@@ -279,7 +280,7 @@ class _ActivityViewState extends State<ActivityView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Welcome Back !",
+                          "Welcome!",
                           style: TextStyle(color: TColour.black1, fontSize: 16),
                         ),
                         Text(
@@ -292,7 +293,12 @@ class _ActivityViewState extends State<ActivityView> {
                       ],
                     ),
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const ProfileView()));
+                        },
                         icon: Image.asset(
                           "assets/images/user.jpeg",
                           width: 25,
