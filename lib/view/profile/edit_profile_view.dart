@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:health_app/view/bottom_tab/bottom_tab.dart';
 import '../../common/color_extension.dart';
 import '../../common_widgets/rounded_btn.dart';
 import '../../services/auth_service.dart';
@@ -30,27 +31,10 @@ class _EditProfileViewState extends State<EditProfileView> {
   late final _sleep = TextEditingController(text: widget.sleep.toString());
   late final _workout = TextEditingController(text: widget.workout.toString());
   late final _water = TextEditingController(text: widget.water.toString());
-  // Future<void> _initializeUserData() async {
-  //   UserDataModel? userData = await _auth.getUserData();
-  //   if (userData != null) {
-  //     setState(() {
-  //       height = userData.height;
-  //       weight = userData.weight;
-  //       age = userData.age;
-  //       gender = userData.gender;
-  //       _sleep.text = userData.sleep.toString();
-  //       _workout.text = userData.workout.toString();
-  //       _water.text = userData.water.toString();
-  //     });
-  //   } else {
-  //     print("User data is not available.");
-  //   }
-  // }
 
   @override
   void initState() {
     super.initState();
-    // _initializeUserData();
   }
 
   @override
@@ -453,8 +437,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                           double.parse(_sleep.text),
                           widget.gender,
                         );
-                        Navigator.pop(context);
-                      }
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const BottomTab(),
+                            ));                      }
                     })
               ],
             ),
