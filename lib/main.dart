@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
+import 'package:health_app/view/create_schdeuls/create_schedule_view.dart';
 import 'package:health_app/view/on_boarding/getting_started_view.dart';
 import 'firebase_options.dart';
 
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
           fontFamily: "Poppins",
           useMaterial3: true,
         ),
-        home: const GettingStartedView());
+        home:const SleepTrackerView());
+        // home: const GettingStartedView());
   }
 }

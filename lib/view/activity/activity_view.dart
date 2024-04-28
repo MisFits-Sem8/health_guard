@@ -147,7 +147,14 @@ class _ActivityViewState extends State<ActivityView> {
 
     if (!mounted) return;
   }
+  int waterIntake = 0;
+  int targetWaterIntake = 2000; // Customize this value as needed
 
+  void incrementWaterIntake() {
+    setState(() {
+      waterIntake+=100;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     setBmiInterpretation();
@@ -560,6 +567,7 @@ class _ActivityViewState extends State<ActivityView> {
                               BoxShadow(color: Colors.black12, blurRadius: 3)
                             ]),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SimpleAnimationProgressBar(
                               height: media.width * .8,
@@ -567,7 +575,7 @@ class _ActivityViewState extends State<ActivityView> {
                               backgroundColor: TColour.secondaryColor2,
                               foregrondColor: Colors.purple,
                               ratio:
-                                  0.8, // to be chage with the consumed water amount
+                                  waterIntake/targetWaterIntake, // to be chage with the consumed water amount
                               direction: Axis.vertical,
                               curve: Curves.fastLinearToSlowEaseIn,
                               duration: const Duration(seconds: 4),
@@ -582,6 +590,8 @@ class _ActivityViewState extends State<ActivityView> {
                             ),
                             Expanded(
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   "Water Intake",
@@ -590,8 +600,12 @@ class _ActivityViewState extends State<ActivityView> {
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700),
                                 ),
+                                SizedBox(
+                                  height: media.width * 0.15,
+                                ),
                                 ShaderMask(
                                   blendMode: BlendMode.srcIn,
+
                                   shaderCallback: (bounds) {
                                     return LinearGradient(
                                             colors: TColour.primary,
@@ -601,92 +615,114 @@ class _ActivityViewState extends State<ActivityView> {
                                             0, 0, bounds.width, bounds.height));
                                   },
                                   child: Text(
-                                    "8/10",
-                                    textAlign: TextAlign.left,
+                                    "${waterIntake}/${targetWaterIntake}",
+                                    textAlign: TextAlign.right,
                                     style: TextStyle(
+                                        shadows: [ // List of Shadow objects for adding shadows
+                                          Shadow(
+                                            offset: Offset(2.0, 2.0), // Offset the shadow slightly
+                                            blurRadius: 3.0, // Blur the shadow for a softer look
+                                            color: Colors.grey.withOpacity(0.5), // Set the shadow color and opacity
+                                          ),
+                                        ],
                                         color: TColour.white.withOpacity(.7),
                                         fontSize: 14,
                                         fontWeight: FontWeight.w700),
                                   ),
                                 ),
+                                SizedBox(
+                                  height: media.width * 0.04,
+                                ),
                                 Text(
                                   "Real time updates",
-                                  textAlign: TextAlign.center,
+                                  textAlign: TextAlign.left,
                                   style: TextStyle(
                                       color: TColour.black1.withOpacity(.7),
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700),
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: waterArray.map((item) {
-                                    var isLast = item == waterArray.last;
-                                    return Row(children: [
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 4),
-                                              width: 10,
-                                              height: 10,
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      TColour.secondaryColor2,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          15))),
-                                          if (!isLast)
-                                            DottedDashedLine(
-                                                height: media.width * .095,
-                                                width: 0,
-                                                axis: Axis.vertical)
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        width: media.width * .04,
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(item['subtitle']),
-                                          ShaderMask(
-                                            blendMode: BlendMode.srcIn,
-                                            shaderCallback: (bounds) {
-                                              return LinearGradient(
-                                                      colors: TColour.primary,
-                                                      begin:
-                                                          Alignment.centerLeft,
-                                                      end:
-                                                          Alignment.centerRight)
-                                                  .createShader(Rect.fromLTRB(
-                                                      0,
-                                                      0,
-                                                      bounds.width,
-                                                      bounds.height));
-                                            },
-                                            child: Text(
-                                              item['title'],
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  color: TColour.white
-                                                      .withOpacity(.7),
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w700),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ]);
-                                  }).toList(),
-                                )
+                                SizedBox(
+                                  height: media.width * 0.04,
+                                ),
+                                ElevatedButton(
+
+                                  onPressed: incrementWaterIntake,
+                                  child: Text('Add🥤' ,style: TextStyle(
+                                  color: TColour.black1.withOpacity(.7),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700),),
+
+                                ),
+                                // Column(
+                                //   crossAxisAlignment: CrossAxisAlignment.start,
+                                //   children: waterArray.map((item) {
+                                //     var isLast = item == waterArray.last;
+                                //     return Row(children: [
+                                //       Column(
+                                //         mainAxisAlignment:
+                                //             MainAxisAlignment.start,
+                                //         crossAxisAlignment:
+                                //             CrossAxisAlignment.center,
+                                //         children: [
+                                //           Container(
+                                //               margin:
+                                //                   const EdgeInsets.symmetric(
+                                //                       vertical: 4),
+                                //               width: 10,
+                                //               height: 10,
+                                //               decoration: BoxDecoration(
+                                //                   color:
+                                //                       TColour.secondaryColor2,
+                                //                   borderRadius:
+                                //                       BorderRadius.circular(
+                                //                           15))),
+                                //           if (!isLast)
+                                //             DottedDashedLine(
+                                //                 height: media.width * .095,
+                                //                 width: 0,
+                                //                 axis: Axis.vertical)
+                                //         ],
+                                //       ),
+                                //       SizedBox(
+                                //         width: media.width * .04,
+                                //       ),
+                                //       // Column(
+                                //       //   mainAxisAlignment:
+                                //       //       MainAxisAlignment.start,
+                                //       //   crossAxisAlignment:
+                                //       //       CrossAxisAlignment.start,
+                                //       //   children: [
+                                //       //     Text(item['subtitle']),
+                                //       //     ShaderMask(
+                                //       //       blendMode: BlendMode.srcIn,
+                                //       //       shaderCallback: (bounds) {
+                                //       //         return LinearGradient(
+                                //       //                 colors: TColour.primary,
+                                //       //                 begin:
+                                //       //                     Alignment.centerLeft,
+                                //       //                 end:
+                                //       //                     Alignment.centerRight)
+                                //       //             .createShader(Rect.fromLTRB(
+                                //       //                 0,
+                                //       //                 0,
+                                //       //                 bounds.width,
+                                //       //                 bounds.height));
+                                //       //       },
+                                //       //       child: Text(
+                                //       //         item['title'],
+                                //       //         textAlign: TextAlign.left,
+                                //       //         style: TextStyle(
+                                //       //             color: TColour.white
+                                //       //                 .withOpacity(.7),
+                                //       //             fontSize: 14,
+                                //       //             fontWeight: FontWeight.w700),
+                                //       //       ),
+                                //       //     ),
+                                //       //   ],
+                                //       // ),
+                                //     ]);
+                                //   }).toList(),
+                                // )
                               ],
                             ))
                           ],
