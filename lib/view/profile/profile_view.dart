@@ -61,9 +61,7 @@ class _ProfileViewState extends State<ProfileView> {
         title: Text(
           "Profile",
           style: TextStyle(
-              color: TColour.black1,
-              fontSize: 16,
-              fontWeight: FontWeight.w700),
+              color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
         ),
       ),
       backgroundColor: TColour.white,
@@ -123,7 +121,15 @@ class _ProfileViewState extends State<ProfileView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const EditProfileView(),
+                            builder: (context) => EditProfileView(
+                              age: age,
+                              height: height,
+                              weight: weight,
+                              gender: gender,
+                              water: water,
+                              sleep: sleep,
+                              workout: workout,
+                            ),
                           ),
                         );
                       },
@@ -192,8 +198,8 @@ class _ProfileViewState extends State<ProfileView> {
                 height: media.width * 0.1,
               ),
               Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 10, horizontal: 15),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   decoration: BoxDecoration(
                       color: TColour.white,
                       borderRadius: BorderRadius.circular(15),

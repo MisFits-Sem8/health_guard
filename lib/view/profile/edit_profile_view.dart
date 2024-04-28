@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:health_app/models/user.dart';
 import 'package:health_app/view/bottom_tab/bottom_tab.dart';
 import '../../common/color_extension.dart';
 import '../../common_widgets/rounded_btn.dart';
 import '../../services/auth_service.dart';
 
 class EditProfileView extends StatefulWidget {
-  const EditProfileView({super.key});
+  late int height;
+  late int weight;
+  late int age;
+  late double sleep;
+  late double water;
+  late double workout;
+  final String gender;
+  EditProfileView(
+      {required this.height,
+      required this.weight,
+      required this.sleep,
+      required this.water,
+      required this.workout,
+      required this.age,
+      required this.gender});
 
   @override
   State<EditProfileView> createState() => _EditProfileViewState();
@@ -14,36 +27,14 @@ class EditProfileView extends StatefulWidget {
 
 class _EditProfileViewState extends State<EditProfileView> {
   final _auth = AuthService();
-  late String gender;
-  late int height;
-  late int weight;
-  late int age;
   final _editProfileFormKey = GlobalKey<FormState>();
-  late final _sleep;
-  late final _workout;
-  late final _water;
-
-  Future<void> _initializeUserData() async {
-    UserDataModel? userData = await _auth.getUserData();
-    if (userData != null) {
-      setState(() {
-        height = userData.height;
-        weight = userData.weight;
-        age = userData.age;
-        gender = userData.gender;
-        _sleep = TextEditingController(text: userData.sleep.toString());
-        _workout = TextEditingController(text: userData.workout.toString());
-        _water = TextEditingController(text: userData.water.toString());
-      });
-    } else {
-      print("User data is not available.");
-    }
-  }
+  late final _sleep = TextEditingController(text: widget.sleep.toString());
+  late final _workout = TextEditingController(text: widget.workout.toString());
+  late final _water = TextEditingController(text: widget.water.toString());
 
   @override
   void initState() {
     super.initState();
-    _initializeUserData();
   }
 
   @override
@@ -110,7 +101,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                             .alphabetic, //both arguments are needed, crossaxis with baseline
                         children: [
                           Text(
-                            height.toString(),
+                            '${widget.height}',
                             style: const TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.w900,
@@ -137,12 +128,12 @@ class _EditProfileViewState extends State<EditProfileView> {
                               overlayRadius: 20.0),
                         ),
                         child: Slider(
-                            value: height.toDouble(),
+                            value: widget.height.toDouble(),
                             min: 120.0,
                             max: 220.0,
                             onChanged: (double newValue) {
                               setState(() {
-                                height = newValue.round();
+                                widget.height = newValue.round();
                               });
                             }),
                       )
@@ -186,7 +177,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                       .alphabetic, //both arguments are needed, crossaxis with baseline
                                   children: [
                                     Text(
-                                      weight.toString(),
+                                      widget.weight.toString(),
                                       style: const TextStyle(
                                         fontSize: 30,
                                         fontWeight: FontWeight.w900,
@@ -208,7 +199,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                     IconButton(
                                       onPressed: () {
                                         setState(() {
-                                          weight--;
+                                          widget.weight--;
                                         });
                                       },
                                       icon: const Icon(Icons.arrow_drop_down),
@@ -219,7 +210,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                     IconButton(
                                       onPressed: () {
                                         setState(() {
-                                          weight++;
+                                          widget.weight++;
                                         });
                                       },
                                       icon: const Icon(
@@ -269,7 +260,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                       .alphabetic, //both arguments are needed, crossaxis with baseline
                                   children: [
                                     Text(
-                                      age.toString(),
+                                      widget.age.toString(),
                                       style: const TextStyle(
                                         fontSize: 30,
                                         fontWeight: FontWeight.w900,
@@ -291,7 +282,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                     IconButton(
                                       onPressed: () {
                                         setState(() {
-                                          age--;
+                                          widget.age--;
                                         });
                                       },
                                       icon: const Icon(Icons.arrow_drop_down),
@@ -302,7 +293,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                     IconButton(
                                       onPressed: () {
                                         setState(() {
-                                          age++;
+                                          widget.age++;
                                         });
                                       },
                                       icon: const Icon(
@@ -438,19 +429,19 @@ class _EditProfileViewState extends State<EditProfileView> {
                       if (_editProfileFormKey.currentState?.validate() ??
                           false) {
                         _auth.addUserData(
-                          height,
-                          weight,
-                          age,
+                          widget.height,
+                          widget.weight,
+                          widget.age,
                           double.parse(_water.text),
                           double.parse(_workout.text),
                           double.parse(_sleep.text),
-                          gender,
+                          widget.gender,
                         );
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const BottomTab()));
-                      }
+                              builder: (context) => const BottomTab(),
+                            ));                      }
                     })
               ],
             ),
