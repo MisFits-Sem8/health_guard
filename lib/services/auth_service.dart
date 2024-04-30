@@ -67,6 +67,7 @@ class AuthService {
         if (data.exists) {
           final userData = data.data() as Map<String, dynamic>;
           return UserDataModel(
+            userData["uid"],
             userData["name"],
             userData["age"],
             userData["height"],
@@ -89,5 +90,4 @@ class AuthService {
       return null;
     }
   }
-
 }

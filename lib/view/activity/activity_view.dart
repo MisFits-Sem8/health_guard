@@ -11,7 +11,7 @@ import 'package:pretty_gauge/pretty_gauge.dart';
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
 import 'package:pedometer/pedometer.dart';
 import 'dart:async';
-import 'package:health_app/model/daily_steps.dart';
+import 'package:health_app/models/daily_steps.dart';
 import 'package:health_app/db_helper/db_helper.dart';
 import 'package:health_app/repositories/data_repository.dart';
 
@@ -27,6 +27,7 @@ class ActivityView extends StatefulWidget {
 }
 
 class _ActivityViewState extends State<ActivityView> {
+  late int id = 1;
   late String gender = "";
   late String name = "";
   late int height = 0;
@@ -37,7 +38,7 @@ class _ActivityViewState extends State<ActivityView> {
   late int targetWaterIntake = 0;
   final AuthService _auth = AuthService();
 
-  late double bmiScore;
+  late double bmiScore = 0;
 
   String? bmiStatus;
 
@@ -52,8 +53,6 @@ class _ActivityViewState extends State<ActivityView> {
   String _status = '?', _steps = '?';
 
   List<FlSpot> allSpots = [];
-
-  // Map<String, DailySteps> stepRecords = {};
 
   final FitnessDatabaseHelper databaseHelper = FitnessDatabaseHelper();
 
@@ -98,6 +97,7 @@ class _ActivityViewState extends State<ActivityView> {
     UserDataModel? userData = await _auth.getUserData();
     if (userData != null) {
       setState(() {
+        id = userData.id;
         name = userData.name;
         height = userData.height;
         weight = userData.weight;
@@ -167,7 +167,7 @@ class _ActivityViewState extends State<ActivityView> {
           // _dataRepository.updateStep(allSpots.last.x.toInt(), prevRecord);
         } else {
           _dataRepository.updateStep(_dataRepository.recordSteps.length - 1,
-              DailySteps(eventDate, _dailySteps));
+              DailySteps(eventDate, _dailySteps, id));
         }
         // _dataRepository.updateStep(allSpots.last.x.toInt(), prevRecord);
       } else {
@@ -176,7 +176,7 @@ class _ActivityViewState extends State<ActivityView> {
             _dailySteps.toDouble()));
         tools.add(_dataRepository.recordSteps.length);
         _dataRepository.updateStep(_dataRepository.recordSteps.length,
-            DailySteps(eventDate, _dailySteps));
+            DailySteps(eventDate, _dailySteps, id));
       }
       // print(_dataRepository);
     });
@@ -218,7 +218,7 @@ class _ActivityViewState extends State<ActivityView> {
 
   void updateStepsView() async {
     await databaseHelper.initializeDatabase();
-    List<DailySteps> recordSteps = await databaseHelper.getStepsList();
+    List<DailySteps> recordSteps = await databaseHelper.getStepsList(id);
 
     // Create a new list to store the filtered spots
     List<FlSpot> filteredSpots = [];
@@ -259,6 +259,34 @@ class _ActivityViewState extends State<ActivityView> {
     setState(() {
       waterIntake += 200;
     });
+  }
+
+  double calculatePercentCaloriesBurned() {
+    int? steps;
+    if (_dataRepository.recordSteps.isNotEmpty) {
+      steps = _dataRepository
+          .getRecord(_dataRepository.recordSteps.length - 1)
+          ?.steps;
+    }
+
+    double weightInKg = 70.0;
+    // MET value for walking is approximately 3.9 at speed of 5km/h
+    double met = 3.9;
+
+    // Time is estimated based on an average pace
+    double time = (steps ?? 2000) /
+        50.0; // time in hours based on an average pace of 5000 steps per hour
+
+    // Calories burned formula
+    double calories = time * met * 5 * weightInKg / 10;
+
+    // Total calories that should be burned per day
+    double totalCalories = 2000;
+
+    // Calculate the percentage of total calories burned
+    double percentCaloriesBurned = (calories / totalCalories) * 100;
+
+    return percentCaloriesBurned;
   }
 
   @override
@@ -336,7 +364,7 @@ class _ActivityViewState extends State<ActivityView> {
                               MaterialPageRoute(
                                   builder: (context) => const ProfileView()));
                         },
-                        icon:ClipOval(
+                        icon: ClipOval(
                           child: Image.asset(
                             gender == "female"
                                 ? "assets/images/profile-female.jpg"
@@ -609,9 +637,18 @@ class _ActivityViewState extends State<ActivityView> {
                                             index < lineBarsSpot.length / 2
                                                 ? FLHorizontalAlignment.right
                                                 : FLHorizontalAlignment.left;
+
+                                        DailySteps? record = _dataRepository
+                                            .getRecord(lineBarSpot.x.toInt());
+                                        String date = record?.date ?? 'N/A';
+                                        int steps = record?.steps ?? 0;
+                                        if (date != 'N/A') {
+                                          date = DateTime.parse(date)
+                                              .day
+                                              .toString();
+                                        }
                                         return LineTooltipItem(
-                                          "${lineBarSpot.x.toString()}day\n ${lineBarSpot.y.toInt()}steps",
-                                          // lineBarSpot.y.toString(),
+                                          "${date}day\n ${steps}steps",
                                           const TextStyle(
                                             color: Colors.white,
                                             fontSize: 10,
@@ -840,7 +877,7 @@ class _ActivityViewState extends State<ActivityView> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                          const SleepTrackerView(),
+                                              const SleepTrackerView(),
                                         ),
                                       );
                                     },
@@ -900,11 +937,15 @@ class _ActivityViewState extends State<ActivityView> {
                                 CircularPercentIndicator(
                                   radius: 40.0,
                                   lineWidth: 7.0,
-                                  percent: 0.30,
+                                  percent:
+                                      calculatePercentCaloriesBurned() / 100 > 1
+                                          ? 1
+                                          : calculatePercentCaloriesBurned() /
+                                              100,
                                   animation: true,
                                   animationDuration: 1200,
                                   center: new Text(
-                                    "40%",
+                                    "${calculatePercentCaloriesBurned().toStringAsFixed(2)}%",
                                     style: new TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 10.0),
