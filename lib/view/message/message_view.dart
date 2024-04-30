@@ -4,6 +4,8 @@ import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/view/message/message.dart';
 import 'package:intl/intl.dart';
 
+import '../../services/auth_service.dart';
+
 class MessageView extends StatefulWidget {
   const MessageView({super.key});
 
@@ -12,6 +14,7 @@ class MessageView extends StatefulWidget {
 }
 
 class _MessageViewState extends State<MessageView> {
+  final _auth = AuthService();
   final _messageController = TextEditingController();
 
   @override
@@ -126,15 +129,13 @@ class _MessageViewState extends State<MessageView> {
                   shape: const CircleBorder(),
                   backgroundColor: TColour.primaryColor1,
                   onPressed: () {
-                    final text = _messageController.text;
-                    final message = Message(
-                        text: text, date: DateTime.now(), isSentByMe: true);
-                    setState(() {
-                      if (text != "") {
-                        messages.add(message);
-                      }
-                    });
-                    _messageController.clear();
+                    if (_messageController.text.isNotEmpty) {
+                      Message newMessage = Message(text: _messageController.text, date: DateTime.now(), isSentByMe: true);
+                      _auth.sendText(newMessage);
+                      messages.add(newMessage);
+                      _messageController.clear();
+                      FocusScope.of(context).unfocus();
+                    }
                   },
                   child: Icon(
                     Icons.send_rounded,

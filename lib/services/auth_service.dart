@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:health_app/services/database.dart';
 import 'package:health_app/models/user.dart';
 
+import '../view/message/message.dart';
+
 class AuthService {
   final _auth = FirebaseAuth.instance;
 
@@ -90,4 +92,12 @@ class AuthService {
     }
   }
 
+  Future<void> sendText(Message message) async {
+    try {
+      final user = _auth.currentUser;
+      await DatabaseService(uid: user!.uid).addMessageToChat(message);
+    } on FirebaseAuthException catch (e) {
+      print(e.code);
+    }
+  }
 }
