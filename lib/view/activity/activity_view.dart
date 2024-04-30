@@ -14,30 +14,46 @@ import 'dart:async';
 import 'package:health_app/model/daily_steps.dart';
 import 'package:health_app/db_helper/db_helper.dart';
 import 'package:health_app/repositories/data_repository.dart';
-
-import '../../models/user.dart';
-import '../../services/auth_service.dart';
 import '../profile/profile_view.dart';
 
 class ActivityView extends StatefulWidget {
-  const ActivityView({super.key});
+  String gender;
+  String name;
+  int height;
+  int weight;
+  int age;
+  double sleep;
+  double workout;
+  int targetWaterIntake;
+  double bmiScore;
+  ActivityView(
+      {Key? key,
+      required this.height,
+      required this.weight,
+      required this.workout,
+      required this.name,
+      required this.sleep,
+      required this.gender,
+      required this.age,
+      required this.targetWaterIntake,
+      required this.bmiScore})
+      : super(key: key);
 
   @override
   State<ActivityView> createState() => _ActivityViewState();
 }
 
 class _ActivityViewState extends State<ActivityView> {
-  late String gender = "";
-  late String name = "";
-  late int height = 0;
-  late int weight = 0;
-  late int age = 0;
-  late double sleep = 0;
-  late double workout = 0;
-  late int targetWaterIntake = 0;
-  final AuthService _auth = AuthService();
+  // late String gender = "";
+  // late String name = "";
+  // late int height = 0;
+  // late int weight = 0;
+  // late int age = 0;
+  // late double sleep = 0;
+  // late double workout = 0;
+  // late int targetWaterIntake = 0;
+  // final AuthService _auth = AuthService();
 
-  late double bmiScore;
 
   String? bmiStatus;
 
@@ -68,19 +84,19 @@ class _ActivityViewState extends State<ActivityView> {
   final DataRepository _dataRepository = DataRepository();
 
   void setBmiInterpretation() {
-    if (bmiScore > 30) {
+    if (widget.bmiScore > 30) {
       bmiStatus = "OBESITY";
       bmiInterpretation = "Please work to reduce obesity";
       bmiStatusColor = Colors.orange.shade900;
-    } else if (bmiScore >= 25) {
+    } else if (widget.bmiScore >= 25) {
       bmiStatus = "Overweight";
       bmiInterpretation = "Do regular exercise & reduce the weight";
       bmiStatusColor = Colors.orange.shade500;
-    } else if (bmiScore >= 18.5) {
+    } else if (widget.bmiScore >= 18.5) {
       bmiStatus = "NORMAL";
       bmiInterpretation = "Enjoy, You are fit";
       bmiStatusColor = Colors.lightGreen.shade800;
-    } else if (bmiScore < 18.5) {
+    } else if (widget.bmiScore < 18.5) {
       bmiStatus = "UNDERWEIGHT";
       bmiInterpretation = "Try to increase the weight";
       bmiStatusColor = Colors.blueAccent.shade400;
@@ -94,30 +110,30 @@ class _ActivityViewState extends State<ActivityView> {
     {"title": "12-14", "subtitle": "1 cup"}
   ];
 
-  Future<void> _initializeUserData() async {
-    UserDataModel? userData = await _auth.getUserData();
-    if (userData != null) {
-      setState(() {
-        name = userData.name;
-        height = userData.height;
-        weight = userData.weight;
-        age = userData.age;
-        gender = userData.gender;
-        sleep = userData.sleep;
-        workout = userData.workout;
-        targetWaterIntake = (userData.water * 1000).toInt();
-        double heightInMeters = height / 100.0;
-        bmiScore = double.parse(
-            (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
-      });
-    } else {
-      print("User data is not available.");
-    }
-  }
+  // Future<void> _initializeUserData() async {
+  //   UserDataModel? userData = await _auth.getUserData();
+  //   if (userData != null) {
+  //     setState(() {
+  //       this.name = userData.name;
+  //       height = userData.height;
+  //       weight = userData.weight;
+  //       age = userData.age;
+  //       gender = userData.gender;
+  //       sleep = userData.sleep;
+  //       workout = userData.workout;
+  //       targetWaterIntake = (userData.water * 1000).toInt();
+  //       double heightInMeters = height / 100.0;
+  //       bmiScore = double.parse(
+  //           (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
+  //     });
+  //   } else {
+  //     print("User data is not available.");
+  //   }
+  // }
 
   @override
   void initState() {
-    _initializeUserData();
+    // _initializeUserData();
     super.initState();
     initPlatformState();
     updateStepsView();
@@ -321,7 +337,7 @@ class _ActivityViewState extends State<ActivityView> {
                           style: TextStyle(color: TColour.black1, fontSize: 16),
                         ),
                         Text(
-                          name,
+                          widget.name,
                           style: TextStyle(
                               color: TColour.black1,
                               fontSize: 14,
@@ -336,9 +352,9 @@ class _ActivityViewState extends State<ActivityView> {
                               MaterialPageRoute(
                                   builder: (context) => const ProfileView()));
                         },
-                        icon:ClipOval(
+                        icon: ClipOval(
                           child: Image.asset(
-                            gender == "female"
+                            widget.gender == "female"
                                 ? "assets/images/profile-female.jpg"
                                 : "assets/images/profile-male.png",
                             height: media.width * 0.15,
@@ -383,7 +399,7 @@ class _ActivityViewState extends State<ActivityView> {
                                     fontWeight: FontWeight.w700),
                               ),
                               Text(
-                                "${bmiScore}",
+                                "${widget.bmiScore}",
                                 style: TextStyle(
                                     color: TColour.white,
                                     fontSize: 16,
@@ -403,18 +419,17 @@ class _ActivityViewState extends State<ActivityView> {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditProfileView(
-                                                      height: height,
-                                                      weight: weight,
-                                                      sleep: sleep,
-                                                      water:
-                                                          (targetWaterIntake /
-                                                                  1000)
-                                                              .toDouble(),
-                                                      workout: workout,
-                                                      age: age,
-                                                      gender: gender),
+                                              builder: (context) => EditProfileView(
+                                                  height: widget.height,
+                                                  weight: widget.weight,
+                                                  sleep: widget.sleep,
+                                                  water:
+                                                      (widget.targetWaterIntake /
+                                                              1000)
+                                                          .toDouble(),
+                                                  workout: widget.workout,
+                                                  age: widget.age,
+                                                  gender: widget.gender),
                                             ));
                                       }))
                             ],
@@ -443,10 +458,10 @@ class _ActivityViewState extends State<ActivityView> {
                                     GaugeSegment('Obesity', 10.1, Colors.red),
                                   ],
                                   valueWidget: Text(
-                                    bmiScore.toStringAsFixed(1),
+                                    widget.bmiScore.toStringAsFixed(1),
                                     style: const TextStyle(fontSize: 20),
                                   ),
-                                  currentValue: bmiScore.toDouble(),
+                                  currentValue: widget.bmiScore.toDouble(),
                                   needleColor: Color.fromARGB(255, 0, 0, 0),
                                 ),
                                 Text(
@@ -717,7 +732,7 @@ class _ActivityViewState extends State<ActivityView> {
                                         0, 0, bounds.width, bounds.height));
                               },
                               child: Text(
-                                "${waterIntake}/${targetWaterIntake}",
+                                "${waterIntake}/${widget.targetWaterIntake}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: TColour.white.withOpacity(.7),
@@ -734,7 +749,8 @@ class _ActivityViewState extends State<ActivityView> {
                               backgroundColor: TColour.secondaryColor2,
                               foregrondColor: Colors.purple,
                               ratio: waterIntake /
-                                  targetWaterIntake, // to be chage with the consumed water amount
+                                  widget
+                                      .targetWaterIntake, // to be chage with the consumed water amount
                               direction: Axis.vertical,
                               curve: Curves.fastLinearToSlowEaseIn,
                               duration: const Duration(seconds: 4),
@@ -840,7 +856,7 @@ class _ActivityViewState extends State<ActivityView> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                          const SleepTrackerView(),
+                                              const SleepTrackerView(),
                                         ),
                                       );
                                     },
