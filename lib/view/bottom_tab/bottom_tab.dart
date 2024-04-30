@@ -8,6 +8,7 @@ import '../../common/color_extension.dart';
 import '../../common_widgets/tab_button.dart';
 import '../../models/user.dart';
 import '../../services/auth_service.dart';
+import '../message/message.dart';
 
 class BottomTab extends StatefulWidget {
   String gender;
@@ -38,6 +39,7 @@ class BottomTab extends StatefulWidget {
 
 class _BottomTabState extends State<BottomTab> {
   int selectedTab = 0;
+  List<Message> messages = [];
   final PageStorageBucket pageStorageBucket = PageStorageBucket();
   final AuthService _auth = AuthService();
 
@@ -62,13 +64,17 @@ class _BottomTabState extends State<BottomTab> {
       print("User data is not available.");
     }
   }
-
+  Future<void> _loadMessages() async {
+    List<Message> loadedMessages = await _auth.getUserMessages();
+    setState(() {
+      messages = loadedMessages;
+    });
+  }
   late Widget currentTab; // Declare currentTab as late Widget
 
   @override
   void initState() {
     super.initState();
-    // _initializeUserData();
     currentTab = ActivityView(
       height: widget.height,
       weight: widget.weight,
@@ -146,7 +152,8 @@ class _BottomTabState extends State<BottomTab> {
               onTap: () {
                 setState(() {
                   selectedTab = 3;
-                  currentTab = const MessageView();
+                  _loadMessages();
+                  currentTab = MessageView(messages: messages,);
                 });
               },
               size: media.height * 0.039,
