@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/today_sleep_schedule_row.dart';
+import 'package:health_app/db_helper/db_helper.dart';
 import 'package:health_app/view/profile/profile_view.dart';
 
 class CreateScheduleView extends StatefulWidget {
@@ -12,6 +13,8 @@ class CreateScheduleView extends StatefulWidget {
 }
 
 class _CreateScheduleViewState extends State<CreateScheduleView> {
+  FitnessDatabaseHelper databaseHelper = FitnessDatabaseHelper();
+
   List todaySleepArr = [
     {
       "name": "Bedtime",
@@ -69,6 +72,12 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
   List<int> showingTooltipOnSpots = [4];
   String selectedName = 'Bedtime'; // Default selection
   DateTime? selectedTime; // Placeholder for selected time
+
+  @override
+  void initState() {
+    super.initState();
+    updateNotifications();
+  }
 
   Future<void> _selectTime() async {
     final TimeOfDay? pickedTime = await showTimePicker(
@@ -140,6 +149,8 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
 
     return 'in $formattedHours hours $formattedMinutes minutes';
   }
+
+  void updateNotifications() {}
 
   @override
   Widget build(BuildContext context) {
@@ -254,7 +265,9 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
                             ),
                             // Button to add schedule
                             ElevatedButton(
-                              onPressed: _addScheduleItem,
+                              onPressed: () {
+                                _addScheduleItem();
+                              },
                               child: const Text('Add '),
                             ),
                           ],

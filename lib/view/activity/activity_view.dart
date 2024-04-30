@@ -275,7 +275,7 @@ class _ActivityViewState extends State<ActivityView> {
 
     // Time is estimated based on an average pace
     double time = (steps ?? 2000) /
-        50.0; // time in hours based on an average pace of 5000 steps per hour
+        500.0; // time in hours based on an average pace of 5000 steps per hour
 
     // Calories burned formula
     double calories = time * met * 5 * weightInKg / 10;
