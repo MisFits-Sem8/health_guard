@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:health_app/models/chat.dart';
 import 'package:health_app/models/daily_sleep.dart';
 import 'package:health_app/models/daily_target.dart';
@@ -34,6 +35,7 @@ class FitnessDatabaseHelper {
   String colSteps = 'steps';
   String colUserId = 'user_id';
   String colName = 'name';
+  String colEmail = 'email';
   String colGender = 'gender';
   String colAge = 'age';
   String colHeight = 'height';
@@ -73,21 +75,22 @@ class FitnessDatabaseHelper {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = '${directory.path}fitness.db';
 
+    // Delete the database if it already exists
+    // if (await databaseExists(path)) {
+    //   await deleteDatabase(path);
+    // }
+
     // Open/create the database at a given path
     var fitnessDatabase =
         await openDatabase(path, version: 1, onCreate: _createDb);
     return fitnessDatabase;
   }
 
-  // void _createDb(Database db, int newVersion) async {
-  //   await db.execute(
-  //       'CREATE TABLE $stepsTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colDate TEXT, $colSteps INTEGER)');
-  // }
   void _createDb(Database db, int newVersion) async {
     await db.execute(
         'CREATE TABLE $stepsTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colDate TEXT, $colSteps INTEGER, $colUserId INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
-        'CREATE TABLE $userTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT, $colGender TEXT, $colAge INTEGER, $colHeight INTEGER, $colWeight INTEGER)');
+        'CREATE TABLE $userTable($colId TEXT PRIMARY KEY, $colName TEXT, $colEmail TEXT, $colGender TEXT, $colAge INTEGER, $colHeight INTEGER, $colWeight INTEGER)');
     await db.execute(
         'CREATE TABLE $sleepTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId INTEGER, $colDate TEXT, $colDuration INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
@@ -101,7 +104,7 @@ class FitnessDatabaseHelper {
   }
 
   // Fetch Operation: Get all DailySteps objects from database
-  Future<List<Map<String, dynamic>>> getStepsMapList(int userId) async {
+  Future<List<Map<String, dynamic>>> getStepsMapList(String userId) async {
     Database db = await fitnessDatabase;
     var result = await db.query(
       stepsTable,
@@ -162,7 +165,7 @@ class FitnessDatabaseHelper {
   }
 
   // Get the 'Map List' [ List<Map> ] and convert it to 'DailySteps List' [ List<DailySteps> ]
-  Future<List<DailySteps>> getStepsList(int userId) async {
+  Future<List<DailySteps>> getStepsList(String userId) async {
     var stepsMapList =
         await getStepsMapList(userId); // Get 'Map List' from database
     int count =
@@ -184,15 +187,26 @@ class FitnessDatabaseHelper {
       String date = '2024-04-${i.toString().padLeft(2, '0')}';
       int steps = rng.nextInt(990) +
           10; // generates a random integer where 10 <= _ <= 2000
-      DailySteps dailySteps = DailySteps(date, steps, 1);
+      DailySteps dailySteps = DailySteps(date, steps, "1");
       await insertSteps(dailySteps);
     }
   }
 
   Future<int> insertUser(UserDataModel user) async {
     Database db = await fitnessDatabase;
-    var result = await db.insert(userTable, user.toMap());
-    return result;
+
+    // Check if user already exists
+    List<Map> existingUsers = await db
+        .query(userTable, where: '$colEmail = ?', whereArgs: [user.email]);
+
+    // If user does not exist, insert new user
+    if (existingUsers.isEmpty) {
+      var result = await db.insert(userTable, user.toMap());
+      return result;
+    } else {
+      debugPrint('User with email ${user.email} already exists');
+      return -1;
+    }
   }
 
   Future<int> updateUser(UserDataModel user) async {
@@ -288,8 +302,8 @@ class FitnessDatabaseHelper {
     return result;
   }
 
-  Future<List<Schedule>> getScheduleList() async {
-    var scheduleMapList = await getScheduleMapList();
+  Future<List<Schedule>> getScheduleList(String userId) async {
+    var scheduleMapList = await getScheduleMapList(userId);
     int count = scheduleMapList.length;
 
     List<Schedule> scheduleList = [];
@@ -301,9 +315,13 @@ class FitnessDatabaseHelper {
     return scheduleList;
   }
 
-  Future<List<Map<String, dynamic>>> getScheduleMapList() async {
+  Future<List<Map<String, dynamic>>> getScheduleMapList(String userId) async {
     Database db = await fitnessDatabase;
-    var result = await db.query(scheduleTable);
+    var result = await db.query(
+      scheduleTable,
+      where: '$colUserId = ?',
+      whereArgs: [userId],
+    );
     return result;
   }
 

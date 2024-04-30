@@ -6,8 +6,9 @@ class UserModel {
 }
 
 class UserDataModel {
-  late int id;
+  late String id;
   late String name;
+  late String email;
   late String gender;
   late int age;
   late int height;
@@ -16,8 +17,8 @@ class UserDataModel {
   late double sleep;
   late double workout;
 
-  UserDataModel(this.id, this.name, this.age, this.height, this.weight,
-      this.sleep, this.workout, this.water, this.gender);
+  UserDataModel(this.id, this.name, this.email, this.age, this.height,
+      this.weight, this.sleep, this.workout, this.water, this.gender);
 
   // UserDataModel(this.name, this.age, this.height, this.weight, this.sleep,
   //     this.workout, this.water, this.gender);
@@ -26,6 +27,7 @@ class UserDataModel {
     return UserDataModel(
       userMapList['id'],
       userMapList['name'],
+      userMapList['email'],
       userMapList['age'],
       userMapList['height'],
       userMapList['weight'],
@@ -40,6 +42,7 @@ class UserDataModel {
     var map = <String, dynamic>{};
     map['id'] = id;
     map['name'] = name;
+    map['email'] = email;
     map['age'] = age;
     map['height'] = height;
     map['weight'] = weight;

@@ -145,6 +145,7 @@ class _LoginViewState extends State<LoginView> {
       if (EmailValidator.validate(user.email!)) {
         if (mounted) {
           NotificationService().showNotification();
+
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const HealthTipPage()));
         }

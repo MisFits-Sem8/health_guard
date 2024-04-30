@@ -2,7 +2,7 @@ class DailySteps {
   int? id;
   late String date;
   late int steps;
-  late int userId;
+  late String userId;
 
   DailySteps(this.date, this.steps, this.userId);
 

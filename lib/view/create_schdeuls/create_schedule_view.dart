@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/today_sleep_schedule_row.dart';
 import 'package:health_app/db_helper/db_helper.dart';
+import 'package:health_app/models/schedule.dart';
+import 'package:health_app/models/user.dart';
+import 'package:health_app/services/auth_service.dart';
 import 'package:health_app/view/profile/profile_view.dart';
 
 class CreateScheduleView extends StatefulWidget {
@@ -13,6 +16,40 @@ class CreateScheduleView extends StatefulWidget {
 }
 
 class _CreateScheduleViewState extends State<CreateScheduleView> {
+  late String id;
+  // String gender;
+  // String name = "";
+  // int height = 0;
+  // int weight = 0;
+  // int age = 0;
+  // double sleep = 0;
+  // double workout = 0;
+  // int targetWaterIntake = 0;
+  final AuthService _auth = AuthService();
+
+  Future<void> _initializeUserData() async {
+    UserDataModel? userData = await _auth.getUserData();
+    if (userData != null) {
+      setState(() {
+        id = userData.id;
+        // name = userData.name;
+        // height = userData.height;
+        // weight = userData.weight;
+        // age = userData.age;
+        // gender = userData.gender;
+        // sleep = userData.sleep;
+        // workout = userData.workout;
+        // targetWaterIntake = (userData.water * 1000).toInt();
+        // double heightInMeters = height / 100.0;
+        // bmiScore = double.parse(
+        //     (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
+        updateNotifications();
+      });
+    } else {
+      print("User data is not available.");
+    }
+  }
+
   FitnessDatabaseHelper databaseHelper = FitnessDatabaseHelper();
 
   List todaySleepArr = [
@@ -76,7 +113,7 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
   @override
   void initState() {
     super.initState();
-    updateNotifications();
+    _initializeUserData();
   }
 
   Future<void> _selectTime() async {
@@ -97,7 +134,7 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
     }
   }
 
-  void _addScheduleItem() {
+  void _addScheduleItem() async {
     if (selectedTime != null) {
       final now = DateTime.now();
       final duration = Duration(
@@ -105,6 +142,9 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
         minutes: selectedTime!.minute - now.minute,
       );
       final formattedDuration = formatDuration(duration); // Calculate duration
+      int success = await databaseHelper
+          .insertSchedule(Schedule(id, selectedName, selectedTime!, true));
+      debugPrint("schedule inserted $success?");
 
       setState(() {
         todaySleepArr.add(
@@ -150,7 +190,51 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
     return 'in $formattedHours hours $formattedMinutes minutes';
   }
 
-  void updateNotifications() {}
+  void updateNotifications() async {
+    List<Schedule> schedules = await databaseHelper.getScheduleList(id);
+    for (var schedule in schedules) {
+      DateTime now = DateTime.now();
+      Duration difference = schedule.time.difference(now);
+      String duration =
+          'in ${difference.inHours} hours ${difference.inMinutes.remainder(60)} minutes';
+
+      String image;
+      switch (schedule.type) {
+        case 'Breakfast':
+          image = 'assets/images/breakfast.png';
+          break;
+        case 'Bedtime':
+          image = 'assets/images/bed.png';
+          break;
+        case 'Lunch':
+          image = 'assets/images/lunch.png';
+          break;
+        case 'Dinner':
+          image = 'assets/images/dinner.png';
+          break;
+        case 'Workout':
+          image = 'assets/images/workout1.png';
+          break;
+        case 'Medical':
+          image = 'assets/images/medical.png';
+          break;
+        case 'Meditation':
+          image = 'assets/images/meditation.png';
+          break;
+        default:
+          image = 'assets/images/alarm.png';
+          break;
+      }
+
+      Map<String, dynamic> scheduleMap = {
+        "name": schedule.type, // replace with actual property name
+        "image": image,
+        "time": schedule.time, // replace with actual property name
+        "duration": duration,
+      };
+      todaySleepArr.add(scheduleMap);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

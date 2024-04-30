@@ -27,9 +27,10 @@ class ActivityView extends StatefulWidget {
 }
 
 class _ActivityViewState extends State<ActivityView> {
-  late int id = 1;
+  late String id = "";
   late String gender = "";
   late String name = "";
+  late String email = "";
   late int height = 0;
   late int weight = 0;
   late int age = 0;
@@ -95,10 +96,13 @@ class _ActivityViewState extends State<ActivityView> {
 
   Future<void> _initializeUserData() async {
     UserDataModel? userData = await _auth.getUserData();
+    print("userdata: ");
+    print(userData);
     if (userData != null) {
       setState(() {
         id = userData.id;
         name = userData.name;
+        email = userData.email;
         height = userData.height;
         weight = userData.weight;
         age = userData.age;
@@ -109,6 +113,7 @@ class _ActivityViewState extends State<ActivityView> {
         double heightInMeters = height / 100.0;
         bmiScore = double.parse(
             (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
+        updateStepsView();
       });
     } else {
       print("User data is not available.");
@@ -117,10 +122,9 @@ class _ActivityViewState extends State<ActivityView> {
 
   @override
   void initState() {
-    _initializeUserData();
     super.initState();
     initPlatformState();
-    updateStepsView();
+    _initializeUserData();
   }
 
   void onStepCount(StepCount event) {
@@ -246,10 +250,12 @@ class _ActivityViewState extends State<ActivityView> {
     filteredSpots.sort((a, b) => a.x.compareTo(b.x));
 
     debugPrint(filteredSpots.toString());
-    setState(() {
-      this.allSpots = filteredSpots;
-      this.tools = List<int>.generate(filteredSpots.length, (i) => i);
-    });
+    if (mounted) {
+      setState(() {
+        this.allSpots = filteredSpots;
+        this.tools = List<int>.generate(filteredSpots.length, (i) => i);
+      });
+    }
   }
 
   int waterIntake = 0;

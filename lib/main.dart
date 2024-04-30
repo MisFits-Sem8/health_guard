@@ -4,7 +4,6 @@ import 'package:health_app/services/notification_service.dart';
 import 'package:health_app/services/sleep_track_service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:health_app/common/color_extension.dart';
-import 'package:health_app/view/create_schdeuls/create_schedule_view.dart';
 import 'package:health_app/view/on_boarding/getting_started_view.dart';
 import 'firebase_options.dart';
 import 'package:cron/cron.dart';
@@ -26,7 +25,7 @@ void main() async {
   final Future<Database> db = dbh.fitnessDatabase;
   await dbh.initializeDatabase();
   // dbh.truncateStepsTable();
-  await dbh.populateDb();
+  // await dbh.populateDb();
 
   cron.schedule(Schedule.parse('*/5 * * * *'), () async {
     executeCronJob();

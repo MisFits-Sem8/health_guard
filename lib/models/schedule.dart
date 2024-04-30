@@ -1,9 +1,9 @@
 // Schedule class
 class Schedule {
-  late int id;
-  late int userId;
+  late int? id;
+  late String userId;
   late String type;
-  late String time;
+  late DateTime time;
   late bool isActive;
 
   Schedule(this.userId, this.type, this.time, this.isActive);

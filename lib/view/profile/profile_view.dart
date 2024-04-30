@@ -16,7 +16,7 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  late int? id = 1;
+  late String? id = "";
   late String gender = "";
   late String name = "";
   late int height = 0;

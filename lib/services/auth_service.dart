@@ -62,13 +62,16 @@ class AuthService {
   Future<UserDataModel?> getUserData() async {
     try {
       final user = _auth.currentUser;
+
       if (user != null) {
         final data = await DatabaseService(uid: user.uid).userData.first;
         if (data.exists) {
+          print(data.data());
           final userData = data.data() as Map<String, dynamic>;
           return UserDataModel(
-            userData["uid"],
+            user.uid,
             userData["name"],
+            user.email!,
             userData["age"],
             userData["height"],
             userData["weight"],

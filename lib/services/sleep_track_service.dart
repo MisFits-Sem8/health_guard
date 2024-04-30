@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:health_app/model/timed_accelerometer.dart';
-import 'package:health_app/model/timed_gyroscope.dart';
+import 'package:health_app/models/timed_accelerometer.dart';
+import 'package:health_app/models/timed_gyroscope.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:logger/logger.dart';
 
