@@ -380,7 +380,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                                 sideTitles: bottomTitles,
                               ),
                               rightTitles: AxisTitles(
-                                sideTitles: rightTitles,
+                                sideTitles: rightTitlesCalorie,
                               )),
                           gridData: FlGridData(
                             show: true,
@@ -496,6 +496,12 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
         interval: 2,
         reservedSize: 40,
       );
+  SideTitles get rightTitlesCalorie => SideTitles(
+    getTitlesWidget: rightTitleWidgetsCalorie,
+    showTitles: true,
+    interval: 2,
+    reservedSize: 40,
+  );
   List<LineChartBarData> get lineBarsData2 => [
         lineChartBarData2_2,
       ];
@@ -546,6 +552,38 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
         break;
       case 10:
         text = '10h';
+        break;
+      default:
+        return Container();
+    }
+
+    return Text(text,
+        style: TextStyle(
+          color: TColour.gray,
+          fontSize: 12,
+        ),
+        textAlign: TextAlign.center);
+  }
+  Widget rightTitleWidgetsCalorie(double value, TitleMeta meta) {
+    String text;
+    switch (value.toInt()) {
+      case 0:
+        text = '0kcal';
+        break;
+      case 2:
+        text = '2kcal';
+        break;
+      case 4:
+        text = '4kcal';
+        break;
+      case 6:
+        text = '6kcal';
+        break;
+      case 8:
+        text = '8kcal';
+        break;
+      case 10:
+        text = '10kcal';
         break;
       default:
         return Container();

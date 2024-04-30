@@ -11,7 +11,7 @@ import 'package:pretty_gauge/pretty_gauge.dart';
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
 import 'package:pedometer/pedometer.dart';
 import 'dart:async';
-import 'package:health_app/model/daily_steps.dart';
+import 'package:health_app/models/daily_steps.dart';
 import 'package:health_app/db_helper/db_helper.dart';
 import 'package:health_app/repositories/data_repository.dart';
 
@@ -27,6 +27,7 @@ class ActivityView extends StatefulWidget {
 }
 
 class _ActivityViewState extends State<ActivityView> {
+  late int id = 1;
   late String gender = "";
   late String name = "";
   late int height = 0;
@@ -37,7 +38,7 @@ class _ActivityViewState extends State<ActivityView> {
   late int targetWaterIntake = 0;
   final AuthService _auth = AuthService();
 
-  late double bmiScore;
+  late double bmiScore = 0;
 
   String? bmiStatus;
 
@@ -52,8 +53,6 @@ class _ActivityViewState extends State<ActivityView> {
   String _status = '?', _steps = '?';
 
   List<FlSpot> allSpots = [];
-
-  // Map<String, DailySteps> stepRecords = {};
 
   final FitnessDatabaseHelper databaseHelper = FitnessDatabaseHelper();
 
@@ -98,6 +97,7 @@ class _ActivityViewState extends State<ActivityView> {
     UserDataModel? userData = await _auth.getUserData();
     if (userData != null) {
       setState(() {
+        id = userData.id;
         name = userData.name;
         height = userData.height;
         weight = userData.weight;
@@ -167,7 +167,7 @@ class _ActivityViewState extends State<ActivityView> {
           // _dataRepository.updateStep(allSpots.last.x.toInt(), prevRecord);
         } else {
           _dataRepository.updateStep(_dataRepository.recordSteps.length - 1,
-              DailySteps(eventDate, _dailySteps));
+              DailySteps(eventDate, _dailySteps, id));
         }
         // _dataRepository.updateStep(allSpots.last.x.toInt(), prevRecord);
       } else {
@@ -176,7 +176,7 @@ class _ActivityViewState extends State<ActivityView> {
             _dailySteps.toDouble()));
         tools.add(_dataRepository.recordSteps.length);
         _dataRepository.updateStep(_dataRepository.recordSteps.length,
-            DailySteps(eventDate, _dailySteps));
+            DailySteps(eventDate, _dailySteps, id));
       }
       // print(_dataRepository);
     });
@@ -218,7 +218,7 @@ class _ActivityViewState extends State<ActivityView> {
 
   void updateStepsView() async {
     await databaseHelper.initializeDatabase();
-    List<DailySteps> recordSteps = await databaseHelper.getStepsList();
+    List<DailySteps> recordSteps = await databaseHelper.getStepsList(id);
 
     // Create a new list to store the filtered spots
     List<FlSpot> filteredSpots = [];
