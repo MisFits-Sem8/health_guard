@@ -8,14 +8,14 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  final StreamController<ReceivedNotification>
-      didReceiveLocalNotificationSubject =
-      StreamController<ReceivedNotification>.broadcast();
+  // final StreamController<ReceivedNotification>
+  //     didReceiveLocalNotificationSubject =
+  //     StreamController<ReceivedNotification>.broadcast();
 
-  final StreamController<String?> selectNotificationSubject =
-      StreamController<String?>.broadcast();
+  // final StreamController<String?> selectNotificationSubject =
+  //     StreamController<String?>.broadcast();
 
-  String? selectedNotificationPayload;
+  // String? selectedNotificationPayload;
 
   // Private constructor
   NotificationService._privateConstructor();
@@ -31,7 +31,7 @@ class NotificationService {
 
   Future<void> init() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const InitializationSettings initializationSettings =
         InitializationSettings(

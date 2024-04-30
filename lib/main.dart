@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:health_app/services/notification_service.dart';
 import 'package:health_app/services/sleep_track_service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:health_app/common/color_extension.dart';
@@ -13,6 +14,7 @@ void main() async {
   final cron = Cron();
 
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -22,7 +24,7 @@ void main() async {
   final FitnessDatabaseHelper dbh = FitnessDatabaseHelper();
   final Future<Database> db = dbh.fitnessDatabase;
   await dbh.initializeDatabase();
-  dbh.truncateStepsTable();
+  // dbh.truncateStepsTable();
   await dbh.populateDb();
 
   cron.schedule(Schedule.parse('*/5 * * * *'), () async {
