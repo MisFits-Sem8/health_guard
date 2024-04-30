@@ -71,23 +71,31 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
   DateTime? selectedTime; // Placeholder for selected time
 
   Future<void> _selectTime() async {
-    final TimeOfDay? pickedTime = await showTimePicker(
+    final DateTime? pickedDateTime = await showDatePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2026, 1),
+      // Removed lastDate restriction
     );
-    if (pickedTime != null) {
-      setState(() {
-        selectedTime = DateTime(
-          DateTime.now().year,
-          DateTime.now().month,
-          DateTime.now().day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-      });
+    if (pickedDateTime != null) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+      if (pickedTime != null) {
+        setState(() {
+          selectedTime = DateTime(
+            pickedDateTime.year,
+            pickedDateTime.month,
+            pickedDateTime.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+        });
+      }
     }
   }
-
   void _addScheduleItem() {
     if (selectedTime != null) {
       final now = DateTime.now();
@@ -207,6 +215,8 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
                           height: media.width * 0.05,
                         ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             // Dropdown to select name
                             DropdownButton<String>(
@@ -249,10 +259,12 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
                               onPressed: _selectTime,
                               child: const Text('Select Time'),
                             ),
-                            SizedBox(
-                              width: media.width * 0.04,
-                            ),
-                            // Button to add schedule
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
                             ElevatedButton(
                               onPressed: _addScheduleItem,
                               child: const Text('Add '),
