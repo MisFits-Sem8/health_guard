@@ -157,18 +157,18 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ProfileView()));
-              },
-              icon: Image.asset(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ProfileView()));
+            },
+            icon: ClipOval(
+              child: Image.asset(
                 "assets/images/profile-female.jpg",
-                width: 50,
-                height: 50,
-                fit: BoxFit.fitHeight,
-              )),
+                height: media.width * 0.15,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
         ],
       ),
       backgroundColor: TColour.white,

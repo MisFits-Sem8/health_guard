@@ -74,13 +74,11 @@ class _ProfileViewState extends State<ProfileView> {
               children: [
                 Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
+                    ClipOval(
                       child: Image.asset(
                         gender == "female"
                             ? "assets/images/profile-female.jpg"
                             : "assets/images/profile-male.png",
-                        width: media.width * 0.15,
                         height: media.width * 0.15,
                         fit: BoxFit.cover,
                       ),

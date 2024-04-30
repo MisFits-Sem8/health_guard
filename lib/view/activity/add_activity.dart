@@ -110,15 +110,47 @@ class _AddActivityState extends State<AddActivity> {
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     final tooltipsOnBar = lineBarsData1[0];
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: TColour.white,
-          centerTitle: true,
-          elevation: 0,
-          leading: InkWell(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: TColour.white,
+        centerTitle: true,
+        elevation: 0,
+        // leading: InkWell(
+        //   onTap: () {
+        //     Navigator.pop(context);
+        //   },
+        //   child: Container(
+        //     margin: const EdgeInsets.all(8),
+        //     height: 40,
+        //     width: 40,
+        //     alignment: Alignment.center,
+        //     decoration: BoxDecoration(
+        //         color: TColour.lightGray,
+        //         borderRadius: BorderRadius.circular(10)),
+        //     child: Image.asset(
+        //       "assets/images/icons/back-button.png",
+        //       width: 15,
+        //       height: 15,
+        //       fit: BoxFit.contain,
+        //     ),
+        //   ),
+        // ),
+        title: Text(
+          "Log your Activities",
+          style: TextStyle(
+              color: TColour.black1,
+              fontSize: 16,
+              fontWeight: FontWeight.w700),
+        ),
+        actions: [
+          InkWell(
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileView(),
+                ),
+              );
             },
             child: Container(
               margin: const EdgeInsets.all(8),
@@ -128,51 +160,20 @@ class _AddActivityState extends State<AddActivity> {
               decoration: BoxDecoration(
                   color: TColour.lightGray,
                   borderRadius: BorderRadius.circular(10)),
-              child: Image.asset(
-                "assets/images/icons/back-button.png",
-                width: 15,
-                height: 15,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          title: Text(
-            "Log your Activities",
-            style: TextStyle(
-                color: TColour.black1,
-                fontSize: 16,
-                fontWeight: FontWeight.w700),
-          ),
-          actions: [
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProfileView(),
-                  ),
-                );
-              },
-              child: Container(
-                margin: const EdgeInsets.all(8),
-                height: 40,
-                width: 40,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: TColour.lightGray,
-                    borderRadius: BorderRadius.circular(10)),
+              child: ClipOval(
                 child: Image.asset(
                   "assets/images/profile-female.jpg",
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.contain,
+                  height: media.width * 0.15,
+                  fit: BoxFit.cover,
                 ),
               ),
-            )
-          ],
-        ),
-        backgroundColor: TColour.white,
-        body: SingleChildScrollView(
+            ),
+          )
+        ],
+      ),
+      backgroundColor: TColour.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

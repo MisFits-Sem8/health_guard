@@ -69,7 +69,7 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
     });
   }
 
-  String url = "http://10.0.2.2:5000/combine-prompt";
+  String url = "https://flask-chat.vercel.app/assess";
   Future<List<dynamic>> sendPostRequest() async {
     print("in the method");
     var response = await http.post(Uri.parse(url),
@@ -115,18 +115,18 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ProfileView()));
-              },
-              icon: Image.asset(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ProfileView()));
+            },
+            icon: ClipOval(
+              child: Image.asset(
                 "assets/images/profile-female.jpg",
-                width: 50,
-                height: 50,
-                fit: BoxFit.fitHeight,
-              )),
+                height: media.width * 0.15,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -228,9 +228,10 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
             SizedBox(height: 10.0),
             Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: TColour.gradient,
-                ),
+                color: TColour.lightGray,
+                boxShadow: const [
+                  BoxShadow(color: Colors.black12, blurRadius: 8)
+                ],
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: TextField(
@@ -240,7 +241,7 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 12.0)),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: TColour.gray),
                   maxLines: 5,
                   onChanged: (value) {
                     setState(() {
@@ -256,24 +257,24 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                     children: [
                       Text(
                         'Sleep level',
-                        style: TextStyle(
-                            fontSize: 16.0),
+                        style: TextStyle(fontSize: 16.0),
                       ),
                       SizedBox(height: 10.0),
                       Container(
                         decoration: BoxDecoration(
+                            color: TColour.lightGray,
                             borderRadius: BorderRadius.circular(8.0),
                             boxShadow: const [
-                              BoxShadow(color: Colors.black12, blurRadius: 4)
+                              BoxShadow(color: Colors.black12, blurRadius: 8)
                             ]),
                         child: DropdownButton(
-                          // Initial Value
+                          underline: SizedBox(),
                           style: TextStyle(
                             color: TColour.primaryColor1,
-                            fontSize: 20,
+                            fontSize: 18,
                             fontStyle: FontStyle.italic,
                           ),
-                          dropdownColor: TColour.primaryColor2,
+                          dropdownColor: TColour.lightGray,
                           value: selectedSleepingStatus,
 
                           // Down Arrow Icon
@@ -293,17 +294,14 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                                 width: media.width * 0.3,
                                 alignment:
                                     Alignment.center, // Align text to center
-                                color: selectedSleepingStatus == value
-                                    ? TColour
-                                        .primaryColor1 // Selected item color
-                                    : TColour
-                                        .primaryColor2, // Non-selected item color
+                                color: TColour
+                                    .lightGray, // Non-selected item color
                                 child: Text(
                                   value,
                                   style: TextStyle(
                                     color: selectedSleepingStatus == value
-                                        ? Colors
-                                            .white // Text color for selected item
+                                        ? TColour
+                                            .primaryColor1 // Text color for selected item
                                         : Colors
                                             .black, // Text color for non-selected item
                                   ),
@@ -327,24 +325,25 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                     children: [
                       Text(
                         'Stress level',
-                        style: TextStyle(
-                            fontSize: 16.0),
+                        style: TextStyle(fontSize: 16.0),
                       ),
                       SizedBox(height: 10.0),
                       Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0),
-                            boxShadow: const [
-                              BoxShadow(color: Colors.black12, blurRadius: 4)
-                            ]),
+                          color: TColour.lightGray,
+                          borderRadius: BorderRadius.circular(8.0),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black12, blurRadius: 8)
+                          ],
+                        ),
                         child: DropdownButton(
-                          // Initial Value
+                          underline: SizedBox(),
                           style: TextStyle(
                             color: TColour.primaryColor1,
-                            fontSize: 20,
+                            fontSize: 18,
                             fontStyle: FontStyle.italic,
                           ),
-                          dropdownColor: TColour.primaryColor2,
+                          dropdownColor: TColour.lightGray,
                           value: selectedStressLevel,
 
                           // Down Arrow Icon
@@ -361,17 +360,12 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                                 width: media.width * 0.3,
                                 alignment:
                                     Alignment.center, // Align text to center
-                                color: selectedStressLevel == value
-                                    ? TColour
-                                        .primaryColor1 // Selected item color
-                                    : TColour
-                                        .primaryColor2, // Non-selected item color
                                 child: Text(
                                   value,
                                   style: TextStyle(
                                     color: selectedStressLevel == value
-                                        ? Colors
-                                            .white // Text color for selected item
+                                        ? TColour
+                                            .primaryColor1 // Text color for selected item
                                         : Colors
                                             .black, // Text color for non-selected item
                                   ),
@@ -405,15 +399,16 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                   });
                 },
                 title: "Submit",
-                type: RoundButtonType.bgSGradient,
+                type: RoundButtonType.bgGradient,
               ),
             ),
+            SizedBox(height: 30.0),
             Visibility(
                 visible: display, // Show the PieChart only when display is true
                 child: Center(
                     child: Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: TColour.gradient),
+                    color: TColour.white,
                     borderRadius: BorderRadius.circular(15),
                   ),
                   padding: EdgeInsets.all(3.0),
@@ -446,7 +441,7 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
         titleStyle: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: TColour.black3,
         ),
       ),
     );
@@ -460,7 +455,7 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
         titleStyle: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: TColour.black3,
         ),
       ),
     );
@@ -474,7 +469,7 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
         titleStyle: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: TColour.black3,
         ),
       ),
     );
@@ -486,11 +481,11 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
   Color _getColorForStatus(String status) {
     switch (status) {
       case "moderate":
-        return Colors.red;
+        return Colors.blueAccent;
       case "not depression":
         return Colors.green;
       case "severe":
-        return Colors.white;
+        return Colors.red;
       default:
         return Colors.grey;
     }
