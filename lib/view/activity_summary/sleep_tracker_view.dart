@@ -1,8 +1,7 @@
-// import 'package:fitness/view/sleep_tracker/sleep_schedule_view.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
-import '../notifications/notifications_view.dart';
+import '../profile/profile_view.dart';
 
 class SleepTrackerView extends StatefulWidget {
   const SleepTrackerView({super.key});
@@ -12,8 +11,6 @@ class SleepTrackerView extends StatefulWidget {
 }
 
 class _SleepTrackerViewState extends State<SleepTrackerView> {
-
-
   List<int> showingTooltipOnSpots = [4];
   String selectedName = 'Bedtime'; // Default selection
   DateTime? selectedTime; // Placeholder for selected time
@@ -36,7 +33,6 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
     }
   }
 
-
   String formatDuration(Duration duration) {
     final hours = duration.inHours.remainder(24);
     final minutes = duration.inMinutes.remainder(60);
@@ -55,34 +51,41 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
         backgroundColor: TColour.white,
         centerTitle: true,
         elevation: 0,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Container(
-            margin: const EdgeInsets.all(8),
-            height: 40,
-            width: 40,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                color: TColour.lightGray,
-                borderRadius: BorderRadius.circular(10)),
-            child: Image.asset(
-              "assets/images/icons/back-button.png",
-              width: 15,
-              height: 15,
-              fit: BoxFit.contain,
-            ),
-          ),
-        ),
+        // leading: InkWell(
+        //   onTap: () {
+        //     Navigator.pop(context);
+        //   },
+        //   child: Container(
+        //     margin: const EdgeInsets.all(8),
+        //     height: 40,
+        //     width: 40,
+        //     alignment: Alignment.center,
+        //     decoration: BoxDecoration(
+        //         color: TColour.lightGray,
+        //         borderRadius: BorderRadius.circular(10)),
+        //     child: Image.asset(
+        //       "assets/images/icons/back-button.png",
+        //       width: 15,
+        //       height: 15,
+        //       fit: BoxFit.contain,
+        //     ),
+        //   ),
+        // ),
         title: Text(
-          "Sleep | Sleep Tracker",
+          "Activity Tracker",
           style: TextStyle(
               color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
         ),
         actions: [
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileView(),
+                ),
+              );
+            },
             child: Container(
               margin: const EdgeInsets.all(8),
               height: 40,
@@ -91,11 +94,12 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
               decoration: BoxDecoration(
                   color: TColour.lightGray,
                   borderRadius: BorderRadius.circular(10)),
-              child: Image.asset(
-                "assets/images/icons/more.png",
-                width: 15,
-                height: 15,
-                fit: BoxFit.contain,
+              child: ClipOval(
+                child: Image.asset(
+                  "assets/images/profile-female.jpg",
+                  height: media.width * 0.15,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           )
@@ -114,7 +118,9 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                   Text(
                     "Sleep Summary",
                     style: TextStyle(
-                        color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
+                        color: TColour.black1,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700),
                   ),
                   Container(
                       padding: const EdgeInsets.only(left: 15),
@@ -274,12 +280,13 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                   ),
                   SizedBox(
                     height: media.width * 0.05,
-
                   ),
                   Text(
                     "Calory Summary",
                     style: TextStyle(
-                        color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
+                        color: TColour.black1,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700),
                   ),
                   Container(
                       padding: const EdgeInsets.only(left: 15),
@@ -288,7 +295,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                       child: LineChart(
                         LineChartData(
                           showingTooltipIndicators:
-                          showingTooltipOnSpots.map((index) {
+                              showingTooltipOnSpots.map((index) {
                             return ShowingTooltipIndicators([
                               LineBarSpot(
                                 tooltipsOnBar,
@@ -334,12 +341,12 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                                     show: true,
                                     getDotPainter:
                                         (spot, percent, barData, index) =>
-                                        FlDotCirclePainter(
-                                          radius: 3,
-                                          color: Colors.white,
-                                          strokeWidth: 1,
-                                          strokeColor: TColour.primaryColor2,
-                                        ),
+                                            FlDotCirclePainter(
+                                      radius: 3,
+                                      color: Colors.white,
+                                      strokeWidth: 1,
+                                      strokeColor: TColour.primaryColor2,
+                                    ),
                                   ),
                                 );
                               }).toList();
@@ -439,10 +446,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                   ),
                   SizedBox(
                     height: media.width * 0.05,
-
                   ),
-
-
                 ],
               ),
             ),
@@ -493,35 +497,35 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
         reservedSize: 40,
       );
   List<LineChartBarData> get lineBarsData2 => [
-    lineChartBarData2_2,
-  ];
+        lineChartBarData2_2,
+      ];
 
   LineChartBarData get lineChartBarData2_2 => LineChartBarData(
-    isCurved: true,
-    gradient: LinearGradient(colors: [
-      TColour.primaryColor2,
-      TColour.primaryColor1,
-    ]),
-    barWidth: 2,
-    isStrokeCapRound: true,
-    dotData: FlDotData(show: false),
-    belowBarData: BarAreaData(
-      show: true,
-      gradient: LinearGradient(colors: [
-        TColour.primaryColor2,
-        TColour.white,
-      ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-    ),
-    spots: const [
-      FlSpot(1, 8),
-      FlSpot(2, 3),
-      FlSpot(3, 4),
-      FlSpot(4, 7),
-      FlSpot(5, 6),
-      FlSpot(6, 8),
-      FlSpot(7, 2),
-    ],
-  );
+        isCurved: true,
+        gradient: LinearGradient(colors: [
+          TColour.primaryColor2,
+          TColour.primaryColor1,
+        ]),
+        barWidth: 2,
+        isStrokeCapRound: true,
+        dotData: FlDotData(show: false),
+        belowBarData: BarAreaData(
+          show: true,
+          gradient: LinearGradient(colors: [
+            TColour.primaryColor2,
+            TColour.white,
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+        ),
+        spots: const [
+          FlSpot(1, 8),
+          FlSpot(2, 3),
+          FlSpot(3, 4),
+          FlSpot(4, 7),
+          FlSpot(5, 6),
+          FlSpot(6, 8),
+          FlSpot(7, 2),
+        ],
+      );
   Widget rightTitleWidgets(double value, TitleMeta meta) {
     String text;
     switch (value.toInt()) {

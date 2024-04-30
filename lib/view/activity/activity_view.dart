@@ -37,7 +37,7 @@ class _ActivityViewState extends State<ActivityView> {
   late int targetWaterIntake = 0;
   final AuthService _auth = AuthService();
 
-  late final double bmiScore;
+  late double bmiScore;
 
   String? bmiStatus;
 
@@ -336,13 +336,14 @@ class _ActivityViewState extends State<ActivityView> {
                               MaterialPageRoute(
                                   builder: (context) => const ProfileView()));
                         },
-                        icon: Image.asset(
-                          gender == "male"
-                              ? "assets/images/profile-male.png"
-                              : "assets/images/profile-female.jpg",
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.fitHeight,
+                        icon:ClipOval(
+                          child: Image.asset(
+                            gender == "female"
+                                ? "assets/images/profile-female.jpg"
+                                : "assets/images/profile-male.png",
+                            height: media.width * 0.15,
+                            fit: BoxFit.cover,
+                          ),
                         )),
                   ],
                 ),
