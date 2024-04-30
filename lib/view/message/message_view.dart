@@ -7,7 +7,9 @@ import 'package:intl/intl.dart';
 import '../../services/auth_service.dart';
 
 class MessageView extends StatefulWidget {
-  const MessageView({super.key});
+  List<Message> messages;
+
+  MessageView({Key? key, required this.messages}) : super(key: key);
 
   @override
   State<MessageView> createState() => _MessageViewState();
@@ -16,6 +18,13 @@ class MessageView extends StatefulWidget {
 class _MessageViewState extends State<MessageView> {
   final _auth = AuthService();
   final _messageController = TextEditingController();
+
+  Future<void> _sendMessages(String text, List<Message> messages) async {
+    List<Message> loadedMessages = await _auth.sendText(text, messages);
+    setState(() {
+      widget.messages = loadedMessages;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +52,7 @@ class _MessageViewState extends State<MessageView> {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               useStickyGroupSeparators: true,
               floatingHeader: true,
-              elements: messages,
+              elements: widget.messages,
               groupBy: (Message message) => DateTime(
                 message.date.year,
                 message.date.month,
@@ -110,11 +119,11 @@ class _MessageViewState extends State<MessageView> {
                         ),
                       ),
                       onSubmitted: (text) {
-                        final message = Message(
-                            text: text, date: DateTime.now(), isSentByMe: true);
+                        // final message = Message(
+                        //     text: text, date: DateTime.now(), isSentByMe: true);
                         setState(() {
                           if (text != "") {
-                            messages.add(message);
+                            _sendMessages(text, widget.messages);
                           }
                         });
                         _messageController.clear();
@@ -129,13 +138,13 @@ class _MessageViewState extends State<MessageView> {
                   shape: const CircleBorder(),
                   backgroundColor: TColour.primaryColor1,
                   onPressed: () {
-                    if (_messageController.text.isNotEmpty) {
-                      Message newMessage = Message(text: _messageController.text, date: DateTime.now(), isSentByMe: true);
-                      _auth.sendText(newMessage);
-                      messages.add(newMessage);
-                      _messageController.clear();
-                      FocusScope.of(context).unfocus();
-                    }
+                    final text = _messageController.text;
+                    setState(() {
+                      if (text != "") {
+                        _sendMessages(text, widget.messages);
+                      }
+                    });
+                    _messageController.clear();
                   },
                   child: Icon(
                     Icons.send_rounded,

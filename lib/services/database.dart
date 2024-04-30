@@ -5,6 +5,7 @@ import "../view/message/message.dart";
 class DatabaseService {
   final String uid;
   DatabaseService({required this.uid});
+  List<Message> messages = [];
 
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection("users");
@@ -52,9 +53,22 @@ class DatabaseService {
     }
   }
 
-  // List<Message> getMessages() {
-  //   try{
-  //     chatCollection.
-  //   }
-  // }
+  Future<List<Message>> getMessages() async {
+    try {
+      final snapshot = await chatCollection
+          .doc(uid)
+          .collection("messages")
+          .orderBy("sentTime", descending: false)
+          .get();
+      List<Message> messages = snapshot.docs.map((doc) => Message(
+        text: doc.data()["text"],
+        date: (doc.data()["sentTime"] as Timestamp).toDate(),
+        isSentByMe: doc.data()["isSentByMe"], // Assuming all messages retrieved belong to the current user
+      )).toList();
+      return messages;
+    } catch (e) {
+      print('Error getting messages: $e');
+      return messages;
+    }
+  }
 }
