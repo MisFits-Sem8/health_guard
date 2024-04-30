@@ -71,23 +71,31 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
   DateTime? selectedTime; // Placeholder for selected time
 
   Future<void> _selectTime() async {
-    final TimeOfDay? pickedTime = await showTimePicker(
+    final DateTime? pickedDateTime = await showDatePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2026, 1),
+      // Removed lastDate restriction
     );
-    if (pickedTime != null) {
-      setState(() {
-        selectedTime = DateTime(
-          DateTime.now().year,
-          DateTime.now().month,
-          DateTime.now().day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-      });
+    if (pickedDateTime != null) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+      if (pickedTime != null) {
+        setState(() {
+          selectedTime = DateTime(
+            pickedDateTime.year,
+            pickedDateTime.month,
+            pickedDateTime.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+        });
+      }
     }
   }
-
   void _addScheduleItem() {
     if (selectedTime != null) {
       final now = DateTime.now();
@@ -104,18 +112,18 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
             'image': selectedName == 'Bedtime'
                 ? 'assets/images/bed.png'
                 : (selectedName == 'Breakfast'
-                    ? 'assets/images/breakfast.png' // Add breakfast image
-                    : (selectedName == 'Lunch'
-                        ? 'assets/images/lunch.png' // Add lunch image
-                        : (selectedName == 'Dinner'
-                            ? 'assets/images/dinner.png' // Add dinner image
-                            : (selectedName == 'Workout'
-                                ? 'assets/images/workout1.png'
-                                : (selectedName == 'Medical'
-                                    ? 'assets/images/medical.png' // Add workout image
-                                    : (selectedName == 'Meditation'
-                                        ? 'assets/images/meditation.png' // Add meditation image
-                                        : 'assets/images/alaarm.png')))))),
+                ? 'assets/images/breakfast.png' // Add breakfast image
+                : (selectedName == 'Lunch'
+                ? 'assets/images/lunch.png' // Add lunch image
+                : (selectedName == 'Dinner'
+                ? 'assets/images/dinner.png' // Add dinner image
+                : (selectedName == 'Workout'
+                ? 'assets/images/workout1.png'
+                : (selectedName == 'Medical'
+                ? 'assets/images/medical.png' // Add workout image
+                : (selectedName == 'Meditation'
+                ? 'assets/images/meditation.png' // Add meditation image
+                : 'assets/images/alaarm.png')))))),
             'time': selectedTime!,
             'duration': formattedDuration,
           },
@@ -178,7 +186,7 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
           children: [
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+              const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -207,6 +215,8 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
                           height: media.width * 0.05,
                         ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             // Dropdown to select name
                             DropdownButton<String>(
@@ -249,10 +259,12 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
                               onPressed: _selectTime,
                               child: const Text('Select Time'),
                             ),
-                            SizedBox(
-                              width: media.width * 0.04,
-                            ),
-                            // Button to add schedule
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
                             ElevatedButton(
                               onPressed: _addScheduleItem,
                               child: const Text('Add '),
@@ -299,42 +311,42 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
   }
 
   List<LineChartBarData> get lineBarsData1 => [
-        lineChartBarData1_1,
-      ];
+    lineChartBarData1_1,
+  ];
 
   LineChartBarData get lineChartBarData1_1 => LineChartBarData(
-        isCurved: true,
-        gradient: LinearGradient(colors: [
-          TColour.primaryColor2,
-          TColour.primaryColor1,
-        ]),
-        barWidth: 2,
-        isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
-        belowBarData: BarAreaData(
-          show: true,
-          gradient: LinearGradient(colors: [
-            TColour.primaryColor2,
-            TColour.white,
-          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-        ),
-        spots: const [
-          FlSpot(1, 3),
-          FlSpot(2, 5),
-          FlSpot(3, 4),
-          FlSpot(4, 7),
-          FlSpot(5, 4),
-          FlSpot(6, 8),
-          FlSpot(7, 5),
-        ],
-      );
+    isCurved: true,
+    gradient: LinearGradient(colors: [
+      TColour.primaryColor2,
+      TColour.primaryColor1,
+    ]),
+    barWidth: 2,
+    isStrokeCapRound: true,
+    dotData: FlDotData(show: false),
+    belowBarData: BarAreaData(
+      show: true,
+      gradient: LinearGradient(colors: [
+        TColour.primaryColor2,
+        TColour.white,
+      ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+    ),
+    spots: const [
+      FlSpot(1, 3),
+      FlSpot(2, 5),
+      FlSpot(3, 4),
+      FlSpot(4, 7),
+      FlSpot(5, 4),
+      FlSpot(6, 8),
+      FlSpot(7, 5),
+    ],
+  );
 
   SideTitles get rightTitles => SideTitles(
-        getTitlesWidget: rightTitleWidgets,
-        showTitles: true,
-        interval: 2,
-        reservedSize: 40,
-      );
+    getTitlesWidget: rightTitleWidgets,
+    showTitles: true,
+    interval: 2,
+    reservedSize: 40,
+  );
 
   Widget rightTitleWidgets(double value, TitleMeta meta) {
     String text;
@@ -370,11 +382,11 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
   }
 
   SideTitles get bottomTitles => SideTitles(
-        showTitles: true,
-        reservedSize: 32,
-        interval: 1,
-        getTitlesWidget: bottomTitleWidgets,
-      );
+    showTitles: true,
+    reservedSize: 32,
+    interval: 1,
+    getTitlesWidget: bottomTitleWidgets,
+  );
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     var style = TextStyle(
