@@ -76,11 +76,11 @@ class _ActivityViewState extends State<ActivityView> {
   void setBmiInterpretation() {
     if (widget.bmiScore > 30) {
       bmiStatus = "OBESITY";
-      bmiInterpretation = "Please work to reduce obesity";
+      bmiInterpretation = "Do workout. ";
       bmiStatusColor = Colors.orange.shade900;
     } else if (widget.bmiScore >= 25) {
       bmiStatus = "Overweight";
-      bmiInterpretation = "Do regular exercise & reduce the weight";
+      bmiInterpretation = "Do regular exercise.";
       bmiStatusColor = Colors.orange.shade500;
     } else if (widget.bmiScore >= 18.5) {
       bmiStatus = "NORMAL";
@@ -88,7 +88,7 @@ class _ActivityViewState extends State<ActivityView> {
       bmiStatusColor = Colors.lightGreen.shade800;
     } else if (widget.bmiScore < 18.5) {
       bmiStatus = "UNDERWEIGHT";
-      bmiInterpretation = "Try to increase the weight";
+      bmiInterpretation = "Increase the weight.";
       bmiStatusColor = Colors.blueAccent.shade400;
     }
   }
@@ -405,8 +405,8 @@ class _ActivityViewState extends State<ActivityView> {
                             ],
                           ),
                           Container(
-                            width: media.width * 0.35,
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            width: media.width * 0.45,
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
                             decoration: BoxDecoration(
                               color: TColour.white.withOpacity(0.6),
                               borderRadius: BorderRadius.circular(20),
@@ -449,9 +449,7 @@ class _ActivityViewState extends State<ActivityView> {
                                     color: Colors.blueGrey.shade700,
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
+
                               ],
                             ),
                           ),
@@ -649,7 +647,7 @@ class _ActivityViewState extends State<ActivityView> {
                         ),
                         SizedBox(
                             height: 35,
-                            width: media.width * 0.25,
+                            width: media.width * 0.35,
                             child: RoundedButton(
                                 title: "workout",
                                 type: RoundButtonType.bgGradient,
