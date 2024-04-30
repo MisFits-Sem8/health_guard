@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
 import 'package:health_app/common_widgets/rounded_text_field.dart';
+import 'package:health_app/models/user.dart';
 import 'package:health_app/services/auth_service.dart';
 import 'package:health_app/view/login/login.dart';
 import '../on_boarding/on_boarding_view.dart';
@@ -29,7 +30,7 @@ class _SignUpViewState extends State<SignUpView> {
   void dispose() {
     super.dispose();
     _email.dispose();
-    _password.dispose();
+    _name.dispose();
     _password.dispose();
   }
 
@@ -238,14 +239,10 @@ class _SignUpViewState extends State<SignUpView> {
     }
 
     if (_formKey.currentState?.validate() ?? false) {
-      String? errorMessage = await _auth.createUserWithEmailAndPassword(
+      UserModel user = await _auth.createUserWithEmailAndPassword(
           _email.text, _password.text, _name.text);
-      if (EmailValidator.validate(errorMessage!)) {
+      if (EmailValidator.validate(user.email!)) {
         if (mounted) {
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => const CompleteProfileView()));
           Navigator.push(context, MaterialPageRoute(builder: (context)=>const OnBoardingView()));
         }
       } else {
@@ -267,7 +264,7 @@ class _SignUpViewState extends State<SignUpView> {
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                   Text(
-                    errorMessage,
+                    user.email!,
                     style: const TextStyle(fontSize: 13, color: Colors.white),
                   )
                 ],

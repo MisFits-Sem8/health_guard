@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/services/notification_service.dart';
+import 'package:health_app/models/user.dart';
 import 'package:health_app/view/login/sign_up_view.dart';
 import 'package:health_app/view/tips/health_tip_view.dart';
 import '../../common/color_extension.dart';
@@ -139,9 +140,9 @@ class _LoginViewState extends State<LoginView> {
 
   _login() async {
     if (_formKey.currentState?.validate() ?? false) {
-      String? errorMessage = await _auth.loginUserWithEmailAndPassword(
+      UserModel user = await _auth.loginUserWithEmailAndPassword(
           _email.text, _password.text);
-      if (EmailValidator.validate(errorMessage!)) {
+      if (EmailValidator.validate(user.email!)) {
         if (mounted) {
           NotificationService().showNotification();
           Navigator.push(context,
@@ -168,7 +169,7 @@ class _LoginViewState extends State<LoginView> {
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                     Text(
-                      errorMessage,
+                      user.email!,
                       style: const TextStyle(fontSize: 13, color: Colors.white),
                     )
                   ],

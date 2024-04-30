@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:health_app/common_widgets/rounded_btn.dart';
 import 'package:http/http.dart' as http;
 import '../../common/color_extension.dart';
+import '../profile/profile_view.dart';
 
 class MentalHealthSummary extends StatefulWidget {
   const MentalHealthSummary({super.key});
@@ -67,7 +69,7 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
     });
   }
 
-  String url = "http://10.0.2.2:5000/combine-prompt";
+  String url = "https://flask-chat.vercel.app/assess";
   Future<List<dynamic>> sendPostRequest() async {
     print("in the method");
     var response = await http.post(Uri.parse(url),
@@ -103,7 +105,29 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
     String output = 'Initial Output';
     return Scaffold(
       appBar: AppBar(
-        title: Text('Check Your Mental Health'),
+        backgroundColor: TColour.white,
+        centerTitle: true,
+        elevation: 0,
+        title: Text(
+          "Mental Health Assessment",
+          style: TextStyle(
+              color: TColour.black1, fontSize: 16, fontWeight: FontWeight.w700),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const ProfileView()));
+            },
+            icon: ClipOval(
+              child: Image.asset(
+                "assets/images/profile-female.jpg",
+                height: media.width * 0.15,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10.0),
@@ -115,7 +139,6 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                 'How do you feel today?',
                 style: TextStyle(
                   fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -187,34 +210,38 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                     ),
                     SizedBox(height: 20),
                     Text(
-                      'Selected Feeling: ${selectedFeeling.isNotEmpty ? selectedFeeling : "None"} ${selectedEmoji.isNotEmpty ? selectedEmoji : "None"}',
-                      style: TextStyle(fontSize: 20),
+                      'You are feeling ${selectedFeeling.isNotEmpty ? selectedFeeling : "None"} ${selectedEmoji.isNotEmpty ? selectedEmoji : "None"}',
+                      style:
+                          TextStyle(fontSize: 15, color: TColour.lightTextGray),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 20.0),
-            Text(
-              'Tell something about your feelings..',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            SizedBox(height: 30.0),
+            const Center(
+              child: Text(
+                'Tell something about your feelings...',
+                style: TextStyle(fontSize: 18.0),
+              ),
             ),
             SizedBox(height: 10.0),
             Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: TColour.gradient,
-                ),
+                color: TColour.lightGray,
+                boxShadow: const [
+                  BoxShadow(color: Colors.black12, blurRadius: 8)
+                ],
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: TextField(
                   controller: feelingController,
-                  decoration: InputDecoration(
-                      hintText: 'How do you feel?',
-                      border: OutlineInputBorder(),
+                  decoration: const InputDecoration(
+                      hintText: 'Say something...',
+                      border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 12.0)),
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: TColour.gray),
                   maxLines: 5,
                   onChanged: (value) {
                     setState(() {
@@ -222,32 +249,32 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                     });
                   }),
             ),
-            SizedBox(height: 10.0),
+            SizedBox(height: 20.0),
             Row(
               children: [
                 Expanded(
                   child: Column(
                     children: [
                       Text(
-                        'Stress level',
-                        style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.bold),
+                        'Sleep level',
+                        style: TextStyle(fontSize: 16.0),
                       ),
                       SizedBox(height: 10.0),
                       Container(
                         decoration: BoxDecoration(
+                            color: TColour.lightGray,
                             borderRadius: BorderRadius.circular(8.0),
                             boxShadow: const [
-                              BoxShadow(color: Colors.black12, blurRadius: 4)
+                              BoxShadow(color: Colors.black12, blurRadius: 8)
                             ]),
                         child: DropdownButton(
-                          // Initial Value
+                          underline: SizedBox(),
                           style: TextStyle(
                             color: TColour.primaryColor1,
-                            fontSize: 20,
+                            fontSize: 18,
                             fontStyle: FontStyle.italic,
                           ),
-                          dropdownColor: TColour.primaryColor2,
+                          dropdownColor: TColour.lightGray,
                           value: selectedSleepingStatus,
 
                           // Down Arrow Icon
@@ -267,17 +294,14 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                                 width: media.width * 0.3,
                                 alignment:
                                     Alignment.center, // Align text to center
-                                color: selectedSleepingStatus == value
-                                    ? TColour
-                                        .primaryColor1 // Selected item color
-                                    : TColour
-                                        .primaryColor2, // Non-selected item color
+                                color: TColour
+                                    .lightGray, // Non-selected item color
                                 child: Text(
                                   value,
                                   style: TextStyle(
                                     color: selectedSleepingStatus == value
-                                        ? Colors
-                                            .white // Text color for selected item
+                                        ? TColour
+                                            .primaryColor1 // Text color for selected item
                                         : Colors
                                             .black, // Text color for non-selected item
                                   ),
@@ -301,24 +325,25 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                     children: [
                       Text(
                         'Stress level',
-                        style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 16.0),
                       ),
                       SizedBox(height: 10.0),
                       Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0),
-                            boxShadow: const [
-                              BoxShadow(color: Colors.black12, blurRadius: 4)
-                            ]),
+                          color: TColour.lightGray,
+                          borderRadius: BorderRadius.circular(8.0),
+                          boxShadow: const [
+                            BoxShadow(color: Colors.black12, blurRadius: 8)
+                          ],
+                        ),
                         child: DropdownButton(
-                          // Initial Value
+                          underline: SizedBox(),
                           style: TextStyle(
                             color: TColour.primaryColor1,
-                            fontSize: 20,
+                            fontSize: 18,
                             fontStyle: FontStyle.italic,
                           ),
-                          dropdownColor: TColour.primaryColor2,
+                          dropdownColor: TColour.lightGray,
                           value: selectedStressLevel,
 
                           // Down Arrow Icon
@@ -335,17 +360,12 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                                 width: media.width * 0.3,
                                 alignment:
                                     Alignment.center, // Align text to center
-                                color: selectedStressLevel == value
-                                    ? TColour
-                                        .primaryColor1 // Selected item color
-                                    : TColour
-                                        .primaryColor2, // Non-selected item color
                                 child: Text(
                                   value,
                                   style: TextStyle(
                                     color: selectedStressLevel == value
-                                        ? Colors
-                                            .white // Text color for selected item
+                                        ? TColour
+                                            .primaryColor1 // Text color for selected item
                                         : Colors
                                             .black, // Text color for non-selected item
                                   ),
@@ -366,17 +386,10 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                 ),
               ],
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: 30.0),
             Container(
               alignment: Alignment.center,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: TColour.secondaryColor2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 4,
-                ),
+              child: RoundedButton(
                 onPressed: () async {
                   data = await sendPostRequest();
                   setState(() {
@@ -385,22 +398,17 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
                     depressionStatus = data;
                   });
                 },
-                child: Column(
-                  children: [
-                    Text(
-                      'Submit',
-                      style: TextStyle(color: Colors.white, fontSize: 15),
-                    ),
-                  ],
-                ),
+                title: "Submit",
+                type: RoundButtonType.bgGradient,
               ),
             ),
+            SizedBox(height: 30.0),
             Visibility(
                 visible: display, // Show the PieChart only when display is true
                 child: Center(
                     child: Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: TColour.gradient),
+                    color: TColour.white,
                     borderRadius: BorderRadius.circular(15),
                   ),
                   padding: EdgeInsets.all(3.0),
@@ -427,12 +435,13 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
       PieChartSectionData(
         color: _getColorForStatus(label1),
         value: score1 * 10000, // Convert score to percentage
-        title: '${(score1 * 100).toStringAsFixed(1)}\n${label1}%', // Display percentage
+        title:
+            '${(score1 * 100).toStringAsFixed(1)}\n${label1}%', // Display percentage
         radius: 30,
         titleStyle: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: TColour.black3,
         ),
       ),
     );
@@ -440,12 +449,13 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
       PieChartSectionData(
         color: _getColorForStatus(label2),
         value: score2 * 10000, // Convert score to percentage
-        title: '${(score2 * 100).toStringAsFixed(1)}%\n${label2}', // Display percentage
+        title:
+            '${(score2 * 100).toStringAsFixed(1)}%\n${label2}', // Display percentage
         radius: 50,
         titleStyle: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: TColour.black3,
         ),
       ),
     );
@@ -453,12 +463,13 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
       PieChartSectionData(
         color: _getColorForStatus(label3),
         value: score3 * 10000, // Convert score to percentage
-        title: '${(score3 * 100).toStringAsFixed(1)}%\n${label3}', // Display percentage
+        title:
+            '${(score3 * 100).toStringAsFixed(1)}%\n${label3}', // Display percentage
         radius: 40,
         titleStyle: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: TColour.black3,
         ),
       ),
     );
@@ -470,11 +481,11 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
   Color _getColorForStatus(String status) {
     switch (status) {
       case "moderate":
-        return Colors.red;
+        return Colors.blueAccent;
       case "not depression":
         return Colors.green;
       case "severe":
-        return Colors.white;
+        return Colors.red;
       default:
         return Colors.grey;
     }
