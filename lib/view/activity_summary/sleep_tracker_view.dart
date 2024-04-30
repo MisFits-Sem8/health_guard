@@ -11,6 +11,11 @@ class SleepTrackerView extends StatefulWidget {
 }
 
 class _SleepTrackerViewState extends State<SleepTrackerView> {
+
+  int targetCalorie = 2000;
+  int completedCalorie =800;
+  String sleepTime="8 hours 30 minutes";
+  double previousSteps = 0;
   List<int> showingTooltipOnSpots = [4];
   String selectedName = 'Bedtime'; // Default selection
   DateTime? selectedTime; // Placeholder for selected time
@@ -51,26 +56,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
         backgroundColor: TColour.white,
         centerTitle: true,
         elevation: 0,
-        // leading: InkWell(
-        //   onTap: () {
-        //     Navigator.pop(context);
-        //   },
-        //   child: Container(
-        //     margin: const EdgeInsets.all(8),
-        //     height: 40,
-        //     width: 40,
-        //     alignment: Alignment.center,
-        //     decoration: BoxDecoration(
-        //         color: TColour.lightGray,
-        //         borderRadius: BorderRadius.circular(10)),
-        //     child: Image.asset(
-        //       "assets/images/icons/back-button.png",
-        //       width: 15,
-        //       height: 15,
-        //       fit: BoxFit.contain,
-        //     ),
-        //   ),
-        // ),
+
         title: Text(
           "Activity Tracker",
           style: TextStyle(
@@ -264,7 +250,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Text(
-                              "8h 20m",
+                              "${sleepTime}",
                               style: TextStyle(
                                   color: TColour.white,
                                   fontSize: 16,
@@ -430,7 +416,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Text(
-                              "1200/4000",
+                              "${completedCalorie}/${targetCalorie}",
                               style: TextStyle(
                                   color: TColour.white,
                                   fontSize: 16,
@@ -568,22 +554,22 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
     String text;
     switch (value.toInt()) {
       case 0:
-        text = '0kcal';
+        text = '0cal';
         break;
       case 2:
-        text = '2kcal';
+        text = '0.4cal';
         break;
       case 4:
-        text = '4kcal';
+        text = '0.8kcal';
         break;
       case 6:
-        text = '6kcal';
+        text = '1.2kcal';
         break;
       case 8:
-        text = '8kcal';
+        text = '1.6kcal';
         break;
       case 10:
-        text = '10kcal';
+        text = '2kcal';
         break;
       default:
         return Container();
