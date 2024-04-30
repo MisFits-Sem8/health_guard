@@ -234,7 +234,7 @@ class _ActivityViewState extends State<ActivityView> {
     debugPrint(filteredSpots.toString());
     setState(() {
       this.allSpots = filteredSpots;
-      this.tools = List<int>.generate(filteredSpots.length, (i) => i);
+      this.tools = [filteredSpots.length-1];
     });
   }
 
