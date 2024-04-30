@@ -44,16 +44,6 @@ class ActivityView extends StatefulWidget {
 }
 
 class _ActivityViewState extends State<ActivityView> {
-  // late String gender = "";
-  // late String name = "";
-  // late int height = 0;
-  // late int weight = 0;
-  // late int age = 0;
-  // late double sleep = 0;
-  // late double workout = 0;
-  // late int targetWaterIntake = 0;
-  // final AuthService _auth = AuthService();
-
 
   String? bmiStatus;
 
@@ -110,26 +100,6 @@ class _ActivityViewState extends State<ActivityView> {
     {"title": "12-14", "subtitle": "1 cup"}
   ];
 
-  // Future<void> _initializeUserData() async {
-  //   UserDataModel? userData = await _auth.getUserData();
-  //   if (userData != null) {
-  //     setState(() {
-  //       this.name = userData.name;
-  //       height = userData.height;
-  //       weight = userData.weight;
-  //       age = userData.age;
-  //       gender = userData.gender;
-  //       sleep = userData.sleep;
-  //       workout = userData.workout;
-  //       targetWaterIntake = (userData.water * 1000).toInt();
-  //       double heightInMeters = height / 100.0;
-  //       bmiScore = double.parse(
-  //           (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
-  //     });
-  //   } else {
-  //     print("User data is not available.");
-  //   }
-  // }
 
   @override
   void initState() {
