@@ -6,6 +6,7 @@ import 'package:health_app/models/daily_target.dart';
 import 'package:health_app/models/depression_detector.dart';
 import 'package:health_app/models/schedule.dart';
 import 'package:health_app/models/user.dart';
+import 'package:health_app/models/water_intake.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
@@ -89,9 +90,9 @@ class FitnessDatabaseHelper {
 
   void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $stepsTable($colDate TEXT, PRIMARY KEY,  $colSteps INTEGER, $colUserId TEXT, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
-    await db.execute(
         'CREATE TABLE $userTable($colId TEXT PRIMARY KEY, $colName TEXT, $colEmail TEXT, $colGender TEXT, $colAge INTEGER, $colHeight INTEGER, $colWeight INTEGER)');
+    await db.execute(
+        'CREATE TABLE $stepsTable($colDate TEXT PRIMARY KEY,  $colSteps INTEGER, $colUserId TEXT, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
         'CREATE TABLE $sleepTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId TEXT, $colDate TEXT, $colDuration INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
@@ -119,36 +120,52 @@ class FitnessDatabaseHelper {
     return result;
   }
 
-  // Insert Operation: Insert a DailySteps object to database
-  Future<int> insertWaterIntake(DailySteps steps) async {
+  Future<int> getTodayWaterIntake(String userId, String date) async {
     Database db = await fitnessDatabase;
-    var result = await db.insert(stepsTable, steps.toMap());
+    var result = await db.query(
+      waterIntakeTable,
+      where: '$colUserId = ? AND $colDate = ?',
+      whereArgs: [userId, date],
+      orderBy: '$colDate ASC',
+    );
+
+    if (result.isNotEmpty) {
+      return WaterIntake.fromMapObject(result.first).water;
+    }
+
+    return 0;
+  }
+
+  // Insert Operation: Insert a DailySteps object to database
+  Future<int> insertWaterIntake(WaterIntake waterIntake) async {
+    Database db = await fitnessDatabase;
+    var result = await db.insert(waterIntakeTable, waterIntake.toMap());
     return result;
   }
 
   // Update Operation: Update a DailySteps object and save it to database
-  Future<int> updateWaterIntake(DailySteps steps) async {
+  Future<int> updateWaterIntake(WaterIntake waterIntake) async {
     Database db = await fitnessDatabase;
 
     // Check if the record exists
     List<Map> result = await db.query(waterIntakeTable,
-        where: '$colDate = ?', whereArgs: [steps.date]);
+        where: '$colDate = ?', whereArgs: [waterIntake.date]);
 
     if (result.isEmpty) {
       // If the record doesn't exist, insert it
-      return await db.insert(waterIntakeTable, steps.toMap());
+      return await db.insert(waterIntakeTable, waterIntake.toMap());
     } else {
       // If the record exists, update it
-      return await db.update(waterIntakeTable, steps.toMap(),
-          where: '$colDate = ?', whereArgs: [steps.date]);
+      return await db.update(waterIntakeTable, waterIntake.toMap(),
+          where: '$colDate = ?', whereArgs: [waterIntake.date]);
     }
   }
 
   // Delete Operation: Delete a DailySteps object from database
   Future<int> deleteWaterIntake(String date) async {
     var db = await fitnessDatabase;
-    int result =
-        await db.rawDelete('DELETE FROM $stepsTable WHERE $colDate = $date');
+    int result = await db
+        .rawDelete('DELETE FROM $waterIntakeTable WHERE $colDate = $date');
     return result;
   }
 

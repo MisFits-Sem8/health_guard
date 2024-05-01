@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
 import 'package:health_app/models/user.dart';
+import 'package:health_app/models/water_intake.dart';
 import 'package:health_app/services/auth_service.dart';
 import 'package:health_app/view/activity/add_activity.dart';
 import 'package:health_app/view/activity_summary/sleep_tracker_view.dart';
@@ -82,6 +83,8 @@ class _ActivityViewState extends State<ActivityView> {
 
   int _dailySteps = 0;
 
+  int waterIntake = 0;
+
   double previousSteps = 0;
 
   final DataRepository _dataRepository = DataRepository();
@@ -133,6 +136,7 @@ class _ActivityViewState extends State<ActivityView> {
         bmiScore = double.parse(
             (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
         updateStepsView();
+        updateWaterIntake();
       });
     } else {
       print("User data is not available.");
@@ -279,12 +283,17 @@ class _ActivityViewState extends State<ActivityView> {
     }
   }
 
-  int waterIntake = 0;
   // int targetWaterIntake = 2000; // Customize this value as needed
+  void updateWaterIntake() async {
+    waterIntake = await databaseHelper.getTodayWaterIntake(
+        id, DateFormat('yyyy-MM-dd').format(DateTime.now()));
+  }
 
   void incrementWaterIntake() {
     setState(() {
       waterIntake += 200;
+      databaseHelper.updateWaterIntake(WaterIntake(
+          DateFormat('yyyy-MM-dd').format(DateTime.now()), waterIntake, id));
     });
   }
 
