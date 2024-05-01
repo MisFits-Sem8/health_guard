@@ -100,13 +100,21 @@ class _ActivityViewState extends State<ActivityView> {
     {"title": "12-14", "subtitle": "1 cup"}
   ];
 
-
+  void updateWaterIntake() async {
+    int id = 1; // Set your user id here
+    int intake = await databaseHelper.getWaterIntake(id);
+    setState(() {
+      waterIntake = intake;
+    });
+  }
   @override
   void initState() {
     // _initializeUserData();
     super.initState();
+
     initPlatformState();
     updateStepsView();
+    updateWaterIntake();
   }
 
   void onStepCount(StepCount event) {
@@ -241,10 +249,15 @@ class _ActivityViewState extends State<ActivityView> {
   int waterIntake = 0;
   // int targetWaterIntake = 2000; // Customize this value as needed
 
-  void incrementWaterIntake() {
-    setState(() {
-      waterIntake += 200;
-    });
+  // void incrementWaterIntake() {
+  //   setState(() {
+  //     waterIntake += 200;
+  //   });
+  // }
+  void increaseWaterIntake() async {
+    int id = 1; // Set your user id here
+    await databaseHelper.increaseWaterIntake(id);
+    updateWaterIntake();
   }
 
   @override
@@ -738,7 +751,9 @@ class _ActivityViewState extends State<ActivityView> {
                                     title: 'Add🥤',
                                     type: RoundButtonType.bgGradient,
                                     fontSize: 13,
-                                    onPressed: incrementWaterIntake))
+                                    onPressed: increaseWaterIntake))
+
+
                           ],
                         ),
                       ),

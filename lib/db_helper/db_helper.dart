@@ -40,6 +40,7 @@ class FitnessDatabaseHelper {
   void _createDb(Database db, int newVersion) async {
     await db.execute(
         'CREATE TABLE $stepsTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colDate TEXT, $colSteps INTEGER)');
+    'CREATE TABLE WaterIntake (id INTEGER PRIMARY KEY, intake INTEGER)';
   }
 
   // Fetch Operation: Get all DailySteps objects from database
@@ -115,5 +116,33 @@ class FitnessDatabaseHelper {
     }
 
     return stepsList;
+  }
+
+  Future<void> increaseWaterIntake(int id) async {
+    Database db = await fitnessDatabase;
+    var res = await db.rawQuery('SELECT * FROM WaterIntake WHERE id = $id');
+    if (res.isEmpty) {
+      await db.transaction((txn) async {
+        await txn
+            .rawInsert('INSERT INTO WaterIntake(id, intake) VALUES($id, 200)');
+      });
+    } else {
+      int newIntake = (res.first['intake'] as int) + 200;
+      await db.transaction((txn) async {
+        await txn.rawUpdate(
+            'UPDATE WaterIntake SET intake = $newIntake WHERE id = $id');
+      });
+    }
+  }
+
+  Future<int> getWaterIntake(int id) async {
+    Database db = await fitnessDatabase;
+    var res =
+        await db.rawQuery('SELECT intake FROM WaterIntake WHERE id = $id');
+    int count = 0;
+    for (int i = 0; i < res.length; i++) {
+      count += res[i] as int;
+    }
+    return count;
   }
 }
