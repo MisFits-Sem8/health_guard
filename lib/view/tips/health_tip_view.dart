@@ -75,14 +75,35 @@ class HealthTipPage extends StatelessWidget {
                       ],
                     ),
                   ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 15),
+                  //   child: Text(
+                  //     "Health Tip of the Day",
+                  //     style: TextStyle(
+                  //       color: TColour.black1,
+                  //       fontSize: 24,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //   ),
+                  // ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(
-                      "Health Habit of the Day for Vibrant Living",
-                      style: TextStyle(
-                        color: TColour.black1,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: ShaderMask(
+                      blendMode: BlendMode.srcIn,
+                      shaderCallback: (bounds) {
+                        return LinearGradient(
+                                colors: TColour.primary,
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight)
+                            .createShader(Rect.fromLTRB(
+                                0, 0, bounds.width, bounds.height));
+                      },
+                      child: Text(
+                        "Health Tip of the Day",
+                        style: TextStyle(
+                            color: TColour.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 28),
                       ),
                     ),
                   ),
@@ -94,7 +115,7 @@ class HealthTipPage extends StatelessWidget {
                     child: Text(
                       selectedTip["title"],
                       style: TextStyle(
-                          color: TColour.black2,
+                          color: TColour.black3,
                           fontSize: 18,
                           fontWeight: FontWeight.w700),
                     ),

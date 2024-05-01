@@ -18,11 +18,23 @@ class MessageView extends StatefulWidget {
 class _MessageViewState extends State<MessageView> {
   final _auth = AuthService();
   final _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   Future<void> _sendMessages(String text, List<Message> messages) async {
     List<Message> loadedMessages = await _auth.sendText(text, messages);
     setState(() {
       widget.messages = loadedMessages;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(_scrollController.position.extentTotal);
     });
   }
 
@@ -49,6 +61,7 @@ class _MessageViewState extends State<MessageView> {
         body: Column(children: [
           Expanded(
             child: GroupedListView<Message, DateTime>(
+              controller: _scrollController,
               padding: const EdgeInsets.symmetric(horizontal: 12),
               useStickyGroupSeparators: true,
               floatingHeader: true,
@@ -58,7 +71,8 @@ class _MessageViewState extends State<MessageView> {
                 message.date.month,
                 message.date.day,
               ),
-              groupHeaderBuilder: (Message message) => SizedBox(
+              groupHeaderBuilder: (Message message) => Container(
+                color: TColour.white.withOpacity(0.8),
                 height: media.height * 0.05,
                 child: Center(
                   child: ShaderMask(
