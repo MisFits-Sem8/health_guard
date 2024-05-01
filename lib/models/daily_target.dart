@@ -1,19 +1,20 @@
 // Target class
 class Target {
-  late int id;
-  late int userId;
+  // late int id;
+  late String date;
+  late String userId;
   late int calories;
   late int water;
   late int steps;
 
-  Target(this.userId, this.calories, this.water, this.steps);
+  Target(this.date, this.userId, this.calories, this.water, this.steps);
 
-  Target.withId(this.id, this.userId, this.calories, this.water, this.steps);
+  // Target.withId(this.id, this.userId, this.calories, this.water, this.steps);
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{};
 
-    map['id'] = id;
+    map['date'] = date;
     map['user_id'] = userId;
     map['calories'] = calories;
     map['water'] = water;
@@ -23,8 +24,8 @@ class Target {
   }
 
   factory Target.fromMapObject(Map<String, dynamic> map) {
-    return Target.withId(
-      map['id'],
+    return Target(
+      map['date'],
       map['user_id'],
       map['calories'],
       map['water'],

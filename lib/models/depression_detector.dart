@@ -1,7 +1,7 @@
 // DepressionDetector class
 class DepressionDetector {
   late int id;
-  late int userId;
+  late String userId;
   late String time;
   late int stressLevel;
   late String sleepingStatus;

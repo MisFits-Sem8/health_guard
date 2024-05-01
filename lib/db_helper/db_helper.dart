@@ -94,11 +94,11 @@ class FitnessDatabaseHelper {
     await db.execute(
         'CREATE TABLE $stepsTable($colDate TEXT PRIMARY KEY,  $colSteps INTEGER, $colUserId TEXT, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
-        'CREATE TABLE $sleepTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId TEXT, $colDate TEXT, $colDuration INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
+        'CREATE TABLE $sleepTable($colDate TEXT PRIMARY KEY, $colUserId TEXT,  $colDuration INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
         'CREATE TABLE $scheduleTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId TEXT, $colType TEXT, $colTime TEXT, $colIsActive BOOLEAN, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
-        'CREATE TABLE $targetTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId TEXT, $colCalories INTEGER, $colWater INTEGER, $colSteps INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
+        'CREATE TABLE $targetTable($colDate TEXT PRIMARY KEY, $colUserId TEXT, $colCalories INTEGER, $colWater INTEGER, $colSteps INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
         'CREATE TABLE $chatTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId TEXT, $colIsSender BOOLEAN, $colMessage TEXT, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
@@ -247,14 +247,121 @@ class FitnessDatabaseHelper {
     return stepsList;
   }
 
-  Future<void> populateDb() async {
-    var rng = new Random();
+  // Future<void> populateDb() async {
+  //   var rng = new Random();
+  //   for (int i = 18; i <= 28; i++) {
+  //     String date = '2024-04-${i.toString().padLeft(2, '0')}';
+  //     int steps = rng.nextInt(990) +
+  //         10; // generates a random integer where 10 <= _ <= 2000
+  //     DailySteps dailySteps = DailySteps(date, steps, "1");
+  //     await insertSteps(dailySteps);
+  //   }
+  // }
+  Future<void> populateDb(String userId) async {
+    Database db = await fitnessDatabase;
+    var rng = Random();
+    // String userId = "1"; // Replace with the desired user ID
+
+    // Populate user table
+    // await db.execute(
+    //   'INSERT INTO $userTable ($colId, $colName, $colGender, $colAge, $colHeight, $colWeight) VALUES (?, ?, ?, ?, ?, ?)',
+    //   [userId, "John Doe", "Male", 25, 175, 70],
+    // );
+
+    // Populate steps table
     for (int i = 18; i <= 28; i++) {
       String date = '2024-04-${i.toString().padLeft(2, '0')}';
       int steps = rng.nextInt(990) +
           10; // generates a random integer where 10 <= _ <= 2000
-      DailySteps dailySteps = DailySteps(date, steps, "1");
+      DailySteps dailySteps = DailySteps(date, steps, userId);
       await insertSteps(dailySteps);
+    }
+
+    // Populate sleep table
+    for (int i = 18; i <= 28; i++) {
+      String date = '2024-04-${i.toString().padLeft(2, '0')}';
+      int duration = rng.nextInt(8) +
+          6; // generates a random integer where 6 <= _ <= 13 (hours of sleep)
+      Sleep sleep = Sleep(userId, date, duration);
+      await insertSleep(sleep);
+    }
+
+// Populate schedule table
+    List<String> scheduleTypes = [
+      "Breakfast",
+      "Lunch",
+      "Dinner",
+      "Alarm",
+      "Workout"
+    ];
+
+    for (int i = 0; i < 5; i++) {
+      String type = scheduleTypes[rng.nextInt(scheduleTypes.length)];
+
+      // Generate a random DateTime object
+      DateTime now = DateTime.now();
+      DateTime randomDateTime = now.add(Duration(
+          days: rng.nextInt(30),
+          hours: rng.nextInt(24),
+          minutes: rng.nextInt(60)));
+
+      bool isActive = rng.nextBool();
+      Schedule schedule = Schedule(userId, type, randomDateTime, isActive);
+      await insertSchedule(schedule);
+    }
+
+    // Populate target table
+// Populate target table
+    for (int i = 18; i <= 28; i++) {
+      String date = '2024-04-${i.toString().padLeft(2, '0')}';
+      int calories =
+          rng.nextInt(1000) + 1500; // Random calories between 1500 and 2499
+      int water = rng.nextInt(1000) +
+          2000; // Random water intake between 2000 and 2999 milliliters
+      int steps =
+          rng.nextInt(5000) + 5000; // Random steps between 5000 and 9999
+
+      await db.execute(
+        'INSERT INTO $targetTable ($colDate, $colUserId, $colCalories, $colWater, $colSteps) VALUES (?, ?, ?, ?, ?)',
+        [date, userId, calories, water, steps],
+      );
+    }
+
+    // Populate chat table
+    // List<String> messages = ["Hello!", "How are you?", "I'm doing great!", "Let's catch up soon."];
+    // for (int i = 0; i < messages.length; i++) {
+    //   bool isSender = i % 2 == 0;
+    //   Chat chat = Chat(userId, isSender, messages[i]);
+    //   await insertChat(chat);
+    // }
+
+    // // Populate depressionDetector table
+    // List<String> sleepingStatus = ["Good", "Average", "Poor"];
+    // for (int i = 18; i <= 28; i++) {
+    //   String date = '2024-04-${i.toString().padLeft(2, '0')}';
+    //   String time = "${rng.nextInt(24)}:${rng.nextInt(60)}";
+    //   int stressLevel = rng.nextInt(10);
+    //   int sadness = rng.nextInt(10);
+    //   int joy = rng.nextInt(10);
+    //   int love = rng.nextInt(10);
+    //   int angry = rng.nextInt(10);
+    //   int fear = rng.nextInt(10);
+    //   int surprise = rng.nextInt(10);
+    //   String thoughts = "Some random thoughts...";
+    //   String sleepingStatusValue = sleepingStatus[rng.nextInt(sleepingStatus.length)];
+    //   DepressionDetector detector = DepressionDetector(userId, time, stressLevel, sleepingStatusValue, sadness, joy, love, angry, fear, surprise, thoughts);
+    //   await insertDepressionDetector(detector);
+    // }
+
+    // Populate waterIntake table
+    for (int i = 18; i <= 28; i++) {
+      String date = '2024-04-${i.toString().padLeft(2, '0')}';
+      int waterIntake = rng.nextInt(2000) +
+          1000; // generates a random integer where 1000 <= _ <= 3000 (milliliters)
+      await db.execute(
+        'INSERT INTO $waterIntakeTable ($colDate, $colUserId, $colWater) VALUES (?, ?, ?)',
+        [date, userId, waterIntake],
+      );
     }
   }
 
@@ -318,7 +425,7 @@ class FitnessDatabaseHelper {
   Future<int> updateSleep(Sleep sleep) async {
     Database db = await fitnessDatabase;
     var result = await db.update(sleepTable, sleep.toMap(),
-        where: '$colId = ?', whereArgs: [sleep.id]);
+        where: '$colDate = ?', whereArgs: [sleep.date]);
     return result;
   }
 
@@ -401,7 +508,7 @@ class FitnessDatabaseHelper {
   Future<int> updateTarget(Target target) async {
     Database db = await fitnessDatabase;
     var result = await db.update(targetTable, target.toMap(),
-        where: '$colId = ?', whereArgs: [target.id]);
+        where: '$colDate = ?', whereArgs: [target.date]);
     return result;
   }
 
@@ -438,12 +545,12 @@ class FitnessDatabaseHelper {
     return result;
   }
 
-  Future<int> updateChat(Chat chat) async {
-    Database db = await fitnessDatabase;
-    var result = await db.update(chatTable, chat.toMap(),
-        where: '$colId = ?', whereArgs: [chat.id]);
-    return result;
-  }
+  // Future<int> updateChat(Chat chat) async {
+  //   Database db = await fitnessDatabase;
+  //   var result = await db.update(chatTable, chat.toMap(),
+  //       where: '$colId = ?', whereArgs: [chat.id]);
+  //   return result;
+  // }
 
   Future<int> deleteChat(int id) async {
     var db = await fitnessDatabase;

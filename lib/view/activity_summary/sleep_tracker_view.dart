@@ -1,6 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
+import 'package:health_app/db_helper/db_helper.dart';
+import 'package:health_app/models/user.dart';
+import 'package:health_app/services/auth_service.dart';
 import '../profile/profile_view.dart';
 
 class SleepTrackerView extends StatefulWidget {
@@ -11,10 +14,44 @@ class SleepTrackerView extends StatefulWidget {
 }
 
 class _SleepTrackerViewState extends State<SleepTrackerView> {
+  late String id;
+  // String gender;
+  // String name = "";
+  // int height = 0;
+  // int weight = 0;
+  // int age = 0;
+  // double sleep = 0;
+  // double workout = 0;
+  // int targetWaterIntake = 0;
+  final AuthService _auth = AuthService();
 
+  Future<void> _initializeUserData() async {
+    UserDataModel? userData = await _auth.getUserData();
+    if (userData != null) {
+      setState(() {
+        id = userData.id;
+        // name = userData.name;
+        // height = userData.height;
+        // weight = userData.weight;
+        // age = userData.age;
+        // gender = userData.gender;
+        // sleep = userData.sleep;
+        // workout = userData.workout;
+        // targetWaterIntake = (userData.water * 1000).toInt();
+        // double heightInMeters = height / 100.0;
+        // bmiScore = double.parse(
+        //     (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
+        updateSchedules();
+      });
+    } else {
+      print("User data is not available.");
+    }
+  }
+
+  FitnessDatabaseHelper _databaseHelper = FitnessDatabaseHelper();
   int targetCalorie = 2000;
-  int completedCalorie =800;
-  String sleepTime="8 hours 30 minutes";
+  int completedCalorie = 800;
+  String sleepTime = "8 hours 30 minutes";
   double previousSteps = 0;
   List<int> showingTooltipOnSpots = [4];
   String selectedName = 'Bedtime'; // Default selection
@@ -47,6 +84,8 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
     return 'in $formattedHours hours $formattedMinutes minutes';
   }
 
+  void updateSchedules() {}
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
@@ -56,7 +95,6 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
         backgroundColor: TColour.white,
         centerTitle: true,
         elevation: 0,
-
         title: Text(
           "Activity Tracker",
           style: TextStyle(
@@ -115,7 +153,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                       child: LineChart(
                         LineChartData(
                           showingTooltipIndicators:
-                          showingTooltipOnSpots.map((index) {
+                              showingTooltipOnSpots.map((index) {
                             return ShowingTooltipIndicators([
                               LineBarSpot(
                                 tooltipsOnBar,
@@ -161,12 +199,12 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                                     show: true,
                                     getDotPainter:
                                         (spot, percent, barData, index) =>
-                                        FlDotCirclePainter(
-                                          radius: 3,
-                                          color: Colors.white,
-                                          strokeWidth: 1,
-                                          strokeColor: TColour.primaryColor2,
-                                        ),
+                                            FlDotCirclePainter(
+                                      radius: 3,
+                                      color: Colors.white,
+                                      strokeWidth: 1,
+                                      strokeColor: TColour.primaryColor2,
+                                    ),
                                   ),
                                 );
                               }).toList();
@@ -267,169 +305,169 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                   SizedBox(
                     height: media.width * 0.05,
                   ),
-                  Text(
-                    "Calory Summary",
-                    style: TextStyle(
-                        color: TColour.black1,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.only(left: 15),
-                      height: media.width * 0.5,
-                      width: double.maxFinite,
-                      child: LineChart(
-                        LineChartData(
-                          showingTooltipIndicators:
-                          showingTooltipOnSpots.map((index) {
-                            return ShowingTooltipIndicators([
-                              LineBarSpot(
-                                tooltipsOnBar,
-                                lineBarsData2.indexOf(tooltipsOnBar),
-                                tooltipsOnBar.spots[index],
-                              ),
-                            ]);
-                          }).toList(),
-                          lineTouchData: LineTouchData(
-                            enabled: true,
-                            handleBuiltInTouches: false,
-                            touchCallback: (FlTouchEvent event,
-                                LineTouchResponse? response) {
-                              if (response == null ||
-                                  response.lineBarSpots == null) {
-                                return;
-                              }
-                              if (event is FlTapUpEvent) {
-                                final spotIndex =
-                                    response.lineBarSpots!.first.spotIndex;
-                                showingTooltipOnSpots.clear();
-                                setState(() {
-                                  showingTooltipOnSpots.add(spotIndex);
-                                });
-                              }
-                            },
-                            mouseCursorResolver: (FlTouchEvent event,
-                                LineTouchResponse? response) {
-                              if (response == null ||
-                                  response.lineBarSpots == null) {
-                                return SystemMouseCursors.basic;
-                              }
-                              return SystemMouseCursors.click;
-                            },
-                            getTouchedSpotIndicator: (LineChartBarData barData,
-                                List<int> spotIndexes) {
-                              return spotIndexes.map((index) {
-                                return TouchedSpotIndicatorData(
-                                  FlLine(
-                                    color: Colors.transparent,
-                                  ),
-                                  FlDotData(
-                                    show: true,
-                                    getDotPainter:
-                                        (spot, percent, barData, index) =>
-                                        FlDotCirclePainter(
-                                          radius: 3,
-                                          color: Colors.white,
-                                          strokeWidth: 1,
-                                          strokeColor: TColour.primaryColor2,
-                                        ),
-                                  ),
-                                );
-                              }).toList();
-                            },
-                            touchTooltipData: LineTouchTooltipData(
-                              // tooltipBgColor: TColour.secondaryColor1,
-                              tooltipRoundedRadius: 5,
-                              getTooltipItems:
-                                  (List<LineBarSpot> lineBarsSpot) {
-                                return lineBarsSpot.map((lineBarSpot) {
-                                  return LineTooltipItem(
-                                    "${lineBarSpot.y.toInt()} Calories",
-                                    const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  );
-                                }).toList();
-                              },
-                            ),
-                          ),
-                          lineBarsData: lineBarsData2,
-                          minY: -0.01,
-                          maxY: 10.01,
-                          titlesData: FlTitlesData(
-                              show: true,
-                              leftTitles: AxisTitles(),
-                              topTitles: AxisTitles(),
-                              bottomTitles: AxisTitles(
-                                sideTitles: bottomTitles,
-                              ),
-                              rightTitles: AxisTitles(
-                                sideTitles: rightTitlesCalorie,
-                              )),
-                          gridData: FlGridData(
-                            show: true,
-                            drawHorizontalLine: true,
-                            horizontalInterval: 2,
-                            drawVerticalLine: false,
-                            getDrawingHorizontalLine: (value) {
-                              return FlLine(
-                                color: TColour.gray.withOpacity(0.15),
-                                strokeWidth: 2,
-                              );
-                            },
-                          ),
-                          borderData: FlBorderData(
-                            show: true,
-                            border: Border.all(
-                              color: Colors.transparent,
-                            ),
-                          ),
-                        ),
-                      )),
-                  SizedBox(
-                    height: media.width * 0.05,
-                  ),
-                  Container(
-                    width: double.maxFinite,
-                    height: media.width * 0.4,
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: TColour.primary),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Text(
-                              "Today Calorie Count",
-                              style: TextStyle(
-                                color: TColour.white,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Text(
-                              "${completedCalorie}/${targetCalorie}",
-                              style: TextStyle(
-                                  color: TColour.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          const Spacer(),
-                          Image.asset(
-                            "assets/images/SleepGraph.png",
-                            width: double.maxFinite,
-                          )
-                        ]),
-                  ),
+                  // Text(
+                  //   "Calory Summary",
+                  //   style: TextStyle(
+                  //       color: TColour.black1,
+                  //       fontSize: 16,
+                  //       fontWeight: FontWeight.w700),
+                  // ),
+                  // Container(
+                  //     padding: const EdgeInsets.only(left: 15),
+                  //     height: media.width * 0.5,
+                  //     width: double.maxFinite,
+                  //     child: LineChart(
+                  //       LineChartData(
+                  //         showingTooltipIndicators:
+                  //             showingTooltipOnSpots.map((index) {
+                  //           return ShowingTooltipIndicators([
+                  //             LineBarSpot(
+                  //               tooltipsOnBar,
+                  //               lineBarsData2.indexOf(tooltipsOnBar),
+                  //               tooltipsOnBar.spots[index],
+                  //             ),
+                  //           ]);
+                  //         }).toList(),
+                  //         lineTouchData: LineTouchData(
+                  //           enabled: true,
+                  //           handleBuiltInTouches: false,
+                  //           touchCallback: (FlTouchEvent event,
+                  //               LineTouchResponse? response) {
+                  //             if (response == null ||
+                  //                 response.lineBarSpots == null) {
+                  //               return;
+                  //             }
+                  //             if (event is FlTapUpEvent) {
+                  //               final spotIndex =
+                  //                   response.lineBarSpots!.first.spotIndex;
+                  //               showingTooltipOnSpots.clear();
+                  //               setState(() {
+                  //                 showingTooltipOnSpots.add(spotIndex);
+                  //               });
+                  //             }
+                  //           },
+                  //           mouseCursorResolver: (FlTouchEvent event,
+                  //               LineTouchResponse? response) {
+                  //             if (response == null ||
+                  //                 response.lineBarSpots == null) {
+                  //               return SystemMouseCursors.basic;
+                  //             }
+                  //             return SystemMouseCursors.click;
+                  //           },
+                  //           getTouchedSpotIndicator: (LineChartBarData barData,
+                  //               List<int> spotIndexes) {
+                  //             return spotIndexes.map((index) {
+                  //               return TouchedSpotIndicatorData(
+                  //                 FlLine(
+                  //                   color: Colors.transparent,
+                  //                 ),
+                  //                 FlDotData(
+                  //                   show: true,
+                  //                   getDotPainter:
+                  //                       (spot, percent, barData, index) =>
+                  //                           FlDotCirclePainter(
+                  //                     radius: 3,
+                  //                     color: Colors.white,
+                  //                     strokeWidth: 1,
+                  //                     strokeColor: TColour.primaryColor2,
+                  //                   ),
+                  //                 ),
+                  //               );
+                  //             }).toList();
+                  //           },
+                  //           touchTooltipData: LineTouchTooltipData(
+                  //             // tooltipBgColor: TColour.secondaryColor1,
+                  //             tooltipRoundedRadius: 5,
+                  //             getTooltipItems:
+                  //                 (List<LineBarSpot> lineBarsSpot) {
+                  //               return lineBarsSpot.map((lineBarSpot) {
+                  //                 return LineTooltipItem(
+                  //                   "${lineBarSpot.y.toInt()} Calories",
+                  //                   const TextStyle(
+                  //                     color: Colors.white,
+                  //                     fontSize: 10,
+                  //                     fontWeight: FontWeight.bold,
+                  //                   ),
+                  //                 );
+                  //               }).toList();
+                  //             },
+                  //           ),
+                  //         ),
+                  //         lineBarsData: lineBarsData2,
+                  //         minY: -0.01,
+                  //         maxY: 10.01,
+                  //         titlesData: FlTitlesData(
+                  //             show: true,
+                  //             leftTitles: AxisTitles(),
+                  //             topTitles: AxisTitles(),
+                  //             bottomTitles: AxisTitles(
+                  //               sideTitles: bottomTitles,
+                  //             ),
+                  //             rightTitles: AxisTitles(
+                  //               sideTitles: rightTitlesCalorie,
+                  //             )),
+                  //         gridData: FlGridData(
+                  //           show: true,
+                  //           drawHorizontalLine: true,
+                  //           horizontalInterval: 2,
+                  //           drawVerticalLine: false,
+                  //           getDrawingHorizontalLine: (value) {
+                  //             return FlLine(
+                  //               color: TColour.gray.withOpacity(0.15),
+                  //               strokeWidth: 2,
+                  //             );
+                  //           },
+                  //         ),
+                  //         borderData: FlBorderData(
+                  //           show: true,
+                  //           border: Border.all(
+                  //             color: Colors.transparent,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     )),
+                  // SizedBox(
+                  //   height: media.width * 0.05,
+                  // ),
+                  // Container(
+                  //   width: double.maxFinite,
+                  //   height: media.width * 0.4,
+                  //   decoration: BoxDecoration(
+                  //       gradient: LinearGradient(colors: TColour.primary),
+                  //       borderRadius: BorderRadius.circular(20)),
+                  //   child: Column(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         const SizedBox(
+                  //           height: 15,
+                  //         ),
+                  //         Padding(
+                  //           padding: const EdgeInsets.symmetric(horizontal: 15),
+                  //           child: Text(
+                  //             "Today Calorie Count",
+                  //             style: TextStyle(
+                  //               color: TColour.white,
+                  //               fontSize: 14,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         Padding(
+                  //           padding: const EdgeInsets.symmetric(horizontal: 15),
+                  //           child: Text(
+                  //             "${completedCalorie}/${targetCalorie}",
+                  //             style: TextStyle(
+                  //                 color: TColour.white,
+                  //                 fontSize: 16,
+                  //                 fontWeight: FontWeight.w500),
+                  //           ),
+                  //         ),
+                  //         const Spacer(),
+                  //         Image.asset(
+                  //           "assets/images/SleepGraph.png",
+                  //           width: double.maxFinite,
+                  //         )
+                  //       ]),
+                  // ),
                   SizedBox(
                     height: media.width * 0.05,
                   ),
@@ -446,78 +484,78 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
   }
 
   List<LineChartBarData> get lineBarsData1 => [
-    lineChartBarData1_1,
-  ];
+        lineChartBarData1_1,
+      ];
 
   LineChartBarData get lineChartBarData1_1 => LineChartBarData(
-    isCurved: true,
-    gradient: LinearGradient(colors: [
-      TColour.primaryColor2,
-      TColour.primaryColor1,
-    ]),
-    barWidth: 2,
-    isStrokeCapRound: true,
-    dotData: FlDotData(show: false),
-    belowBarData: BarAreaData(
-      show: true,
-      gradient: LinearGradient(colors: [
-        TColour.primaryColor2,
-        TColour.white,
-      ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-    ),
-    spots: const [
-      FlSpot(1, 3),
-      FlSpot(2, 5),
-      FlSpot(3, 4),
-      FlSpot(4, 7),
-      FlSpot(5, 4),
-      FlSpot(6, 8),
-      FlSpot(7, 5),
-    ],
-  );
+        isCurved: true,
+        gradient: LinearGradient(colors: [
+          TColour.primaryColor2,
+          TColour.primaryColor1,
+        ]),
+        barWidth: 2,
+        isStrokeCapRound: true,
+        dotData: FlDotData(show: false),
+        belowBarData: BarAreaData(
+          show: true,
+          gradient: LinearGradient(colors: [
+            TColour.primaryColor2,
+            TColour.white,
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+        ),
+        spots: const [
+          FlSpot(1, 3),
+          FlSpot(2, 5),
+          FlSpot(3, 4),
+          FlSpot(4, 7),
+          FlSpot(5, 4),
+          FlSpot(6, 8),
+          FlSpot(7, 5),
+        ],
+      );
 
   SideTitles get rightTitles => SideTitles(
-    getTitlesWidget: rightTitleWidgets,
-    showTitles: true,
-    interval: 2,
-    reservedSize: 40,
-  );
+        getTitlesWidget: rightTitleWidgets,
+        showTitles: true,
+        interval: 2,
+        reservedSize: 40,
+      );
   SideTitles get rightTitlesCalorie => SideTitles(
-    getTitlesWidget: rightTitleWidgetsCalorie,
-    showTitles: true,
-    interval: 2,
-    reservedSize: 40,
-  );
+        getTitlesWidget: rightTitleWidgetsCalorie,
+        showTitles: true,
+        interval: 2,
+        reservedSize: 40,
+      );
   List<LineChartBarData> get lineBarsData2 => [
-    lineChartBarData2_2,
-  ];
+        lineChartBarData2_2,
+      ];
 
   LineChartBarData get lineChartBarData2_2 => LineChartBarData(
-    isCurved: true,
-    gradient: LinearGradient(colors: [
-      TColour.primaryColor2,
-      TColour.primaryColor1,
-    ]),
-    barWidth: 2,
-    isStrokeCapRound: true,
-    dotData: FlDotData(show: false),
-    belowBarData: BarAreaData(
-      show: true,
-      gradient: LinearGradient(colors: [
-        TColour.primaryColor2,
-        TColour.white,
-      ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-    ),
-    spots: const [
-      FlSpot(1, 8),
-      FlSpot(2, 3),
-      FlSpot(3, 4),
-      FlSpot(4, 7),
-      FlSpot(5, 6),
-      FlSpot(6, 8),
-      FlSpot(7, 2),
-    ],
-  );
+        isCurved: true,
+        gradient: LinearGradient(colors: [
+          TColour.primaryColor2,
+          TColour.primaryColor1,
+        ]),
+        barWidth: 2,
+        isStrokeCapRound: true,
+        dotData: FlDotData(show: false),
+        belowBarData: BarAreaData(
+          show: true,
+          gradient: LinearGradient(colors: [
+            TColour.primaryColor2,
+            TColour.white,
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+        ),
+        spots: const [
+          FlSpot(1, 8),
+          FlSpot(2, 3),
+          FlSpot(3, 4),
+          FlSpot(4, 7),
+          FlSpot(5, 6),
+          FlSpot(6, 8),
+          FlSpot(7, 2),
+        ],
+      );
   Widget rightTitleWidgets(double value, TitleMeta meta) {
     String text;
     switch (value.toInt()) {
@@ -550,6 +588,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
         ),
         textAlign: TextAlign.center);
   }
+
   Widget rightTitleWidgetsCalorie(double value, TitleMeta meta) {
     String text;
     switch (value.toInt()) {
@@ -584,11 +623,11 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
   }
 
   SideTitles get bottomTitles => SideTitles(
-    showTitles: true,
-    reservedSize: 32,
-    interval: 1,
-    getTitlesWidget: bottomTitleWidgets,
-  );
+        showTitles: true,
+        reservedSize: 32,
+        interval: 1,
+        getTitlesWidget: bottomTitleWidgets,
+      );
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     var style = TextStyle(

@@ -731,21 +731,21 @@ class _ActivityViewState extends State<ActivityView> {
                               fontSize: 14,
                               fontWeight: FontWeight.w700),
                         ),
-                        SizedBox(
-                            height: 35,
-                            width: media.width * 0.35,
-                            child: RoundedButton(
-                                title: "workout",
-                                type: RoundButtonType.bgGradient,
-                                fontSize: 14,
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const AddActivity(),
-                                    ),
-                                  );
-                                }))
+                        // SizedBox(
+                        //     height: 35,
+                        //     width: media.width * 0.35,
+                        //     child: RoundedButton(
+                        //         title: "workout",
+                        //         type: RoundButtonType.bgGradient,
+                        //         fontSize: 14,
+                        //         onPressed: () {
+                        //           Navigator.push(
+                        //             context,
+                        //             MaterialPageRoute(
+                        //               builder: (context) => const AddActivity(),
+                        //             ),
+                        //           );
+                        //         }))
                       ]),
                 ),
                 SizedBox(
