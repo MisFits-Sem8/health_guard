@@ -130,7 +130,7 @@ class _BottomTabState extends State<BottomTab> {
               onTap: () {
                 setState(() {
                   selectedTab = 1;
-                  currentTab = const CreateScheduleView();
+                  currentTab = CreateScheduleView(gender: widget.gender);
                 });
               },
               size: media.height * 0.04,
@@ -141,7 +141,7 @@ class _BottomTabState extends State<BottomTab> {
               onTap: () {
                 setState(() {
                   selectedTab = 2;
-                  currentTab = const MentalHealthSummary();
+                  currentTab = MentalHealthSummary(gender: widget.gender,);
                 });
               },
               size: media.height * 0.04,

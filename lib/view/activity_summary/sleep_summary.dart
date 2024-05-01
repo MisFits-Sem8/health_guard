@@ -368,7 +368,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const NotificationView(),
+                                          NotificationView(),
                                     ),
                                   );
                                 },

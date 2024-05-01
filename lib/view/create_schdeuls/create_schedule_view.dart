@@ -5,7 +5,10 @@ import 'package:health_app/common_widgets/today_sleep_schedule_row.dart';
 import 'package:health_app/view/profile/profile_view.dart';
 
 class CreateScheduleView extends StatefulWidget {
-  const CreateScheduleView({super.key});
+  final String gender;
+  const CreateScheduleView({Key? key,
+    required this.gender,})
+      : super(key: key);
 
   @override
   State<CreateScheduleView> createState() => _CreateScheduleViewState();
@@ -171,7 +174,7 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
             },
             icon: ClipOval(
               child: Image.asset(
-                "assets/images/profile-female.jpg",
+                widget.gender == "female" ? "assets/images/profile-female.jpg" : "assets/images/profile-male.png",
                 height: media.width * 0.15,
                 fit: BoxFit.cover,
               ),
@@ -203,7 +206,7 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "New Schedule Create",
+                              "Create New Schedule",
                               style: TextStyle(
                                   color: TColour.black1,
                                   fontSize: 14,
@@ -267,7 +270,7 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
                           children: [
                             ElevatedButton(
                               onPressed: _addScheduleItem,
-                              child: const Text('Add '),
+                              child: const Text('Add'),
                             ),
                           ],
                         ),
