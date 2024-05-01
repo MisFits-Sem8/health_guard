@@ -20,18 +20,17 @@ class DataRepository {
       DailySteps? record = _recordSteps[key];
       if (record != null && record.date == step.date) {
         _recordSteps[key]!.steps += step.steps;
-        reorganizeMap();
       } else {
         // If the record exists but dates do not match, add the new step to the map with a new key
         int maxKey =
             _recordSteps.keys.reduce((curr, next) => curr > next ? curr : next);
         _recordSteps[maxKey + 1] = step;
-        reorganizeMap();
       }
     } else {
       // If the record doesn't exist, add it to the map
       _recordSteps[key] = step;
     }
+    reorganizeMap();
   }
 
   void reorganizeMap() {
@@ -44,8 +43,8 @@ class DataRepository {
     int j = 0;
     for (int i = 0; i < sortedEntries.length; i++) {
       // If the dates are equal, add the steps together
-      print("sortedEntries[i].value.date");
-      print(sortedEntries[i].value.date);
+      // debugPrint("sortedEntries[i].value.date");
+      // debugPrint(sortedEntries[i].value.date);
       if (i != 0 &&
           sortedEntries[i].value.date == sortedEntries[i - 1].value.date) {
         _recordSteps[j - 1]!.steps += sortedEntries[i].value.steps;

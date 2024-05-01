@@ -44,7 +44,6 @@ class ActivityView extends StatefulWidget {
 }
 
 class _ActivityViewState extends State<ActivityView> {
-
   String? bmiStatus;
 
   String? bmiInterpretation;
@@ -99,7 +98,6 @@ class _ActivityViewState extends State<ActivityView> {
     {"title": "10-12", "subtitle": "3 cup"},
     {"title": "12-14", "subtitle": "1 cup"}
   ];
-
 
   @override
   void initState() {
@@ -234,7 +232,8 @@ class _ActivityViewState extends State<ActivityView> {
     debugPrint(filteredSpots.toString());
     setState(() {
       this.allSpots = filteredSpots;
-      this.tools = [0];
+      this.tools =
+          filteredSpots.length - 1 >= 0 ? [filteredSpots.length - 1] : [];
     });
   }
 
@@ -246,6 +245,62 @@ class _ActivityViewState extends State<ActivityView> {
       waterIntake += 200;
     });
   }
+
+  double calculatePercentCaloriesBurned() {
+    int? steps;
+    if (_dataRepository.recordSteps.isNotEmpty) {
+      steps = _dataRepository
+          .getRecord(_dataRepository.recordSteps.length - 1)
+          ?.steps;
+    }
+
+    double weightInKg = 70.0;
+    // MET value for walking is approximately 3.9 at speed of 5km/h
+    double met = 3.9;
+
+    // Time is estimated based on an average pace
+    double time = (steps ?? 2000) /
+        50.0; // time in hours based on an average pace of 5000 steps per hour
+
+    // Calories burned formula
+    double calories = time * met * 5 * weightInKg / 10;
+
+    // Total calories that should be burned per day
+    double totalCalories = 2000;
+
+    // Calculate the percentage of total calories burned
+    double percentCaloriesBurned = (calories / totalCalories) * 100;
+
+    return percentCaloriesBurned;
+  }
+
+  // double calculatePercentCaloriesBurned() {
+  //   int? steps;
+  //   if (_dataRepository.recordSteps.isNotEmpty) {
+  //     steps = _dataRepository
+  //         .getRecord(_dataRepository.recordSteps.length - 1)
+  //         ?.steps;
+  //   }
+
+  //   double weightInKg = 70.0;
+  //   // MET value for walking is approximately 3.9 at speed of 5km/h
+  //   double met = 3.9;
+
+  //   // Time is estimated based on an average pace
+  //   double time = (steps ?? 2000) /
+  //       50.0; // time in hours based on an average pace of 5000 steps per hour
+
+  //   // Calories burned formula
+  //   double calories = time * met * 5 * weightInKg / 10;
+
+  //   // Total calories that should be burned per day
+  //   double totalCalories = 2000;
+
+  //   // Calculate the percentage of total calories burned
+  //   double percentCaloriesBurned = (calories / totalCalories) * 100;
+
+  //   return percentCaloriesBurned;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -449,7 +504,6 @@ class _ActivityViewState extends State<ActivityView> {
                                     color: Colors.blueGrey.shade700,
                                   ),
                                 ),
-
                               ],
                             ),
                           ),
@@ -592,9 +646,18 @@ class _ActivityViewState extends State<ActivityView> {
                                             index < lineBarsSpot.length / 2
                                                 ? FLHorizontalAlignment.right
                                                 : FLHorizontalAlignment.left;
+
+                                        DailySteps? record = _dataRepository
+                                            .getRecord(lineBarSpot.x.toInt());
+                                        String date = record?.date ?? 'N/A';
+                                        int steps = record?.steps ?? 0;
+                                        if (date != 'N/A') {
+                                          date = DateTime.parse(date)
+                                              .day
+                                              .toString();
+                                        }
                                         return LineTooltipItem(
-                                          "${lineBarSpot.x.toString()}day\n ${lineBarSpot.y.toInt()}steps",
-                                          // lineBarSpot.y.toString(),
+                                          "${date}day\n ${steps}steps",
                                           const TextStyle(
                                             color: Colors.white,
                                             fontSize: 10,
@@ -884,11 +947,12 @@ class _ActivityViewState extends State<ActivityView> {
                                 CircularPercentIndicator(
                                   radius: 40.0,
                                   lineWidth: 7.0,
-                                  percent: 0.30,
+                                  percent:
+                                      calculatePercentCaloriesBurned() / 100,
                                   animation: true,
                                   animationDuration: 1200,
                                   center: new Text(
-                                    "40%",
+                                    "${calculatePercentCaloriesBurned().toStringAsFixed(2)}%",
                                     style: new TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 10.0),
