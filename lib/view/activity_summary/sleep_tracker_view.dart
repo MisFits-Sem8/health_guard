@@ -11,6 +11,11 @@ class SleepTrackerView extends StatefulWidget {
 }
 
 class _SleepTrackerViewState extends State<SleepTrackerView> {
+
+  int targetCalorie = 2000;
+  int completedCalorie =800;
+  String sleepTime="8 hours 30 minutes";
+  double previousSteps = 0;
   List<int> showingTooltipOnSpots = [4];
   String selectedName = 'Bedtime'; // Default selection
   DateTime? selectedTime; // Placeholder for selected time
@@ -51,26 +56,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
         backgroundColor: TColour.white,
         centerTitle: true,
         elevation: 0,
-        // leading: InkWell(
-        //   onTap: () {
-        //     Navigator.pop(context);
-        //   },
-        //   child: Container(
-        //     margin: const EdgeInsets.all(8),
-        //     height: 40,
-        //     width: 40,
-        //     alignment: Alignment.center,
-        //     decoration: BoxDecoration(
-        //         color: TColour.lightGray,
-        //         borderRadius: BorderRadius.circular(10)),
-        //     child: Image.asset(
-        //       "assets/images/icons/back-button.png",
-        //       width: 15,
-        //       height: 15,
-        //       fit: BoxFit.contain,
-        //     ),
-        //   ),
-        // ),
+
         title: Text(
           "Activity Tracker",
           style: TextStyle(
@@ -129,7 +115,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                       child: LineChart(
                         LineChartData(
                           showingTooltipIndicators:
-                              showingTooltipOnSpots.map((index) {
+                          showingTooltipOnSpots.map((index) {
                             return ShowingTooltipIndicators([
                               LineBarSpot(
                                 tooltipsOnBar,
@@ -175,12 +161,12 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                                     show: true,
                                     getDotPainter:
                                         (spot, percent, barData, index) =>
-                                            FlDotCirclePainter(
-                                      radius: 3,
-                                      color: Colors.white,
-                                      strokeWidth: 1,
-                                      strokeColor: TColour.primaryColor2,
-                                    ),
+                                        FlDotCirclePainter(
+                                          radius: 3,
+                                          color: Colors.white,
+                                          strokeWidth: 1,
+                                          strokeColor: TColour.primaryColor2,
+                                        ),
                                   ),
                                 );
                               }).toList();
@@ -264,7 +250,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Text(
-                              "8h 20m",
+                              "${sleepTime}",
                               style: TextStyle(
                                   color: TColour.white,
                                   fontSize: 16,
@@ -295,7 +281,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                       child: LineChart(
                         LineChartData(
                           showingTooltipIndicators:
-                              showingTooltipOnSpots.map((index) {
+                          showingTooltipOnSpots.map((index) {
                             return ShowingTooltipIndicators([
                               LineBarSpot(
                                 tooltipsOnBar,
@@ -341,12 +327,12 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                                     show: true,
                                     getDotPainter:
                                         (spot, percent, barData, index) =>
-                                            FlDotCirclePainter(
-                                      radius: 3,
-                                      color: Colors.white,
-                                      strokeWidth: 1,
-                                      strokeColor: TColour.primaryColor2,
-                                    ),
+                                        FlDotCirclePainter(
+                                          radius: 3,
+                                          color: Colors.white,
+                                          strokeWidth: 1,
+                                          strokeColor: TColour.primaryColor2,
+                                        ),
                                   ),
                                 );
                               }).toList();
@@ -430,7 +416,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: Text(
-                              "1200/4000",
+                              "${completedCalorie}/${targetCalorie}",
                               style: TextStyle(
                                   color: TColour.white,
                                   fontSize: 16,
@@ -460,42 +446,42 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
   }
 
   List<LineChartBarData> get lineBarsData1 => [
-        lineChartBarData1_1,
-      ];
+    lineChartBarData1_1,
+  ];
 
   LineChartBarData get lineChartBarData1_1 => LineChartBarData(
-        isCurved: true,
-        gradient: LinearGradient(colors: [
-          TColour.primaryColor2,
-          TColour.primaryColor1,
-        ]),
-        barWidth: 2,
-        isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
-        belowBarData: BarAreaData(
-          show: true,
-          gradient: LinearGradient(colors: [
-            TColour.primaryColor2,
-            TColour.white,
-          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-        ),
-        spots: const [
-          FlSpot(1, 3),
-          FlSpot(2, 5),
-          FlSpot(3, 4),
-          FlSpot(4, 7),
-          FlSpot(5, 4),
-          FlSpot(6, 8),
-          FlSpot(7, 5),
-        ],
-      );
+    isCurved: true,
+    gradient: LinearGradient(colors: [
+      TColour.primaryColor2,
+      TColour.primaryColor1,
+    ]),
+    barWidth: 2,
+    isStrokeCapRound: true,
+    dotData: FlDotData(show: false),
+    belowBarData: BarAreaData(
+      show: true,
+      gradient: LinearGradient(colors: [
+        TColour.primaryColor2,
+        TColour.white,
+      ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+    ),
+    spots: const [
+      FlSpot(1, 3),
+      FlSpot(2, 5),
+      FlSpot(3, 4),
+      FlSpot(4, 7),
+      FlSpot(5, 4),
+      FlSpot(6, 8),
+      FlSpot(7, 5),
+    ],
+  );
 
   SideTitles get rightTitles => SideTitles(
-        getTitlesWidget: rightTitleWidgets,
-        showTitles: true,
-        interval: 2,
-        reservedSize: 40,
-      );
+    getTitlesWidget: rightTitleWidgets,
+    showTitles: true,
+    interval: 2,
+    reservedSize: 40,
+  );
   SideTitles get rightTitlesCalorie => SideTitles(
     getTitlesWidget: rightTitleWidgetsCalorie,
     showTitles: true,
@@ -503,35 +489,35 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
     reservedSize: 40,
   );
   List<LineChartBarData> get lineBarsData2 => [
-        lineChartBarData2_2,
-      ];
+    lineChartBarData2_2,
+  ];
 
   LineChartBarData get lineChartBarData2_2 => LineChartBarData(
-        isCurved: true,
-        gradient: LinearGradient(colors: [
-          TColour.primaryColor2,
-          TColour.primaryColor1,
-        ]),
-        barWidth: 2,
-        isStrokeCapRound: true,
-        dotData: FlDotData(show: false),
-        belowBarData: BarAreaData(
-          show: true,
-          gradient: LinearGradient(colors: [
-            TColour.primaryColor2,
-            TColour.white,
-          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-        ),
-        spots: const [
-          FlSpot(1, 8),
-          FlSpot(2, 3),
-          FlSpot(3, 4),
-          FlSpot(4, 7),
-          FlSpot(5, 6),
-          FlSpot(6, 8),
-          FlSpot(7, 2),
-        ],
-      );
+    isCurved: true,
+    gradient: LinearGradient(colors: [
+      TColour.primaryColor2,
+      TColour.primaryColor1,
+    ]),
+    barWidth: 2,
+    isStrokeCapRound: true,
+    dotData: FlDotData(show: false),
+    belowBarData: BarAreaData(
+      show: true,
+      gradient: LinearGradient(colors: [
+        TColour.primaryColor2,
+        TColour.white,
+      ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+    ),
+    spots: const [
+      FlSpot(1, 8),
+      FlSpot(2, 3),
+      FlSpot(3, 4),
+      FlSpot(4, 7),
+      FlSpot(5, 6),
+      FlSpot(6, 8),
+      FlSpot(7, 2),
+    ],
+  );
   Widget rightTitleWidgets(double value, TitleMeta meta) {
     String text;
     switch (value.toInt()) {
@@ -568,22 +554,22 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
     String text;
     switch (value.toInt()) {
       case 0:
-        text = '0kcal';
+        text = '0cal';
         break;
       case 2:
-        text = '2kcal';
+        text = '0.4cal';
         break;
       case 4:
-        text = '4kcal';
+        text = '0.8kcal';
         break;
       case 6:
-        text = '6kcal';
+        text = '1.2kcal';
         break;
       case 8:
-        text = '8kcal';
+        text = '1.6kcal';
         break;
       case 10:
-        text = '10kcal';
+        text = '2kcal';
         break;
       default:
         return Container();
@@ -598,11 +584,11 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
   }
 
   SideTitles get bottomTitles => SideTitles(
-        showTitles: true,
-        reservedSize: 32,
-        interval: 1,
-        getTitlesWidget: bottomTitleWidgets,
-      );
+    showTitles: true,
+    reservedSize: 32,
+    interval: 1,
+    getTitlesWidget: bottomTitleWidgets,
+  );
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     var style = TextStyle(

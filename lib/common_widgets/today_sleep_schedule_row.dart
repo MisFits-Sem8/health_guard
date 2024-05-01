@@ -1,7 +1,6 @@
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
-import 'package:health_app/common/color_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:health_app/common/common.dart';
+import 'package:health_app/common/color_extension.dart';
 
 class TodaySleepScheduleRow extends StatefulWidget {
   final Map sObj;
@@ -53,8 +52,12 @@ class _TodaySleepScheduleRowState extends State<TodaySleepScheduleRow> {
                             fontSize: 14,
                             fontWeight: FontWeight.w700),
                       ),
+                    ],
+                  ),
+                  Row(
+                    children: [
                       Text(
-                        ", ${widget.sObj["time"].toString()}",
+                        "${widget.sObj["time"].toString()}",
                         style: TextStyle(
                           color: TColour.black1,
                           fontSize: 12,
@@ -62,8 +65,9 @@ class _TodaySleepScheduleRowState extends State<TodaySleepScheduleRow> {
                       ),
                     ],
                   ),
-
-                  const SizedBox(height: 8,),
+                  const SizedBox(
+                    height: 8,
+                  ),
                   Text(
                     widget.sObj["duration"].toString(),
                     style: TextStyle(
@@ -78,17 +82,6 @@ class _TodaySleepScheduleRowState extends State<TodaySleepScheduleRow> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                SizedBox(
-                  height: 30,
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: Image.asset(
-                      "assets/images/icons/more.png",
-                      width: 20,
-                      height: 20,
-                    ),
-                  ),
-                ),
                 SizedBox(
                   height: 30,
                   child: Transform.scale(
@@ -135,7 +128,7 @@ class _TodaySleepScheduleRowState extends State<TodaySleepScheduleRow> {
                             decoration: BoxDecoration(
                               color: TColour.white,
                               borderRadius:
-                              const BorderRadius.all(Radius.circular(50.0)),
+                                  const BorderRadius.all(Radius.circular(50.0)),
                               boxShadow: const [
                                 BoxShadow(
                                     color: Colors.black38,

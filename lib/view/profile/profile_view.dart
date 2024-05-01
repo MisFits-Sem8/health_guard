@@ -177,7 +177,7 @@ class _ProfileViewState extends State<ProfileView> {
                           ),
                           Expanded(
                             child: TitleSubtitleCell(
-                              title: "${weight}cm",
+                              title: "${weight}kg",
                               subtitle: "Weight",
                             ),
                           ),

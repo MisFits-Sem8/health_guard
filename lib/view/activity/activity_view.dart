@@ -14,13 +14,30 @@ import 'dart:async';
 import 'package:health_app/models/daily_steps.dart';
 import 'package:health_app/db_helper/db_helper.dart';
 import 'package:health_app/repositories/data_repository.dart';
-
-import '../../models/user.dart';
-import '../../services/auth_service.dart';
 import '../profile/profile_view.dart';
 
 class ActivityView extends StatefulWidget {
-  const ActivityView({super.key});
+  String gender;
+  String name;
+  int height;
+  int weight;
+  int age;
+  double sleep;
+  double workout;
+  int targetWaterIntake;
+  double bmiScore;
+  ActivityView(
+      {Key? key,
+      required this.height,
+      required this.weight,
+      required this.workout,
+      required this.name,
+      required this.sleep,
+      required this.gender,
+      required this.age,
+      required this.targetWaterIntake,
+      required this.bmiScore})
+      : super(key: key);
 
   @override
   State<ActivityView> createState() => _ActivityViewState();
@@ -68,21 +85,21 @@ class _ActivityViewState extends State<ActivityView> {
   final DataRepository _dataRepository = DataRepository();
 
   void setBmiInterpretation() {
-    if (bmiScore > 30) {
+    if (widget.bmiScore > 30) {
       bmiStatus = "OBESITY";
-      bmiInterpretation = "Please work to reduce obesity";
+      bmiInterpretation = "Do workout. ";
       bmiStatusColor = Colors.orange.shade900;
-    } else if (bmiScore >= 25) {
+    } else if (widget.bmiScore >= 25) {
       bmiStatus = "Overweight";
-      bmiInterpretation = "Do regular exercise & reduce the weight";
+      bmiInterpretation = "Do regular exercise.";
       bmiStatusColor = Colors.orange.shade500;
-    } else if (bmiScore >= 18.5) {
+    } else if (widget.bmiScore >= 18.5) {
       bmiStatus = "NORMAL";
       bmiInterpretation = "Enjoy, You are fit";
       bmiStatusColor = Colors.lightGreen.shade800;
-    } else if (bmiScore < 18.5) {
+    } else if (widget.bmiScore < 18.5) {
       bmiStatus = "UNDERWEIGHT";
-      bmiInterpretation = "Try to increase the weight";
+      bmiInterpretation = "Increase the weight.";
       bmiStatusColor = Colors.blueAccent.shade400;
     }
   }
@@ -253,7 +270,7 @@ class _ActivityViewState extends State<ActivityView> {
     if (mounted) {
       setState(() {
         this.allSpots = filteredSpots;
-        this.tools = List<int>.generate(filteredSpots.length, (i) => i);
+        this.tools = [filteredSpots.length - 1];
       });
     }
   }
@@ -355,7 +372,7 @@ class _ActivityViewState extends State<ActivityView> {
                           style: TextStyle(color: TColour.black1, fontSize: 16),
                         ),
                         Text(
-                          name,
+                          widget.name,
                           style: TextStyle(
                               color: TColour.black1,
                               fontSize: 14,
@@ -372,7 +389,7 @@ class _ActivityViewState extends State<ActivityView> {
                         },
                         icon: ClipOval(
                           child: Image.asset(
-                            gender == "female"
+                            widget.gender == "female"
                                 ? "assets/images/profile-female.jpg"
                                 : "assets/images/profile-male.png",
                             height: media.width * 0.15,
@@ -417,7 +434,7 @@ class _ActivityViewState extends State<ActivityView> {
                                     fontWeight: FontWeight.w700),
                               ),
                               Text(
-                                "${bmiScore}",
+                                "${widget.bmiScore}",
                                 style: TextStyle(
                                     color: TColour.white,
                                     fontSize: 16,
@@ -437,25 +454,24 @@ class _ActivityViewState extends State<ActivityView> {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditProfileView(
-                                                      height: height,
-                                                      weight: weight,
-                                                      sleep: sleep,
-                                                      water:
-                                                          (targetWaterIntake /
-                                                                  1000)
-                                                              .toDouble(),
-                                                      workout: workout,
-                                                      age: age,
-                                                      gender: gender),
+                                              builder: (context) => EditProfileView(
+                                                  height: widget.height,
+                                                  weight: widget.weight,
+                                                  sleep: widget.sleep,
+                                                  water:
+                                                      (widget.targetWaterIntake /
+                                                              1000)
+                                                          .toDouble(),
+                                                  workout: widget.workout,
+                                                  age: widget.age,
+                                                  gender: widget.gender),
                                             ));
                                       }))
                             ],
                           ),
                           Container(
-                            width: media.width * 0.35,
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            width: media.width * 0.45,
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
                             decoration: BoxDecoration(
                               color: TColour.white.withOpacity(0.6),
                               borderRadius: BorderRadius.circular(20),
@@ -477,10 +493,10 @@ class _ActivityViewState extends State<ActivityView> {
                                     GaugeSegment('Obesity', 10.1, Colors.red),
                                   ],
                                   valueWidget: Text(
-                                    bmiScore.toStringAsFixed(1),
+                                    widget.bmiScore.toStringAsFixed(1),
                                     style: const TextStyle(fontSize: 20),
                                   ),
-                                  currentValue: bmiScore.toDouble(),
+                                  currentValue: widget.bmiScore.toDouble(),
                                   needleColor: Color.fromARGB(255, 0, 0, 0),
                                 ),
                                 Text(
@@ -497,9 +513,6 @@ class _ActivityViewState extends State<ActivityView> {
                                     fontSize: 11,
                                     color: Colors.blueGrey.shade700,
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
                                 ),
                               ],
                             ),
@@ -707,7 +720,7 @@ class _ActivityViewState extends State<ActivityView> {
                         ),
                         SizedBox(
                             height: 35,
-                            width: media.width * 0.25,
+                            width: media.width * 0.35,
                             child: RoundedButton(
                                 title: "workout",
                                 type: RoundButtonType.bgGradient,
@@ -760,7 +773,7 @@ class _ActivityViewState extends State<ActivityView> {
                                         0, 0, bounds.width, bounds.height));
                               },
                               child: Text(
-                                "${waterIntake}/${targetWaterIntake}",
+                                "${waterIntake}/${widget.targetWaterIntake}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: TColour.white.withOpacity(.7),
@@ -777,7 +790,8 @@ class _ActivityViewState extends State<ActivityView> {
                               backgroundColor: TColour.secondaryColor2,
                               foregrondColor: Colors.purple,
                               ratio: waterIntake /
-                                  targetWaterIntake, // to be chage with the consumed water amount
+                                  widget
+                                      .targetWaterIntake, // to be chage with the consumed water amount
                               direction: Axis.vertical,
                               curve: Curves.fastLinearToSlowEaseIn,
                               duration: const Duration(seconds: 4),
