@@ -7,7 +7,10 @@ import '../../common/color_extension.dart';
 import '../profile/profile_view.dart';
 
 class MentalHealthSummary extends StatefulWidget {
-  const MentalHealthSummary({super.key});
+  final String gender;
+  const MentalHealthSummary({Key? key,
+    required this.gender,})
+      : super(key: key);
 
   @override
   State<MentalHealthSummary> createState() => _MentalHealthSummaryState();
@@ -121,7 +124,7 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
             },
             icon: ClipOval(
               child: Image.asset(
-                "assets/images/profile-female.jpg",
+                widget.gender == "female" ? "assets/images/profile-female.jpg" : "assets/images/profile-male.png",
                 height: media.width * 0.15,
                 fit: BoxFit.cover,
               ),
