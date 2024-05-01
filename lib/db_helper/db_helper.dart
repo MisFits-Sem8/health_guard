@@ -77,7 +77,7 @@ class FitnessDatabaseHelper {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = '${directory.path}fitness.db';
 
-    // Delete the database if it already exists
+    // // Delete the database if it already exists
     // if (await databaseExists(path)) {
     //   await deleteDatabase(path);
     // }
@@ -274,7 +274,9 @@ class FitnessDatabaseHelper {
       int steps = rng.nextInt(990) +
           10; // generates a random integer where 10 <= _ <= 2000
       DailySteps dailySteps = DailySteps(date, steps, userId);
-      await insertSteps(dailySteps);
+      int id = await insertSteps(dailySteps);
+      print("aaaaaaaaaaaaaaaaaaaaaaaaaa");
+      print(id);
     }
 
     // Populate sleep table

@@ -135,9 +135,12 @@ class _ActivityViewState extends State<ActivityView> {
         double heightInMeters = height / 100.0;
         bmiScore = double.parse(
             (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
-        updateStepsView();
-        updateWaterIntake();
+
+
       });
+      await databaseHelper.populateDb(id);
+      updateStepsView();
+      updateWaterIntake();
     } else {
       print("User data is not available.");
     }
@@ -896,7 +899,7 @@ class _ActivityViewState extends State<ActivityView> {
                                           0, 0, bounds.width, bounds.height));
                                 },
                                 child: Text(
-                                  "234 kCal",
+                                  calculatePercentCaloriesBurned().toString(),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       color: TColour.white.withOpacity(.7),
@@ -907,14 +910,34 @@ class _ActivityViewState extends State<ActivityView> {
                               SizedBox(
                                 height: media.width * 0.02,
                               ),
+                              // CircularPercentIndicator(
+                              //   radius: 40.0,
+                              //   lineWidth: 7.0,
+                              //   percent: 234 / 500,
+                              //   animation: true,
+                              //   animationDuration: 1200,
+                              //   center: new Text(
+                              //     "46.8%",
+                              //     style: new TextStyle(
+                              //         fontWeight: FontWeight.bold,
+                              //         fontSize: 10.0),
+                              //   ),
+                              //   circularStrokeCap: CircularStrokeCap.butt,
+                              //   backgroundColor: TColour.secondaryColor2,
+                              //   progressColor: TColour.primaryColor1,
+                              // ),
                               CircularPercentIndicator(
                                 radius: 40.0,
                                 lineWidth: 7.0,
-                                percent: 234 / 500,
+                                percent:
+                                calculatePercentCaloriesBurned() / 100 > 1
+                                    ? 1
+                                    : calculatePercentCaloriesBurned() /
+                                    100,
                                 animation: true,
                                 animationDuration: 1200,
                                 center: new Text(
-                                  "46.8%",
+                                  "${calculatePercentCaloriesBurned().toStringAsFixed(2)}%",
                                   style: new TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 10.0),
@@ -998,15 +1021,11 @@ class _ActivityViewState extends State<ActivityView> {
                                 CircularPercentIndicator(
                                   radius: 40.0,
                                   lineWidth: 7.0,
-                                  percent:
-                                      calculatePercentCaloriesBurned() / 100 > 1
-                                          ? 1
-                                          : calculatePercentCaloriesBurned() /
-                                              100,
+                                  percent: 234 / 500,
                                   animation: true,
                                   animationDuration: 1200,
                                   center: new Text(
-                                    "${calculatePercentCaloriesBurned().toStringAsFixed(2)}%",
+                                    "46.8%",
                                     style: new TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 10.0),
@@ -1015,6 +1034,26 @@ class _ActivityViewState extends State<ActivityView> {
                                   backgroundColor: TColour.secondaryColor2,
                                   progressColor: TColour.primaryColor1,
                                 ),
+                                // CircularPercentIndicator(
+                                //   radius: 40.0,
+                                //   lineWidth: 7.0,
+                                //   percent:
+                                //       calculatePercentCaloriesBurned() / 100 > 1
+                                //           ? 1
+                                //           : calculatePercentCaloriesBurned() /
+                                //               100,
+                                //   animation: true,
+                                //   animationDuration: 1200,
+                                //   center: new Text(
+                                //     "${calculatePercentCaloriesBurned().toStringAsFixed(2)}%",
+                                //     style: new TextStyle(
+                                //         fontWeight: FontWeight.bold,
+                                //         fontSize: 10.0),
+                                //   ),
+                                //   circularStrokeCap: CircularStrokeCap.butt,
+                                //   backgroundColor: TColour.secondaryColor2,
+                                //   progressColor: TColour.primaryColor1,
+                                // ),
                                 SizedBox(
                                   height: media.height * 0.02,
                                 ),
