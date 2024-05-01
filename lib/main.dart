@@ -28,7 +28,7 @@ void main() async {
   // dbh.truncateStepsTable();
   // await dbh.populateDb();
 
-  cron.schedule(Schedule.parse('*/5 * * * *'), () async {
+  cron.schedule(Schedule.parse('*/1 * * * *'), () async {
     executeCronJob();
     debugPrint("steps count updated to local database");
   });

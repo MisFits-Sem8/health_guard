@@ -1,22 +1,23 @@
+import 'dart:async';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
+import 'package:health_app/db_helper/db_helper.dart';
+import 'package:health_app/models/daily_steps.dart';
 import 'package:health_app/models/user.dart';
 import 'package:health_app/models/water_intake.dart';
+import 'package:health_app/repositories/data_repository.dart';
 import 'package:health_app/services/auth_service.dart';
-import 'package:health_app/view/activity/add_activity.dart';
 import 'package:health_app/view/activity_summary/sleep_tracker_view.dart';
 import 'package:health_app/view/profile/edit_profile_view.dart';
 import 'package:intl/intl.dart';
+import 'package:pedometer/pedometer.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pretty_gauge/pretty_gauge.dart';
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
-import 'package:pedometer/pedometer.dart';
-import 'dart:async';
-import 'package:health_app/models/daily_steps.dart';
-import 'package:health_app/db_helper/db_helper.dart';
-import 'package:health_app/repositories/data_repository.dart';
+
 import '../profile/profile_view.dart';
 
 class ActivityView extends StatefulWidget {
@@ -77,13 +78,13 @@ class _ActivityViewState extends State<ActivityView> {
 
   final FitnessDatabaseHelper databaseHelper = FitnessDatabaseHelper();
 
-  List<int> tools = [];
+  List<int> tools = [-1];
 
   DateTime _currentDay = DateTime.now();
 
   int _dailySteps = 0;
 
-  int waterIntake = 0;
+  late int waterIntake = 0;
 
   double previousSteps = 0;
 
@@ -135,12 +136,13 @@ class _ActivityViewState extends State<ActivityView> {
         double heightInMeters = height / 100.0;
         bmiScore = double.parse(
             (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
-
-
       });
-      await databaseHelper.populateDb(id);
+      // await databaseHelper.populateDb(id);
       updateStepsView();
-      updateWaterIntake();
+      setState(() async {
+        waterIntake:
+        await updateWaterIntake();
+      });
     } else {
       print("User data is not available.");
     }
@@ -287,9 +289,11 @@ class _ActivityViewState extends State<ActivityView> {
   }
 
   // int targetWaterIntake = 2000; // Customize this value as needed
-  void updateWaterIntake() async {
-    waterIntake = await databaseHelper.getTodayWaterIntake(
+  Future<int> updateWaterIntake() async {
+    var intake = await databaseHelper.getTodayWaterIntake(
         id, DateFormat('yyyy-MM-dd').format(DateTime.now()));
+
+    return intake;
   }
 
   void incrementWaterIntake() {
@@ -393,7 +397,7 @@ class _ActivityViewState extends State<ActivityView> {
       ),
     ];
 
-    final tooltipsOnBar = lineBarsData[0];
+    var tooltipsOnBar = lineBarsData[0];
 
     // var media=MediaQuery.of(context).size,
     return SafeArea(
@@ -930,10 +934,10 @@ class _ActivityViewState extends State<ActivityView> {
                                 radius: 40.0,
                                 lineWidth: 7.0,
                                 percent:
-                                calculatePercentCaloriesBurned() / 100 > 1
-                                    ? 1
-                                    : calculatePercentCaloriesBurned() /
-                                    100,
+                                    calculatePercentCaloriesBurned() / 100 > 1
+                                        ? 1
+                                        : calculatePercentCaloriesBurned() /
+                                            100,
                                 animation: true,
                                 animationDuration: 1200,
                                 center: new Text(
@@ -949,23 +953,23 @@ class _ActivityViewState extends State<ActivityView> {
                               SizedBox(
                                 height: media.height * 0.02,
                               ),
-                              SizedBox(
-                                  height: 35,
-                                  width: double.maxFinite,
-                                  child: RoundedButton(
-                                    title: 'Calories Tracker',
-                                    type: RoundButtonType.bgGradient,
-                                    fontSize: 12,
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const SleepTrackerView(),
-                                        ),
-                                      );
-                                    },
-                                  ))
+                              // SizedBox(
+                              //     height: 35,
+                              //     width: double.maxFinite,
+                              //     child: RoundedButton(
+                              //       title: 'Calories Tracker',
+                              //       type: RoundButtonType.bgGradient,
+                              //       fontSize: 12,
+                              //       onPressed: () {
+                              //         Navigator.push(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //             builder: (context) =>
+                              //                 const SleepTrackerView(),
+                              //           ),
+                              //         );
+                              //       },
+                              //     ))
                             ],
                           ),
                         ),
