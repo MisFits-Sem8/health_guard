@@ -4,6 +4,7 @@ import 'package:health_app/view/activity/mental_health_summary.dart';
 import 'package:health_app/view/create_schdeuls/create_schedule_view.dart';
 import 'package:health_app/view/message/message_view.dart';
 import 'package:health_app/view/notifications/notifications_view.dart';
+import 'package:health_app/view/profile/profile_view.dart';
 import '../../common/color_extension.dart';
 import '../../common_widgets/tab_button.dart';
 import '../../models/user.dart';
@@ -64,12 +65,14 @@ class _BottomTabState extends State<BottomTab> {
       print("User data is not available.");
     }
   }
+
   Future<void> _loadMessages() async {
     List<Message> loadedMessages = await _auth.getUserMessages();
     setState(() {
       messages = loadedMessages;
     });
   }
+
   late Widget currentTab; // Declare currentTab as late Widget
 
   @override
@@ -153,18 +156,20 @@ class _BottomTabState extends State<BottomTab> {
                 setState(() {
                   selectedTab = 3;
                   _loadMessages();
-                  currentTab = MessageView(messages: messages,);
+                  currentTab = MessageView(
+                    messages: messages,
+                  );
                 });
               },
               size: media.height * 0.039,
             ),
             TabButton(
-              iconData: Icons.notifications_rounded,
+              iconData: Icons.person_2,
               isActive: selectedTab == 4,
               onTap: () {
                 setState(() {
                   selectedTab = 4;
-                  currentTab = const NotificationView();
+                  currentTab = const ProfileView();
                 });
               },
               size: media.height * 0.04,
