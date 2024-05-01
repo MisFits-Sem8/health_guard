@@ -29,6 +29,7 @@ class FitnessDatabaseHelper {
   String targetTable = 'target_table';
   String chatTable = 'chat_table';
   String depressionDetectorTable = 'depression_detector_table';
+  String waterIntakeTable = 'water_intake_table';
 
   String colId = 'id';
   String colDate = 'date';
@@ -88,19 +89,67 @@ class FitnessDatabaseHelper {
 
   void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $stepsTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colDate TEXT, $colSteps INTEGER, $colUserId INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
+        'CREATE TABLE $stepsTable($colDate TEXT, PRIMARY KEY,  $colSteps INTEGER, $colUserId TEXT, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
         'CREATE TABLE $userTable($colId TEXT PRIMARY KEY, $colName TEXT, $colEmail TEXT, $colGender TEXT, $colAge INTEGER, $colHeight INTEGER, $colWeight INTEGER)');
     await db.execute(
-        'CREATE TABLE $sleepTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId INTEGER, $colDate TEXT, $colDuration INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
+        'CREATE TABLE $sleepTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId TEXT, $colDate TEXT, $colDuration INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
-        'CREATE TABLE $scheduleTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId INTEGER, $colType TEXT, $colTime TEXT, $colIsActive BOOLEAN, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
+        'CREATE TABLE $scheduleTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId TEXT, $colType TEXT, $colTime TEXT, $colIsActive BOOLEAN, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
-        'CREATE TABLE $targetTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId INTEGER, $colCalories INTEGER, $colWater INTEGER, $colSteps INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
+        'CREATE TABLE $targetTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId TEXT, $colCalories INTEGER, $colWater INTEGER, $colSteps INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
-        'CREATE TABLE $chatTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId INTEGER, $colIsSender BOOLEAN, $colMessage TEXT, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
+        'CREATE TABLE $chatTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId TEXT, $colIsSender BOOLEAN, $colMessage TEXT, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
     await db.execute(
-        'CREATE TABLE $depressionDetectorTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId INTEGER, $colTime TEXT, $colStressLevel INTEGER, $colSleepingStatus TEXT, $colSadness INTEGER, $colJoy INTEGER, $colLove INTEGER, $colAngry INTEGER, $colFear INTEGER, $colSurprise INTEGER, $colThoughts TEXT, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
+        'CREATE TABLE $depressionDetectorTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUserId TEXT, $colTime TEXT, $colStressLevel INTEGER, $colSleepingStatus TEXT, $colSadness INTEGER, $colJoy INTEGER, $colLove INTEGER, $colAngry INTEGER, $colFear INTEGER, $colSurprise INTEGER, $colThoughts TEXT, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
+    await db.execute(
+        'CREATE TABLE $waterIntakeTable($colDate TEXT PRIMARY KEY, $colUserId TEXT, $colWater INTEGER, FOREIGN KEY($colUserId) REFERENCES $userTable($colId))');
+  }
+
+  // Fetch Operation: Get all DailySteps objects from database relvent to user
+  Future<List<Map<String, dynamic>>> getWaterIntakeMapList(
+      String userId) async {
+    Database db = await fitnessDatabase;
+    var result = await db.query(
+      waterIntakeTable,
+      where: '$colUserId = ?',
+      whereArgs: [userId],
+      orderBy: '$colDate ASC',
+    );
+    return result;
+  }
+
+  // Insert Operation: Insert a DailySteps object to database
+  Future<int> insertWaterIntake(DailySteps steps) async {
+    Database db = await fitnessDatabase;
+    var result = await db.insert(stepsTable, steps.toMap());
+    return result;
+  }
+
+  // Update Operation: Update a DailySteps object and save it to database
+  Future<int> updateWaterIntake(DailySteps steps) async {
+    Database db = await fitnessDatabase;
+
+    // Check if the record exists
+    List<Map> result = await db.query(waterIntakeTable,
+        where: '$colDate = ?', whereArgs: [steps.date]);
+
+    if (result.isEmpty) {
+      // If the record doesn't exist, insert it
+      return await db.insert(waterIntakeTable, steps.toMap());
+    } else {
+      // If the record exists, update it
+      return await db.update(waterIntakeTable, steps.toMap(),
+          where: '$colDate = ?', whereArgs: [steps.date]);
+    }
+  }
+
+  // Delete Operation: Delete a DailySteps object from database
+  Future<int> deleteWaterIntake(String date) async {
+    var db = await fitnessDatabase;
+    int result =
+        await db.rawDelete('DELETE FROM $stepsTable WHERE $colDate = $date');
+    return result;
   }
 
   // Fetch Operation: Get all DailySteps objects from database

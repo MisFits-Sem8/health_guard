@@ -1,6 +1,6 @@
 // Schedule class
 class Schedule {
-  late int? id;
+  int? id;
   late String userId;
   late String type;
   late DateTime time;
@@ -13,10 +13,10 @@ class Schedule {
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{};
 
-    map['id'] = id;
+    // map['id'] = id;
     map['user_id'] = userId;
     map['type'] = type;
-    map['time'] = time;
+    map['time'] = time.toIso8601String();
     map['is_active'] = isActive ? 1 : 0;
 
     return map;
@@ -27,7 +27,7 @@ class Schedule {
       map['id'],
       map['user_id'],
       map['type'],
-      map['time'],
+      DateTime.parse(map['time']),
       map['is_active'] == 1,
     );
   }

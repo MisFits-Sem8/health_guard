@@ -9,6 +9,7 @@ import 'firebase_options.dart';
 import 'package:cron/cron.dart';
 import 'package:health_app/db_helper/db_helper.dart';
 import 'package:health_app/db_helper/steps_update_job.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   final cron = Cron();
@@ -33,7 +34,7 @@ void main() async {
   });
 
   SleepTracker _sleepTracker = SleepTracker();
-
+  tz.initializeTimeZones();
   runApp(const MyApp());
 }
 

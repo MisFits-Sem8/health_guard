@@ -2,6 +2,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
+import 'package:health_app/models/user.dart';
+import 'package:health_app/services/auth_service.dart';
 import 'package:health_app/view/activity/add_activity.dart';
 import 'package:health_app/view/activity_summary/sleep_tracker_view.dart';
 import 'package:health_app/view/profile/edit_profile_view.dart';
@@ -195,9 +197,10 @@ class _ActivityViewState extends State<ActivityView> {
         // Add a new entry for the new day
         allSpots.add(FlSpot(_dataRepository.recordSteps.length.toDouble(),
             _dailySteps.toDouble()));
-        tools.add(_dataRepository.recordSteps.length);
+
         _dataRepository.updateStep(_dataRepository.recordSteps.length,
             DailySteps(eventDate, _dailySteps, id));
+        tools = [_dataRepository.recordSteps.length - 1];
       }
       // print(_dataRepository);
     });
@@ -270,7 +273,8 @@ class _ActivityViewState extends State<ActivityView> {
     if (mounted) {
       setState(() {
         this.allSpots = filteredSpots;
-        this.tools = [filteredSpots.length - 1];
+        this.tools =
+            filteredSpots.length - 1 >= 0 ? [filteredSpots.length - 1] : [];
       });
     }
   }

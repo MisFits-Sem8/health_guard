@@ -1,9 +1,13 @@
 import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
+import 'package:health_app/db_helper/db_helper.dart';
+import 'package:health_app/models/schedule.dart';
+import 'package:health_app/services/notification_service.dart';
 
 class TodaySleepScheduleRow extends StatefulWidget {
   final Map sObj;
+
   const TodaySleepScheduleRow({super.key, required this.sObj});
 
   @override
@@ -11,7 +15,7 @@ class TodaySleepScheduleRow extends StatefulWidget {
 }
 
 class _TodaySleepScheduleRowState extends State<TodaySleepScheduleRow> {
-  bool positive = false;
+  FitnessDatabaseHelper databasehelper = FitnessDatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +61,7 @@ class _TodaySleepScheduleRowState extends State<TodaySleepScheduleRow> {
                   Row(
                     children: [
                       Text(
-                        "${widget.sObj["time"].toString()}",
+                        widget.sObj["time"].toString(),
                         style: TextStyle(
                           color: TColour.black1,
                           fontSize: 12,
@@ -87,14 +91,34 @@ class _TodaySleepScheduleRowState extends State<TodaySleepScheduleRow> {
                   child: Transform.scale(
                     scale: 0.7,
                     child: CustomAnimatedToggleSwitch<bool>(
-                      current: positive,
-                      values: [false, true],
+                      current: widget.sObj["is_active"],
+                      values: const [false, true],
                       spacing: 0.0,
                       indicatorSize: const Size.square(30.0),
                       animationDuration: const Duration(milliseconds: 200),
                       animationCurve: Curves.linear,
                       iconsTappable: true,
-                      onChanged: (b) => setState(() => positive = !positive),
+                      onChanged: (b) async {
+                        setState(() {
+                          widget.sObj["is_active"] = !widget.sObj["is_active"];
+                        });
+                        databasehelper.updateSchedule(Schedule(
+                            widget.sObj["id"],
+                            widget.sObj["type"],
+                            widget.sObj["time"],
+                            widget.sObj["is_active"]));
+                        if (!widget.sObj["is_active"]) {
+                          await NotificationService()
+                              .cancelNotification(widget.sObj["id"]);
+                        } else {
+                          await NotificationService().scheduleNotification(
+                              widget.sObj["id"],
+                              "Alert!",
+                              "Don't miss your ${widget.sObj["type"]}",
+                              widget.sObj["time"]);
+                        }
+                      },
+
                       iconBuilder: (context, local, global) {
                         return const SizedBox();
                       },

@@ -1,6 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:async';
 import 'package:logger/logger.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   final Logger _logger = Logger();
@@ -41,18 +42,6 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  // Future<void> showNotification() async {
-  //   _logger.d('show notification event fired');
-  //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-  //       AndroidNotificationDetails('your channel id', 'your channel name',
-  //           importance: Importance.max,
-  //           priority: Priority.high,
-  //           showWhen: false);
-  //   const NotificationDetails platformChannelSpecifics =
-  //       NotificationDetails(android: androidPlatformChannelSpecifics);
-  //   await flutterLocalNotificationsPlugin.show(0, 'Successful Login',
-  //       'You have logged in successfully', platformChannelSpecifics);
-  // }
   Future<void> showNotification() async {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails('your channel id', 'your channel name',
@@ -65,6 +54,26 @@ class NotificationService {
     await flutterLocalNotificationsPlugin.show(0, 'Successful Login',
         'You have logged in successfully', notificationDetails,
         payload: 'item x');
+  }
+
+  Future<void> scheduleNotification(
+      int id, String title, String body, DateTime scheduledTime) async {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        id,
+        title,
+        body,
+        tz.TZDateTime.from(scheduledTime, tz.local),
+        const NotificationDetails(
+            android: AndroidNotificationDetails(
+                'your channel id', 'your channel name',
+                channelDescription: 'your channel description')),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
+  }
+
+  Future<void> cancelNotification(int notificationId) async {
+    await flutterLocalNotificationsPlugin.cancel(notificationId);
   }
 }
 
