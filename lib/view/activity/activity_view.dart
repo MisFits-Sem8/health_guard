@@ -11,7 +11,7 @@ import 'package:pretty_gauge/pretty_gauge.dart';
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
 import 'package:pedometer/pedometer.dart';
 import 'dart:async';
-import 'package:health_app/model/daily_steps.dart';
+import 'package:health_app/models/daily_steps.dart';
 import 'package:health_app/db_helper/db_helper.dart';
 import 'package:health_app/repositories/data_repository.dart';
 import '../profile/profile_view.dart';
