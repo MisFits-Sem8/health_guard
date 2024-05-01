@@ -325,6 +325,34 @@ class _ActivityViewState extends State<ActivityView> {
     return percentCaloriesBurned;
   }
 
+  // double calculatePercentCaloriesBurned() {
+  //   int? steps;
+  //   if (_dataRepository.recordSteps.isNotEmpty) {
+  //     steps = _dataRepository
+  //         .getRecord(_dataRepository.recordSteps.length - 1)
+  //         ?.steps;
+  //   }
+
+  //   double weightInKg = 70.0;
+  //   // MET value for walking is approximately 3.9 at speed of 5km/h
+  //   double met = 3.9;
+
+  //   // Time is estimated based on an average pace
+  //   double time = (steps ?? 2000) /
+  //       50.0; // time in hours based on an average pace of 5000 steps per hour
+
+  //   // Calories burned formula
+  //   double calories = time * met * 5 * weightInKg / 10;
+
+  //   // Total calories that should be burned per day
+  //   double totalCalories = 2000;
+
+  //   // Calculate the percentage of total calories burned
+  //   double percentCaloriesBurned = (calories / totalCalories) * 100;
+
+  //   return percentCaloriesBurned;
+  // }
+
   @override
   Widget build(BuildContext context) {
     setBmiInterpretation();
