@@ -4,15 +4,39 @@ import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/view/message/message.dart';
 import 'package:intl/intl.dart';
 
+import '../../services/auth_service.dart';
+
 class MessageView extends StatefulWidget {
-  const MessageView({super.key});
+  List<Message> messages;
+
+  MessageView({Key? key, required this.messages}) : super(key: key);
 
   @override
   State<MessageView> createState() => _MessageViewState();
 }
 
 class _MessageViewState extends State<MessageView> {
+  final _auth = AuthService();
   final _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  Future<void> _sendMessages(String text, List<Message> messages) async {
+    List<Message> loadedMessages = await _auth.sendText(text, messages);
+    setState(() {
+      widget.messages = loadedMessages;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(_scrollController.position.extentTotal);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,16 +61,18 @@ class _MessageViewState extends State<MessageView> {
         body: Column(children: [
           Expanded(
             child: GroupedListView<Message, DateTime>(
+              controller: _scrollController,
               padding: const EdgeInsets.symmetric(horizontal: 12),
               useStickyGroupSeparators: true,
               floatingHeader: true,
-              elements: messages,
+              elements: widget.messages,
               groupBy: (Message message) => DateTime(
                 message.date.year,
                 message.date.month,
                 message.date.day,
               ),
-              groupHeaderBuilder: (Message message) => SizedBox(
+              groupHeaderBuilder: (Message message) => Container(
+                color: TColour.white.withOpacity(0.8),
                 height: media.height * 0.05,
                 child: Center(
                   child: ShaderMask(
@@ -107,11 +133,11 @@ class _MessageViewState extends State<MessageView> {
                         ),
                       ),
                       onSubmitted: (text) {
-                        final message = Message(
-                            text: text, date: DateTime.now(), isSentByMe: true);
+                        // final message = Message(
+                        //     text: text, date: DateTime.now(), isSentByMe: true);
                         setState(() {
                           if (text != "") {
-                            messages.add(message);
+                            _sendMessages(text, widget.messages);
                           }
                         });
                         _messageController.clear();
@@ -127,11 +153,9 @@ class _MessageViewState extends State<MessageView> {
                   backgroundColor: TColour.primaryColor1,
                   onPressed: () {
                     final text = _messageController.text;
-                    final message = Message(
-                        text: text, date: DateTime.now(), isSentByMe: true);
                     setState(() {
                       if (text != "") {
-                        messages.add(message);
+                        _sendMessages(text, widget.messages);
                       }
                     });
                     _messageController.clear();

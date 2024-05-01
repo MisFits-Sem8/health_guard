@@ -1,6 +1,8 @@
 import "dart:math";
 import "package:flutter/material.dart";
 import "../../common/color_extension.dart";
+import "../../models/user.dart";
+import "../../services/auth_service.dart";
 import "../bottom_tab/bottom_tab.dart";
 
 List healthTips = [
@@ -42,7 +44,6 @@ class HealthTipPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context).size;
-
     final random = Random();
     final selectedTipIndex = random.nextInt(healthTips.length);
     final selectedTip = healthTips[selectedTipIndex];
@@ -67,23 +68,42 @@ class HealthTipPage extends StatelessWidget {
                         IconButton(
                           icon: Icon(Icons.close),
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const BottomTab()));
+                            // Fetch user data
+                            _initializeUserData(context);
                           },
                         ),
                       ],
                     ),
                   ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 15),
+                  //   child: Text(
+                  //     "Health Tip of the Day",
+                  //     style: TextStyle(
+                  //       color: TColour.black1,
+                  //       fontSize: 24,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //   ),
+                  // ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(
-                      "Health Habit of the Day for Vibrant Living",
-                      style: TextStyle(
-                        color: TColour.black1,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: ShaderMask(
+                      blendMode: BlendMode.srcIn,
+                      shaderCallback: (bounds) {
+                        return LinearGradient(
+                                colors: TColour.primary,
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight)
+                            .createShader(Rect.fromLTRB(
+                                0, 0, bounds.width, bounds.height));
+                      },
+                      child: Text(
+                        "Health Tip of the Day",
+                        style: TextStyle(
+                            color: TColour.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 28),
                       ),
                     ),
                   ),
@@ -95,7 +115,7 @@ class HealthTipPage extends StatelessWidget {
                     child: Text(
                       selectedTip["title"],
                       style: TextStyle(
-                          color: TColour.black2,
+                          color: TColour.black3,
                           fontSize: 18,
                           fontWeight: FontWeight.w700),
                     ),
@@ -126,5 +146,36 @@ class HealthTipPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _initializeUserData(BuildContext context) async {
+    final AuthService _auth = AuthService();
+    UserDataModel? userData = await _auth.getUserData();
+    if (userData != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BottomTab(
+            height: userData.height,
+            weight: userData.weight,
+            workout: userData.workout,
+            name: userData.name,
+            sleep: userData.sleep,
+            gender: userData.gender,
+            age: userData.age,
+            targetWaterIntake: (userData.water * 1000).toInt(),
+            bmiScore: calculateBMI(userData.height, userData.weight),
+          ),
+        ),
+      );
+    } else {
+      print("User data is not available.");
+    }
+  }
+
+  double calculateBMI(int height, int weight) {
+    double heightInMeters = height / 100.0;
+    return double.parse(
+        (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
   }
 }

@@ -1,6 +1,6 @@
 import 'package:health_app/db_helper/db_helper.dart';
 import 'package:health_app/repositories/data_repository.dart';
-import 'package:health_app/model/daily_steps.dart';
+import 'package:health_app/models/daily_steps.dart';
 
 void executeCronJob() async {
   FitnessDatabaseHelper databaseHelper = FitnessDatabaseHelper();

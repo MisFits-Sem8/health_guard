@@ -1,4 +1,4 @@
-import 'package:health_app/model/daily_steps.dart';
+import 'package:health_app/models/daily_steps.dart';
 
 class DataRepository {
   static final DataRepository _instance = DataRepository._internal();

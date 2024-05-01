@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
-import 'package:health_app/model/daily_steps.dart';
+import 'package:health_app/models/daily_steps.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class FitnessDatabaseHelper {
