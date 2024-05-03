@@ -42,9 +42,9 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
     {"emoji": "😍", "name": "In love"},
   ];
   List<dynamic> depressionStatus = [
-    {"moderate": 0.681951642036438},
-    {"not depression": 0.3168366253376007},
-    {"severe": 0.0012117630103603005}
+    {"moderate": 0},
+    {"not depression": 0},
+    {"severe": 0}
   ];
 
   TextEditingController feelingController = TextEditingController();
@@ -55,8 +55,8 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
   double score1 = 0.0;
   String label2 = '';
   double score2 = 0.0;
-  String label3 = '';
-  double score3 = 0.0;
+  // String label3 = '';
+  // double score3 = 0.0;
 
   bool display = false;
   void updateData(List<dynamic> responseData) {
@@ -67,8 +67,8 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
       score1 = responseData[0][0]['score'];
       label2 = responseData[0][1]['label'];
       score2 = responseData[0][1]['score'];
-      label3 = responseData[0][2]['label'];
-      score3 = responseData[0][2]['score'];
+      // label3 = responseData[0][2]['label'];
+      // score3 = responseData[0][2]['score'];
     });
   }
 
@@ -439,7 +439,7 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
         color: _getColorForStatus(label1),
         value: score1 * 10000, // Convert score to percentage
         title:
-            '${(score1 * 100).toStringAsFixed(1)}\n${label1}%', // Display percentage
+            '${(score1 * 100).toStringAsFixed(1)}%\nNormal', // Display percentage
         radius: 30,
         titleStyle: TextStyle(
           fontSize: 16,
@@ -453,7 +453,7 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
         color: _getColorForStatus(label2),
         value: score2 * 10000, // Convert score to percentage
         title:
-            '${(score2 * 100).toStringAsFixed(1)}%\n${label2}', // Display percentage
+            '${(score2 * 100).toStringAsFixed(1)}%\nDepression', // Display percentage
         radius: 50,
         titleStyle: TextStyle(
           fontSize: 16,
@@ -462,21 +462,21 @@ class _MentalHealthSummaryState extends State<MentalHealthSummary> {
         ),
       ),
     );
-    sections.add(
-      PieChartSectionData(
-        color: _getColorForStatus(label3),
-        value: score3 * 10000, // Convert score to percentage
-        title:
-            '${(score3 * 100).toStringAsFixed(1)}%\n${label3}', // Display percentage
-        radius: 40,
-        titleStyle: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: TColour.black3,
-        ),
-      ),
-    );
-    print(sections);
+    // sections.add(
+    //   PieChartSectionData(
+    //     color: _getColorForStatus(label3),
+    //     value: score3 * 10000, // Convert score to percentage
+    //     title:
+    //         '${(score3 * 100).toStringAsFixed(1)}%\n${label3}', // Display percentage
+    //     radius: 40,
+    //     titleStyle: TextStyle(
+    //       fontSize: 16,
+    //       fontWeight: FontWeight.bold,
+    //       color: TColour.black3,
+    //     ),
+    //   ),
+    // );
+    // print(sections);
 
     return sections;
   }

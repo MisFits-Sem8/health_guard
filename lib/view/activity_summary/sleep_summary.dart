@@ -24,7 +24,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
     },
     {
       "name": "Alarm",
-      "image": "assets/images/alaarm.png",
+      "image": "assets/images/alarm.png",
       "time": "02/06/2023 05:10 AM",
       "duration": "in 14hours 30minutes"
     },
@@ -86,7 +86,7 @@ class _SleepTrackerViewState extends State<SleepTrackerView> {
                                 ? 'assets/images/workout.png' // Add workout image
                                 : (selectedName == 'Meditation'
                                     ? 'assets/images/meditation.png' // Add meditation image
-                                    : 'assets/images/alaarm.png'))))),
+                                    : 'assets/images/alarm.png'))))),
             'time': selectedTime!,
             'duration': formattedDuration,
           },

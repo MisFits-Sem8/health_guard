@@ -2,62 +2,112 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/today_sleep_schedule_row.dart';
+import 'package:health_app/db_helper/db_helper.dart';
+import 'package:health_app/models/schedule.dart';
+import 'package:health_app/models/user.dart';
+import 'package:health_app/services/auth_service.dart';
+import 'package:health_app/services/notification_service.dart';
 import 'package:health_app/view/profile/profile_view.dart';
+import 'package:intl/intl.dart';
 
 class CreateScheduleView extends StatefulWidget {
   final String gender;
-  const CreateScheduleView({Key? key,
-    required this.gender,})
-      : super(key: key);
+  const CreateScheduleView({
+    Key? key,
+    required this.gender,
+  }) : super(key: key);
 
   @override
   State<CreateScheduleView> createState() => _CreateScheduleViewState();
 }
 
 class _CreateScheduleViewState extends State<CreateScheduleView> {
+  late String id;
+  // String gender;
+  // String name = "";
+  // int height = 0;
+  // int weight = 0;
+  // int age = 0;
+  // double sleep = 0;
+  // double workout = 0;
+  // int targetWaterIntake = 0;
+  final AuthService _auth = AuthService();
+
+  Future<void> _initializeUserData() async {
+    UserDataModel? userData = await _auth.getUserData();
+    if (userData != null) {
+      setState(() {
+        id = userData.id;
+        // name = userData.name;
+        // height = userData.height;
+        // weight = userData.weight;
+        // age = userData.age;
+        // gender = userData.gender;
+        // sleep = userData.sleep;
+        // workout = userData.workout;
+        // targetWaterIntake = (userData.water * 1000).toInt();
+        // double heightInMeters = height / 100.0;
+        // bmiScore = double.parse(
+        //     (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
+        updateSchedules();
+      });
+    } else {
+      print("User data is not available.");
+    }
+  }
+
+  FitnessDatabaseHelper databaseHelper = FitnessDatabaseHelper();
+
   List todaySleepArr = [
-    {
-      "name": "Bedtime",
-      "image": "assets/images/bed.png",
-      "time": "04/28/2023 11:00 PM",
-      "duration": "in 6hours 22minutes"
-    },
-    {
-      "name": "Medical",
-      "image": "assets/images/medical.png",
-      "time": "04/28/2023 05:10 AM",
-      "duration": "in 14hours 30minutes"
-    },
-    {
-      "name": "Workout",
-      "image": "assets/images/workout.png",
-      "time": "04/28/2023 05:00 PM",
-      "duration": "in 6hours 22minutes"
-    },
-    {
-      "name": "Meditation",
-      "image": "assets/images/meditation.png",
-      "time": "04/28/2023 05:10 AM",
-      "duration": "in 14hours 30minutes"
-    },
-    {
-      "name": "Breakfast",
-      "image": "assets/images/breakfast.png",
-      "time": "04/28/2023 09:00 AM",
-      "duration": "in 6hours 22minutes"
-    },
-    {
-      "name": "Lunch",
-      "image": "assets/images/lunch.png",
-      "time": "04/28/2023 01:10 pM",
-      "duration": "in 14hours 30minutes"
-    },
-    {
-      "name": "Dinner",
-      "image": "assets/images/dinner.png",
-      "time": "04/28/2023 08:10 PM",
-      "duration": "in 14hours 30minutes"
-    },
+    // {
+    //   "name": "Bedtime",
+    //   "image": "assets/images/bed.png",
+    //   "time": "04/28/2023 11:00 PM",
+    //   "duration": "in 6hours 22minutes",
+    //   "is_active": false,
+    // },
+    // {
+    //   "name": "Medical",
+    //   "image": "assets/images/medical.png",
+    //   "time": "04/28/2023 05:10 AM",
+    //   "duration": "in 14hours 30minutes",
+    //   "is_active": false,
+    // },
+    // {
+    //   "name": "Workout",
+    //   "image": "assets/images/workout.png",
+    //   "time": "04/28/2023 05:00 PM",
+    //   "duration": "in 6hours 22minutes",
+    //   "is_active": false,
+    // },
+    // {
+    //   "name": "Meditation",
+    //   "image": "assets/images/meditation.png",
+    //   "time": "04/28/2023 05:10 AM",
+    //   "duration": "in 14hours 30minutes",
+    //   "is_active": false,
+    // },
+    // {
+    //   "name": "Breakfast",
+    //   "image": "assets/images/breakfast.png",
+    //   "time": "04/28/2023 09:00 AM",
+    //   "duration": "in 6hours 22minutes",
+    //   "is_active": false,
+    // },
+    // {
+    //   "name": "Lunch",
+    //   "image": "assets/images/lunch.png",
+    //   "time": "04/28/2023 01:10 pM",
+    //   "duration": "in 14hours 30minutes",
+    //   "is_active": false,
+    // },
+    // {
+    //   "name": "Dinner",
+    //   "image": "assets/images/dinner.png",
+    //   "time": "04/28/2023 08:10 PM",
+    //   "duration": "in 14hours 30minutes",
+    //   "is_active": false,
+    // },
   ];
 
   List findEatArr = [
@@ -72,6 +122,12 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
   List<int> showingTooltipOnSpots = [4];
   String selectedName = 'Bedtime'; // Default selection
   DateTime? selectedTime; // Placeholder for selected time
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeUserData();
+  }
 
   Future<void> _selectTime() async {
     final DateTime? pickedDateTime = await showDatePicker(
@@ -99,36 +155,45 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
       }
     }
   }
-  void _addScheduleItem() {
+
+  void _addScheduleItem() async {
     if (selectedTime != null) {
       final now = DateTime.now();
       final duration = Duration(
         hours: selectedTime!.hour - now.hour,
         minutes: selectedTime!.minute - now.minute,
       );
+      print("selectedtime");
+      print(selectedTime);
       final formattedDuration = formatDuration(duration); // Calculate duration
-
+      int scheduleId = await databaseHelper
+          .insertSchedule(Schedule(id, selectedName, selectedTime!, true));
+      debugPrint("schedule inserted $scheduleId?");
+      await NotificationService().scheduleNotification(
+          scheduleId, "Alert!", "Don't miss your $selectedName", selectedTime!);
       setState(() {
         todaySleepArr.add(
           {
+            'id': scheduleId,
             'name': selectedName,
             'image': selectedName == 'Bedtime'
                 ? 'assets/images/bed.png'
                 : (selectedName == 'Breakfast'
-                ? 'assets/images/breakfast.png' // Add breakfast image
-                : (selectedName == 'Lunch'
-                ? 'assets/images/lunch.png' // Add lunch image
-                : (selectedName == 'Dinner'
-                ? 'assets/images/dinner.png' // Add dinner image
-                : (selectedName == 'Workout'
-                ? 'assets/images/workout1.png'
-                : (selectedName == 'Medical'
-                ? 'assets/images/medical.png' // Add workout image
-                : (selectedName == 'Meditation'
-                ? 'assets/images/meditation.png' // Add meditation image
-                : 'assets/images/alaarm.png')))))),
-            'time': selectedTime!,
+                    ? 'assets/images/breakfast.png' // Add breakfast image
+                    : (selectedName == 'Lunch'
+                        ? 'assets/images/lunch.png' // Add lunch image
+                        : (selectedName == 'Dinner'
+                            ? 'assets/images/dinner.png' // Add dinner image
+                            : (selectedName == 'Workout'
+                                ? 'assets/images/workout1.png'
+                                : (selectedName == 'Medical'
+                                    ? 'assets/images/medical.png' // Add workout image
+                                    : (selectedName == 'Meditation'
+                                        ? 'assets/images/meditation.png' // Add meditation image
+                                        : 'assets/images/alarm.png')))))),
+            'time': DateFormat('MM/dd/yyyy hh:mm a').format(selectedTime!)!,
             'duration': formattedDuration,
+            "is_active": true,
           },
         );
         selectedTime = null; // Clear selection for next entry
@@ -150,6 +215,71 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
     final String formattedMinutes = minutes.toString().padLeft(2, '0');
 
     return 'in $formattedHours hours $formattedMinutes minutes';
+  }
+
+  void updateSchedules() async {
+    List<Schedule> schedules = await databaseHelper.getScheduleList(id);
+    for (var schedule in schedules) {
+      DateTime now = DateTime.now();
+      Duration difference = schedule.time.difference(now);
+
+      String duration;
+      if (difference.isNegative) {
+        schedule.isActive = false;
+        difference = difference.abs();
+        String days = difference.inDays > 0 ? '${difference.inDays} days ' : '';
+        String hours = '${difference.inHours.remainder(24)} hours ';
+        String minutes = '${difference.inMinutes.remainder(60)} minutes ago';
+        duration = days + hours + minutes;
+      } else if (difference.inHours >= 24) {
+        int days = difference.inDays;
+        int hours = difference.inHours.remainder(24);
+        int minutes = difference.inMinutes.remainder(60);
+        duration = 'in $days days $hours hours $minutes minutes';
+      } else {
+        duration =
+            'in ${difference.inHours} hours ${difference.inMinutes.remainder(60)} minutes';
+      }
+
+      String image;
+      switch (schedule.type) {
+        case 'Breakfast':
+          image = 'assets/images/breakfast.png';
+          break;
+        case 'Bedtime':
+          image = 'assets/images/bed.png';
+          break;
+        case 'Lunch':
+          image = 'assets/images/lunch.png';
+          break;
+        case 'Dinner':
+          image = 'assets/images/dinner.png';
+          break;
+        case 'Workout':
+          image = 'assets/images/workout1.png';
+          break;
+        case 'Medical':
+          image = 'assets/images/medical.png';
+          break;
+        case 'Meditation':
+          image = 'assets/images/meditation.png';
+          break;
+        default:
+          image = 'assets/images/alarm.png';
+          break;
+      }
+
+      setState(() {
+        todaySleepArr.add({
+          "id": schedule.id,
+          "name": schedule.type,
+          "image": image,
+          "time": DateFormat('MM/dd/yyyy hh:mm a').format(schedule.time),
+          "duration": duration,
+          "is_active": schedule.isActive,
+        });
+      });
+    }
   }
 
   @override
@@ -174,7 +304,9 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
             },
             icon: ClipOval(
               child: Image.asset(
-                widget.gender == "female" ? "assets/images/profile-female.jpg" : "assets/images/profile-male.png",
+                widget.gender == "female"
+                    ? "assets/images/profile-female.jpg"
+                    : "assets/images/profile-male.png",
                 height: media.width * 0.15,
                 fit: BoxFit.cover,
               ),
@@ -189,7 +321,7 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
           children: [
             Padding(
               padding:
-              const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -224,7 +356,7 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
                             // Dropdown to select name
                             DropdownButton<String>(
                               value: selectedName,
-                              items: <DropdownMenuItem<String>>[
+                              items: const <DropdownMenuItem<String>>[
                                 DropdownMenuItem<String>(
                                   value: 'Bedtime',
                                   child: Text('Bedtime'),
@@ -269,8 +401,10 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             ElevatedButton(
-                              onPressed: _addScheduleItem,
-                              child: const Text('Add'),
+                              onPressed: () {
+                                _addScheduleItem();
+                              },
+                              child: const Text('Add '),
                             ),
                           ],
                         ),
@@ -314,42 +448,42 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
   }
 
   List<LineChartBarData> get lineBarsData1 => [
-    lineChartBarData1_1,
-  ];
+        lineChartBarData1_1,
+      ];
 
   LineChartBarData get lineChartBarData1_1 => LineChartBarData(
-    isCurved: true,
-    gradient: LinearGradient(colors: [
-      TColour.primaryColor2,
-      TColour.primaryColor1,
-    ]),
-    barWidth: 2,
-    isStrokeCapRound: true,
-    dotData: FlDotData(show: false),
-    belowBarData: BarAreaData(
-      show: true,
-      gradient: LinearGradient(colors: [
-        TColour.primaryColor2,
-        TColour.white,
-      ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
-    ),
-    spots: const [
-      FlSpot(1, 3),
-      FlSpot(2, 5),
-      FlSpot(3, 4),
-      FlSpot(4, 7),
-      FlSpot(5, 4),
-      FlSpot(6, 8),
-      FlSpot(7, 5),
-    ],
-  );
+        isCurved: true,
+        gradient: LinearGradient(colors: [
+          TColour.primaryColor2,
+          TColour.primaryColor1,
+        ]),
+        barWidth: 2,
+        isStrokeCapRound: true,
+        dotData: FlDotData(show: false),
+        belowBarData: BarAreaData(
+          show: true,
+          gradient: LinearGradient(colors: [
+            TColour.primaryColor2,
+            TColour.white,
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+        ),
+        spots: const [
+          FlSpot(1, 3),
+          FlSpot(2, 5),
+          FlSpot(3, 4),
+          FlSpot(4, 7),
+          FlSpot(5, 4),
+          FlSpot(6, 8),
+          FlSpot(7, 5),
+        ],
+      );
 
   SideTitles get rightTitles => SideTitles(
-    getTitlesWidget: rightTitleWidgets,
-    showTitles: true,
-    interval: 2,
-    reservedSize: 40,
-  );
+        getTitlesWidget: rightTitleWidgets,
+        showTitles: true,
+        interval: 2,
+        reservedSize: 40,
+      );
 
   Widget rightTitleWidgets(double value, TitleMeta meta) {
     String text;
@@ -385,11 +519,11 @@ class _CreateScheduleViewState extends State<CreateScheduleView> {
   }
 
   SideTitles get bottomTitles => SideTitles(
-    showTitles: true,
-    reservedSize: 32,
-    interval: 1,
-    getTitlesWidget: bottomTitleWidgets,
-  );
+        showTitles: true,
+        reservedSize: 32,
+        interval: 1,
+        getTitlesWidget: bottomTitleWidgets,
+      );
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     var style = TextStyle(

@@ -1,19 +1,23 @@
+import 'dart:async';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/common/color_extension.dart';
 import 'package:health_app/common_widgets/rounded_btn.dart';
-import 'package:health_app/view/activity/add_activity.dart';
+import 'package:health_app/db_helper/db_helper.dart';
+import 'package:health_app/models/daily_steps.dart';
+import 'package:health_app/models/user.dart';
+import 'package:health_app/models/water_intake.dart';
+import 'package:health_app/repositories/data_repository.dart';
+import 'package:health_app/services/auth_service.dart';
 import 'package:health_app/view/activity_summary/sleep_tracker_view.dart';
 import 'package:health_app/view/profile/edit_profile_view.dart';
 import 'package:intl/intl.dart';
+import 'package:pedometer/pedometer.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pretty_gauge/pretty_gauge.dart';
 import 'package:simple_animation_progress_bar/simple_animation_progress_bar.dart';
-import 'package:pedometer/pedometer.dart';
-import 'dart:async';
-import 'package:health_app/models/daily_steps.dart';
-import 'package:health_app/db_helper/db_helper.dart';
-import 'package:health_app/repositories/data_repository.dart';
+
 import '../profile/profile_view.dart';
 
 class ActivityView extends StatefulWidget {
@@ -44,6 +48,20 @@ class ActivityView extends StatefulWidget {
 }
 
 class _ActivityViewState extends State<ActivityView> {
+  late String id = "";
+  late String gender = "";
+  late String name = "";
+  late String email = "";
+  late int height = 0;
+  late int weight = 0;
+  late int age = 0;
+  late double sleep = 0;
+  late double workout = 0;
+  late int targetWaterIntake = 0;
+  final AuthService _auth = AuthService();
+
+  late double bmiScore = 0;
+
   String? bmiStatus;
 
   String? bmiInterpretation;
@@ -58,15 +76,15 @@ class _ActivityViewState extends State<ActivityView> {
 
   List<FlSpot> allSpots = [];
 
-  // Map<String, DailySteps> stepRecords = {};
-
   final FitnessDatabaseHelper databaseHelper = FitnessDatabaseHelper();
 
-  List<int> tools = [];
+  List<int> tools = [-1];
 
   DateTime _currentDay = DateTime.now();
 
   int _dailySteps = 0;
+
+  late int waterIntake = 0;
 
   double previousSteps = 0;
 
@@ -99,12 +117,42 @@ class _ActivityViewState extends State<ActivityView> {
     {"title": "12-14", "subtitle": "1 cup"}
   ];
 
+  Future<void> _initializeUserData() async {
+    UserDataModel? userData = await _auth.getUserData();
+    print("userdata: ");
+    print(userData);
+    if (userData != null) {
+      setState(() {
+        id = userData.id;
+        name = userData.name;
+        email = userData.email;
+        height = userData.height;
+        weight = userData.weight;
+        age = userData.age;
+        gender = userData.gender;
+        sleep = userData.sleep;
+        workout = userData.workout;
+        targetWaterIntake = (userData.water * 1000).toInt();
+        double heightInMeters = height / 100.0;
+        bmiScore = double.parse(
+            (weight / (heightInMeters * heightInMeters)).toStringAsFixed(1));
+      });
+      // await databaseHelper.populateDb(id);
+      updateStepsView();
+      setState(() async {
+        waterIntake:
+        await updateWaterIntake();
+      });
+    } else {
+      print("User data is not available.");
+    }
+  }
+
   @override
   void initState() {
-    // _initializeUserData();
     super.initState();
     initPlatformState();
-    updateStepsView();
+    _initializeUserData();
   }
 
   void onStepCount(StepCount event) {
@@ -151,16 +199,17 @@ class _ActivityViewState extends State<ActivityView> {
           // _dataRepository.updateStep(allSpots.last.x.toInt(), prevRecord);
         } else {
           _dataRepository.updateStep(_dataRepository.recordSteps.length - 1,
-              DailySteps(eventDate, _dailySteps));
+              DailySteps(eventDate, _dailySteps, id));
         }
         // _dataRepository.updateStep(allSpots.last.x.toInt(), prevRecord);
       } else {
         // Add a new entry for the new day
         allSpots.add(FlSpot(_dataRepository.recordSteps.length.toDouble(),
             _dailySteps.toDouble()));
-        tools.add(_dataRepository.recordSteps.length);
+
         _dataRepository.updateStep(_dataRepository.recordSteps.length,
-            DailySteps(eventDate, _dailySteps));
+            DailySteps(eventDate, _dailySteps, id));
+        tools = [_dataRepository.recordSteps.length - 1];
       }
       // print(_dataRepository);
     });
@@ -202,7 +251,7 @@ class _ActivityViewState extends State<ActivityView> {
 
   void updateStepsView() async {
     await databaseHelper.initializeDatabase();
-    List<DailySteps> recordSteps = await databaseHelper.getStepsList();
+    List<DailySteps> recordSteps = await databaseHelper.getStepsList(id);
 
     // Create a new list to store the filtered spots
     List<FlSpot> filteredSpots = [];
@@ -230,19 +279,28 @@ class _ActivityViewState extends State<ActivityView> {
     filteredSpots.sort((a, b) => a.x.compareTo(b.x));
 
     debugPrint(filteredSpots.toString());
-    setState(() {
-      this.allSpots = filteredSpots;
-      this.tools =
-          filteredSpots.length - 1 >= 0 ? [filteredSpots.length - 1] : [];
-    });
+    if (mounted) {
+      setState(() {
+        this.allSpots = filteredSpots;
+        this.tools =
+            filteredSpots.length - 1 >= 0 ? [filteredSpots.length - 1] : [];
+      });
+    }
   }
 
-  int waterIntake = 0;
   // int targetWaterIntake = 2000; // Customize this value as needed
+  Future<int> updateWaterIntake() async {
+    var intake = await databaseHelper.getTodayWaterIntake(
+        id, DateFormat('yyyy-MM-dd').format(DateTime.now()));
+
+    return intake;
+  }
 
   void incrementWaterIntake() {
     setState(() {
       waterIntake += 200;
+      databaseHelper.updateWaterIntake(WaterIntake(
+          DateFormat('yyyy-MM-dd').format(DateTime.now()), waterIntake, id));
     });
   }
 
@@ -260,7 +318,7 @@ class _ActivityViewState extends State<ActivityView> {
 
     // Time is estimated based on an average pace
     double time = (steps ?? 2000) /
-        50.0; // time in hours based on an average pace of 5000 steps per hour
+        500.0; // time in hours based on an average pace of 5000 steps per hour
 
     // Calories burned formula
     double calories = time * met * 5 * weightInKg / 10;
@@ -339,7 +397,7 @@ class _ActivityViewState extends State<ActivityView> {
       ),
     ];
 
-    final tooltipsOnBar = lineBarsData[0];
+    var tooltipsOnBar = lineBarsData[0];
 
     // var media=MediaQuery.of(context).size,
     return SafeArea(
@@ -708,21 +766,21 @@ class _ActivityViewState extends State<ActivityView> {
                               fontSize: 14,
                               fontWeight: FontWeight.w700),
                         ),
-                        SizedBox(
-                            height: 35,
-                            width: media.width * 0.35,
-                            child: RoundedButton(
-                                title: "workout",
-                                type: RoundButtonType.bgGradient,
-                                fontSize: 14,
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const AddActivity(),
-                                    ),
-                                  );
-                                }))
+                        // SizedBox(
+                        //     height: 35,
+                        //     width: media.width * 0.35,
+                        //     child: RoundedButton(
+                        //         title: "workout",
+                        //         type: RoundButtonType.bgGradient,
+                        //         fontSize: 14,
+                        //         onPressed: () {
+                        //           Navigator.push(
+                        //             context,
+                        //             MaterialPageRoute(
+                        //               builder: (context) => const AddActivity(),
+                        //             ),
+                        //           );
+                        //         }))
                       ]),
                 ),
                 SizedBox(
@@ -845,7 +903,7 @@ class _ActivityViewState extends State<ActivityView> {
                                           0, 0, bounds.width, bounds.height));
                                 },
                                 child: Text(
-                                  "234 kCal",
+                                  calculatePercentCaloriesBurned().toString(),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       color: TColour.white.withOpacity(.7),
@@ -856,14 +914,34 @@ class _ActivityViewState extends State<ActivityView> {
                               SizedBox(
                                 height: media.width * 0.02,
                               ),
+                              // CircularPercentIndicator(
+                              //   radius: 40.0,
+                              //   lineWidth: 7.0,
+                              //   percent: 234 / 500,
+                              //   animation: true,
+                              //   animationDuration: 1200,
+                              //   center: new Text(
+                              //     "46.8%",
+                              //     style: new TextStyle(
+                              //         fontWeight: FontWeight.bold,
+                              //         fontSize: 10.0),
+                              //   ),
+                              //   circularStrokeCap: CircularStrokeCap.butt,
+                              //   backgroundColor: TColour.secondaryColor2,
+                              //   progressColor: TColour.primaryColor1,
+                              // ),
                               CircularPercentIndicator(
                                 radius: 40.0,
                                 lineWidth: 7.0,
-                                percent: 234 / 500,
+                                percent:
+                                    calculatePercentCaloriesBurned() / 100 > 1
+                                        ? 1
+                                        : calculatePercentCaloriesBurned() /
+                                            100,
                                 animation: true,
                                 animationDuration: 1200,
                                 center: new Text(
-                                  "46.8%",
+                                  "${calculatePercentCaloriesBurned().toStringAsFixed(2)}%",
                                   style: new TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 10.0),
@@ -875,23 +953,23 @@ class _ActivityViewState extends State<ActivityView> {
                               SizedBox(
                                 height: media.height * 0.02,
                               ),
-                              SizedBox(
-                                  height: 35,
-                                  width: double.maxFinite,
-                                  child: RoundedButton(
-                                    title: 'Calories Tracker',
-                                    type: RoundButtonType.bgGradient,
-                                    fontSize: 12,
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const SleepTrackerView(),
-                                        ),
-                                      );
-                                    },
-                                  ))
+                              // SizedBox(
+                              //     height: 35,
+                              //     width: double.maxFinite,
+                              //     child: RoundedButton(
+                              //       title: 'Calories Tracker',
+                              //       type: RoundButtonType.bgGradient,
+                              //       fontSize: 12,
+                              //       onPressed: () {
+                              //         Navigator.push(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //             builder: (context) =>
+                              //                 const SleepTrackerView(),
+                              //           ),
+                              //         );
+                              //       },
+                              //     ))
                             ],
                           ),
                         ),
@@ -947,12 +1025,11 @@ class _ActivityViewState extends State<ActivityView> {
                                 CircularPercentIndicator(
                                   radius: 40.0,
                                   lineWidth: 7.0,
-                                  percent:
-                                      calculatePercentCaloriesBurned() / 100,
+                                  percent: 234 / 500,
                                   animation: true,
                                   animationDuration: 1200,
                                   center: new Text(
-                                    "${calculatePercentCaloriesBurned().toStringAsFixed(2)}%",
+                                    "46.8%",
                                     style: new TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 10.0),
@@ -961,6 +1038,26 @@ class _ActivityViewState extends State<ActivityView> {
                                   backgroundColor: TColour.secondaryColor2,
                                   progressColor: TColour.primaryColor1,
                                 ),
+                                // CircularPercentIndicator(
+                                //   radius: 40.0,
+                                //   lineWidth: 7.0,
+                                //   percent:
+                                //       calculatePercentCaloriesBurned() / 100 > 1
+                                //           ? 1
+                                //           : calculatePercentCaloriesBurned() /
+                                //               100,
+                                //   animation: true,
+                                //   animationDuration: 1200,
+                                //   center: new Text(
+                                //     "${calculatePercentCaloriesBurned().toStringAsFixed(2)}%",
+                                //     style: new TextStyle(
+                                //         fontWeight: FontWeight.bold,
+                                //         fontSize: 10.0),
+                                //   ),
+                                //   circularStrokeCap: CircularStrokeCap.butt,
+                                //   backgroundColor: TColour.secondaryColor2,
+                                //   progressColor: TColour.primaryColor1,
+                                // ),
                                 SizedBox(
                                   height: media.height * 0.02,
                                 ),

@@ -66,12 +66,16 @@ class AuthService {
   Future<UserDataModel?> getUserData() async {
     try {
       final user = _auth.currentUser;
+
       if (user != null) {
         final data = await DatabaseService(uid: user.uid).userData.first;
         if (data.exists) {
+          print(data.data());
           final userData = data.data() as Map<String, dynamic>;
           return UserDataModel(
+            user.uid,
             userData["name"],
+            user.email!,
             userData["age"],
             userData["height"],
             userData["weight"],
@@ -114,10 +118,8 @@ class AuthService {
       prompt +=
           "\n\nProvide your single, short response only to the following message, focusing on offering practical advice and support. \nUser: ${text}";
 
-      Message newMessage = Message(
-          text: text,
-          date: DateTime.now(),
-          isSentByMe: true);
+      Message newMessage =
+          Message(text: text, date: DateTime.now(), isSentByMe: true);
 
       messages.add(newMessage);
 

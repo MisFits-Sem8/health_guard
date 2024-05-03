@@ -16,6 +16,7 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
+  late String? id = "";
   late String gender = "";
   late String name = "";
   late int height = 0;
@@ -30,6 +31,7 @@ class _ProfileViewState extends State<ProfileView> {
     UserDataModel? userData = await _auth.getUserData();
     if (userData != null) {
       setState(() {
+        id = userData.id;
         name = userData.name;
         height = userData.height;
         weight = userData.weight;
@@ -197,8 +199,8 @@ class _ProfileViewState extends State<ProfileView> {
                   height: media.width * 0.1,
                 ),
                 Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 15),
                     decoration: BoxDecoration(
                         color: TColour.white,
                         borderRadius: BorderRadius.circular(15),
